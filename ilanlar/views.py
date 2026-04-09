@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from .models import Ilan, IlanMedya, Favori
 
 def anasayfa(request):
@@ -30,6 +31,7 @@ def kayit(request):
         form = UserCreationForm()
     return render(request, 'kayit.html', {'form': form})
 
+@csrf_exempt
 def giris(request):
     if request.method == 'POST':
         form = AuthenticationForm(data=request.POST)
