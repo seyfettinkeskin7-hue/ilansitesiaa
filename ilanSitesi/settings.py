@@ -1,14 +1,13 @@
 from pathlib import Path
-import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-bunu-degistir-123456'
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
-    'web-production-2bb83.up.railway.app',
+    'ilansitesiaa-production.up.railway.app',
     'localhost',
     '127.0.0.1',
 ]
@@ -77,26 +76,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- RAILWAY VE CSRF GÜVENLİK AYARLARI ---
 CSRF_TRUSTED_ORIGINS = [
-    'https://web-production-2bb83.up.railway.app',
+    'https://ilansitesiaa-production.up.railway.app',
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SAMESITE = 'Lax'
-CSRF_COOKIE_HTTPONLY = False
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
-        },
-    },
-    'root': {
-        'handlers': ['console'],
-        'level': 'DEBUG',
-    },
-}
