@@ -4,7 +4,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-bunu-degistir-123456'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'web-production-2bb83.up.railway.app',
