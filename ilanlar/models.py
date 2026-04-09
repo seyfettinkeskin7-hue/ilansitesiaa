@@ -34,7 +34,7 @@ class IlanMedya(models.Model):
         ('video', 'Video'),
     ]
     ilan = models.ForeignKey(Ilan, on_delete=models.CASCADE, related_name='medyalar')
-    dosya = models.FileField(upload_to='medya/')
+    dosya = models.ImageField(upload_to='medya/')
     tip = models.CharField(max_length=10, choices=MEDYA_TIPLERI, default='resim')
 
     def __str__(self):
