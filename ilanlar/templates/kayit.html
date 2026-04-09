@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Kayıt Ol</title>
+    <style>
+        body { font-family: Arial; margin: 0; background: #f5f5f5; }
+        .header { background: #FF6000; padding: 15px; color: white; }
+        .header h1 { margin: 0; font-size: 24px; }
+        .form-kart { max-width: 400px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; }
+        .form-kart h2 { color: #FF6000; margin-top: 0; }
+        input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: #FF6000; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
+        a { color: #FF6000; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏠 İlan Sitem</h1>
+    </div>
+    <div class="form-kart">
+        <h2>Kayıt Ol</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Kayıt Ol</button>
+        </form>
+        <p>Zaten hesabın var mı? <a href="/giris/">Giriş yap</a></p>
+    </div>
+</body>
+</html>

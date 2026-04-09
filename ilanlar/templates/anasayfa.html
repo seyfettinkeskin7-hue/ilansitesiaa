@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>İlan Sitem</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: #f5f5f5; }
+        .header { background: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo { display: flex; align-items: center; gap: 8px; }
+        .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
+        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
+        .logo-text span { color: #FF6000; }
+        .nav a { color: #555; text-decoration: none; margin: 0 12px; font-size: 14px; }
+        .header-sag { display: flex; align-items: center; gap: 15px; }
+        .header-sag a { color: #555; text-decoration: none; font-size: 13px; }
+        .btn-ilan { background: #FF6000; color: white !important; padding: 8px 16px; border-radius: 6px; font-size: 13px; }
+        .btn-cikis { background: none; border: none; color: #555; cursor: pointer; font-size: 13px; }
+        .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1400') center/cover; padding: 80px 30px; text-align: center; color: white; }
+        .hero h1 { font-size: 36px; margin-bottom: 30px; }
+        .arama-kutu { background: white; border-radius: 8px; padding: 20px; max-width: 900px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; }
+        .arama-kutu input { flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .arama-kutu select { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; color: #555; }
+        .arama-kutu button { background: #FF6000; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: bold; }
+        .bolum { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .bolum h2 { font-size: 22px; color: #333; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
+        .ilan-kart { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; position: relative; }
+        .ilan-kart:hover { transform: translateY(-3px); }
+        .ilan-kart img { width: 100%; height: 150px; object-fit: cover; }
+        .ilan-kart-icerik { padding: 10px; }
+        .ilan-kart h3 { font-size: 13px; color: #333; margin-bottom: 5px; }
+        .ilan-detay { font-size: 11px; color: #888; margin: 3px 0; }
+        .ilan-konum { font-size: 11px; color: #888; }
+        .resim-yok { width: 100%; height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 13px; }
+        .favori-btn { position: absolute; top: 8px; right: 8px; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+        .favori-btn.aktif { color: red; }
+        .sil-btn { display: block; text-align: center; background: #fee; color: #c00; border: none; width: 100%; padding: 5px; font-size: 12px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">🏠</div>
+            <div class="logo-text">İlan <span>Sitem</span></div>
+        </div>
+        <div class="nav">
+            <a href="/">Anasayfa</a>
+        </div>
+        <div class="header-sag">
+            {% if user.is_authenticated %}
+                <span style="font-size:13px; color:#555;">Merhaba, {{ user.username }}!</span>
+                <form method="post" action="/cikis/" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn-cikis" type="submit">Çıkış Yap</button>
+                </form>
+            {% else %}
+                <a href="/giris/">Giriş Yap / Üye Ol</a>
+            {% endif %}
+            <a href="/ilan-ekle/" class="btn-ilan">Ücretsiz İlan Ver</a>
+        </div>
+    </div>
+
+    <div class="hero">
+        <h1>Hayalinizdeki Evi Bulun!</h1>
+        <div class="arama-kutu">
+            <input type="text" placeholder="Konum (İlçe/Mahalle)">
+            <select><option>Satılık</option><option>Kiralık</option></select>
+            <select><option>Daire</option><option>Villa</option><option>Arsa</option></select>
+            <button>ARA</button>
+        </div>
+    </div>
+
+    <div class="bolum">
+        <h2>Son İlanlar</h2>
+        <div class="grid">
+            {% for ilan in ilanlar %}
+            <div class="ilan-kart">
+                <a href="/favori/{{ ilan.id }}/">
+                    <button class="favori-btn {% if ilan.id in favori_idler %}aktif{% endif %}">
+                        {% if ilan.id in favori_idler %}❤{% else %}♡{% endif %}
+                    </button>
+                </a>
+                <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
+                    {% with ilk=ilan.medyalar.first %}
+                    {% if ilk %}
+                    <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+                    {% else %}
+                    <div class="resim-yok">Resim Yok</div>
+                    {% endif %}
+                    {% endwith %}
+                    <div class="ilan-kart-icerik">
+                        <h3>{{ ilan.baslik }}</h3>
+                        <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
+                        <div class="ilan-konum">📍 {{ ilan.konum }}</div>
+                    </div>
+                </a>
+                {% if ilan.kullanici == user %}
+                <form method="post" action="/ilan-sil/{{ ilan.id }}/">
+                    {% csrf_token %}
+                    <button class="sil-btn" type="submit" onclick="return confirm('İlanı silmek istediğine emin misin?')">🗑 İlanı Sil</button>
+                </form>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if favoriler %}
+    <div class="bolum" style="margin-top: 40px;">
+        <h2>❤ Favorilerim</h2>
+        <div class="grid">
+            {% for ilan in favoriler %}
+            <div class="ilan-kart">
+                <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
+                    {% with ilk=ilan.medyalar.first %}
+                    {% if ilk %}
+                    <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+                    {% else %}
+                    <div class="resim-yok">Resim Yok</div>
+                    {% endif %}
+                    {% endwith %}
+                    <div class="ilan-kart-icerik">
+                        <h3>{{ ilan.baslik }}</h3>
+                        <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
+                        <div class="ilan-konum">📍 {{ ilan.konum }}</div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</body>
+</html>

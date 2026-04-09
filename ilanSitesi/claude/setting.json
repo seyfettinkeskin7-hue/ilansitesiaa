@@ -1,0 +1,12 @@
+# Open your shell profile in nano
+nano ~/.zshrc  # or ~/.bashrc for Bash users
+
+# Add these lines to the file:
+export OPENROUTER_API_KEY="<your-openrouter-api-key>"
+export ANTHROPIC_BASE_URL="https://openrouter.ai/api"
+export ANTHROPIC_AUTH_TOKEN="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
+"
+export ANTHROPIC_API_KEY="" # Important: Must be explicitly empty
+qwen/qwen3-coder:free
+# After saving, restart your terminal for changes to take effect
+qwen/qwen3-coder:free 

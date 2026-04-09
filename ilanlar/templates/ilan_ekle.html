@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>İlan Ekle</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial; background: #f5f5f5; }
+        .header { background: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
+        .logo-text span { color: #FF6000; }
+        .form-kart { max-width: 600px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .form-kart h2 { color: #FF6000; margin-bottom: 20px; }
+        .form-grup { margin-bottom: 15px; }
+        .form-grup label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: bold; }
+        .form-grup input, .form-grup textarea, .form-grup select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+        .form-grup textarea { height: 80px; resize: vertical; }
+        .iki-kolon { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .checkbox-grup { display: flex; align-items: center; gap: 8px; }
+        .checkbox-grup input { width: auto; }
+        .checkbox-grup label { font-weight: normal; margin: 0; }
+        button { width: 100%; padding: 12px; background: #FF6000; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; margin-top: 10px; }
+        .geri { display: inline-block; color: #FF6000; text-decoration: none; margin-bottom: 15px; font-size: 13px; }
+        .bolum-baslik { font-size: 15px; font-weight: bold; color: #FF6000; margin: 20px 0 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+        .medya-aciklama { font-size: 12px; color: #888; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-text">İlan <span>Sitem</span></div>
+        <a href="/" style="color:#555; text-decoration:none; font-size:13px;">Ana Sayfa</a>
+    </div>
+    <div class="form-kart">
+        <a class="geri" href="/">← Geri dön</a>
+        <h2>Lojman İlanı Ekle</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-grup">
+                <label>Başlık</label>
+                <input type="text" name="baslik" placeholder="Örn: Ankara Çankaya 3+1 Lojman" required>
+            </div>
+            <div class="form-grup">
+                <label>Açıklama</label>
+                <textarea name="aciklama" placeholder="Lojman hakkında bilgi..."></textarea>
+            </div>
+            <div class="form-grup">
+                <label>Konum</label>
+                <input type="text" name="konum" placeholder="Örn: Ankara Çankaya" required>
+            </div>
+
+            <div class="bolum-baslik">Daire Özellikleri</div>
+            <div class="iki-kolon">
+                <div class="form-grup">
+                    <label>Oda Sayısı</label>
+                    <select name="oda_sayisi">
+                        <option>1+1</option>
+                        <option>2+1</option>
+                        <option>3+1</option>
+                        <option>4+1</option>
+                        <option>5+1</option>
+                    </select>
+                </div>
+                <div class="form-grup">
+                    <label>Kat</label>
+                    <input type="number" name="kat" placeholder="Örn: 3" min="0">
+                </div>
+                <div class="form-grup">
+                    <label>Metrekare (m²)</label>
+                    <input type="number" name="metrekare" placeholder="Örn: 120">
+                </div>
+                <div class="form-grup">
+                    <label>Bina Yaşı</label>
+                    <input type="number" name="bina_yasi" placeholder="Örn: 5">
+                </div>
+                <div class="form-grup">
+                    <label>Banyo Sayısı</label>
+                    <input type="number" name="banyo" placeholder="Örn: 1" min="1">
+                </div>
+                <div class="form-grup">
+                    <label>Isınma Yöntemi</label>
+                    <select name="isitma">
+                        <option value="dogalgaz">Doğalgaz</option>
+                        <option value="kombi">Kombi</option>
+                        <option value="merkezi">Merkezi</option>
+                        <option value="klima">Klima</option>
+                        <option value="soba">Soba</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="bolum-baslik">Ek Özellikler</div>
+            <div class="iki-kolon">
+                <div class="checkbox-grup">
+                    <input type="checkbox" name="balkon" id="balkon">
+                    <label for="balkon">Balkon var</label>
+                </div>
+                <div class="checkbox-grup">
+                    <input type="checkbox" name="asansor" id="asansor">
+                    <label for="asansor">Asansör var</label>
+                </div>
+                <div class="checkbox-grup">
+                    <input type="checkbox" name="site_icinde" id="site_icinde">
+                    <label for="site_icinde">Site içinde</label>
+                </div>
+            </div>
+            <div class="form-grup" style="margin-top:15px;">
+                <label>Site Aidatı (TL)</label>
+                <input type="number" name="site_aidati" placeholder="Örn: 500">
+            </div>
+
+            <div class="bolum-baslik">Fotoğraf ve Video</div>
+            <div class="form-grup">
+                <label>Resimler (istediğin kadar seç)</label>
+                <input type="file" name="resimler" accept="image/*" multiple>
+                <div class="medya-aciklama">JPG, PNG formatları desteklenir. Birden fazla seçmek için Ctrl/Command tuşuna basılı tutun.</div>
+            </div>
+            <div class="form-grup">
+                <label>Videolar (istediğin kadar seç)</label>
+                <input type="file" name="videolar" accept="video/*" multiple>
+                <div class="medya-aciklama">MP4, MOV formatları desteklenir.</div>
+            </div>
+
+            <button type="submit">İlanı Yayınla</button>
+        </form>
+    </div>
+</body>
+</html>
