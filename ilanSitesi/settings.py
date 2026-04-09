@@ -7,7 +7,7 @@ SECRET_KEY = 'django-insecure-bunu-degistir-123456'
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'ilansitesi-production.up.railway.app',
+    'web-production-2bb83.up.railway.app',
     'localhost',
     '127.0.0.1',
 ]
@@ -76,7 +76,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- RAILWAY VE CSRF GÜVENLİK AYARLARI ---
 CSRF_TRUSTED_ORIGINS = [
-    'https://ilansitesi-production.up.railway.app',
+'https://web-production-2bb83.up.railway.app',
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
