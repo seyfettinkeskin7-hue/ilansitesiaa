@@ -12,6 +12,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = [
     'ilansitesiaa-production.up.railway.app',
+    'seyfettin65.pythonanywhere.com',
     'localhost',
     '127.0.0.1',
 ]
@@ -66,11 +67,6 @@ DATABASES = {
     }
 }
 
-DATABASE_URL = os.environ.get('DATABASE_URL')
-if DATABASE_URL:
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
-
 LANGUAGE_CODE = 'tr-tr'
 TIME_ZONE = 'Europe/Istanbul'
 USE_I18N = True
@@ -84,16 +80,19 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 cloudinary.config(
-    cloudinary_url=os.environ.get('CLOUDINARY_URL')
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', 'dgftemdmf'),
+    api_key=os.environ.get('CLOUDINARY_API_KEY', '951388755267358'),
+    api_secret=os.environ.get('CLOUDINARY_API_SECRET', '3jO2sWOflD1gxiLDdykoxSTiqRc'),
 )
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- RAILWAY VE CSRF GÜVENLİK AYARLARI ---
+# --- CSRF GÜVENLİK AYARLARI ---
 CSRF_TRUSTED_ORIGINS = [
     'https://ilansitesiaa-production.up.railway.app',
+    'https://seyfettin65.pythonanywhere.com',
 ]
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
