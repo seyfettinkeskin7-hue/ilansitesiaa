@@ -1,6 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class Haber(models.Model):
+    baslik = models.CharField(max_length=200)
+    aciklama = models.TextField(blank=True)
+    resim = models.ImageField(upload_to='haberler/', blank=True, null=True)
+    renk = models.CharField(max_length=20, default='#1a3a5c')
+    etiket = models.CharField(max_length=50, default='DUYURU')
+    tarih = models.DateTimeField(auto_now_add=True)
+    aktif = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.baslik
+
+    class Meta:
+        ordering = ['-tarih']
+
 class Ilan(models.Model):
     ISITMA_SECENEKLERI = [
         ('dogalgaz', 'Doğalgaz'),

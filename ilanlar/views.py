@@ -104,4 +104,29 @@ def favori_ekle(request, ilan_id):
     favori, olusturuldu = Favori.objects.get_or_create(kullanici=request.user, ilan=ilan)
     if not olusturuldu:
         favori.delete()
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+    return redirect(request.META.get('HTTP_REFERER', '/'))from .models import Ilan, IlanMedya, Favori, Haber
+
+def anasayfa(request):
+    if not request.user.is_authenticated:
+        return redirect('/giris/')
+    
+    arama = request.GET.get('arama', '').strip()
+    
+    if arama:
+        ilanlar = Ilan.objects.filter(
+            Q(konum__icontains=arama) |
+            Q(baslik__icontains=arama)
+        ).order_by('-tarih')
+    else:
+        ilanlar = Ilan.objects.all().order_by('-tarih')
+    
+    haberler = Haber.objects.filter(aktif=True)
+    favori_idler = Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True)
+    favoriler = Ilan.objects.filter(id__in=favori_idler)
+    return render(request, 'anasayfa.html', {
+        'ilanlar': ilanlar,
+        'haberler': haberler,
+        'favori_idler': list(favori_idler),
+        'favoriler': favoriler,
+        'arama': arama,
+    })
