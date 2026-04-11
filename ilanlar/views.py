@@ -104,4 +104,4 @@ def favori_ekle(request, ilan_id):
     favori, olusturuldu = Favori.objects.get_or_create(kullanici=request.user, ilan=ilan)
     if not olusturuldu:
         favori.delete()
-    return redirect(request.META.get('HTTP_REFERER', '/')
+    return redirect(request.META.get('HTTP_REFERER', '/'))
