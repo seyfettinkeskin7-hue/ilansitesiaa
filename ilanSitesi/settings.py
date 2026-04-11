@@ -67,6 +67,11 @@ DATABASES = {
     }
 }
 
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.parse(DATABASE_URL)
+
 LANGUAGE_CODE = 'tr-tr'
 TIME_ZONE = 'Europe/Istanbul'
 USE_I18N = True
@@ -80,9 +85,9 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 cloudinary.config(
-    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME', 'dgftemdmf'),
-    api_key=os.environ.get('CLOUDINARY_API_KEY', '951388755267358'),
-    api_secret=os.environ.get('CLOUDINARY_API_SECRET', '3jO2sWOflD1gxiLDdykoxSTiqRc'),
+    cloud_name='dgftemdmf',
+    api_key='951388755267358',
+    api_secret='3jO2sWOflD1gxiLDdykoxSTiqRc',
 )
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
