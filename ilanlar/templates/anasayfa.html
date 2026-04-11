@@ -24,7 +24,6 @@
         .logo { display: flex; align-items: center; gap: 8px; }
         .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
         .logo-text { font-size: 20px; font-weight: bold; color: #333; }
-        .logo-text span { color: #FF6000; }
         .nav a { color: #555; text-decoration: none; margin: 0 12px; font-size: 14px; }
         .header-sag { display: flex; align-items: center; gap: 15px; }
         .header-sag a { color: #555; text-decoration: none; font-size: 13px; }
@@ -34,12 +33,13 @@
 
         .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1400') center/cover; padding: 80px 30px; text-align: center; color: white; }
         .hero h1 { font-size: 36px; margin-bottom: 30px; }
-        .arama-kutu { background: white; border-radius: 8px; padding: 20px; max-width: 900px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; }
-        .arama-kutu input { flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-        .arama-kutu select { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; color: #555; }
+        .arama-kutu { background: white; border-radius: 8px; padding: 20px; max-width: 700px; margin: 0 auto; display: flex; gap: 10px; }
+        .arama-kutu input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
         .arama-kutu button { background: #FF6000; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: bold; }
+
         .bolum { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .bolum h2 { font-size: 22px; color: #333; margin-bottom: 20px; }
+        .arama-sonuc { font-size: 14px; color: #888; margin-bottom: 15px; }
         .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
         .ilan-kart { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; position: relative; }
         .ilan-kart:hover { transform: translateY(-3px); }
@@ -52,6 +52,7 @@
         .favori-btn { position: absolute; top: 8px; right: 8px; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
         .favori-btn.aktif { color: red; }
         .sil-btn { display: block; text-align: center; background: #fee; color: #c00; border: none; width: 100%; padding: 5px; font-size: 12px; cursor: pointer; }
+        .bos-sonuc { text-align: center; padding: 50px; color: #aaa; font-size: 16px; }
 
         /* HARİTA */
         .harita-bolum { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
@@ -119,16 +120,29 @@
 
 <div class="hero">
     <h1>Hayalinizdeki Evi Bulun!</h1>
-    <div class="arama-kutu">
-        <input type="text" placeholder="Konum (İlçe/Mahalle)">
-        <select><option>Satılık</option><option>Kiralık</option></select>
-        <select><option>Daire</option><option>Villa</option><option>Arsa</option></select>
-        <button>ARA</button>
-    </div>
+    <form method="get" action="/">
+        <div class="arama-kutu">
+            <input type="text" name="arama" placeholder="Konum ara (İl, İlçe, Mahalle)" value="{{ arama }}">
+            <button type="submit">ARA</button>
+        </div>
+    </form>
 </div>
 
 <div class="bolum">
+    {% if arama %}
+    <h2>🔍 "{{ arama }}" için sonuçlar</h2>
+    {% if ilanlar %}
+    <p class="arama-sonuc">{{ ilanlar.count }} ilan bulundu</p>
+    {% else %}
+    <div class="bos-sonuc">
+        <p>😕 "{{ arama }}" için ilan bulunamadı.</p>
+        <p style="margin-top:10px; font-size:14px;"><a href="/" style="color:#FF6000;">Tüm ilanları gör</a></p>
+    </div>
+    {% endif %}
+    {% else %}
     <h2>Son İlanlar</h2>
+    {% endif %}
+
     <div class="grid">
         {% for ilan in ilanlar %}
         <div class="ilan-kart">
@@ -169,7 +183,6 @@
 </div>
 
 <script>
-    // Sidebar
     function sidebarAc() {
         document.getElementById('sidebar').classList.add('acik');
         document.getElementById('overlay').classList.add('acik');
@@ -179,7 +192,6 @@
         document.getElementById('overlay').classList.remove('acik');
     }
 
-    // Harita
     var harita = L.map('harita').setView([39.0, 35.0], 6);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap'

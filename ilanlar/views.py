@@ -3,15 +3,31 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 from .models import Ilan, IlanMedya, Favori
 
 def anasayfa(request):
     if not request.user.is_authenticated:
         return redirect('/giris/')
-    ilanlar = Ilan.objects.all()
+    
+    arama = request.GET.get('arama', '').strip()
+    
+    if arama:
+        ilanlar = Ilan.objects.filter(
+            Q(konum__icontains=arama) |
+            Q(baslik__icontains=arama)
+        ).order_by('-tarih')
+    else:
+        ilanlar = Ilan.objects.all().order_by('-tarih')
+    
     favori_idler = Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True)
     favoriler = Ilan.objects.filter(id__in=favori_idler)
-    return render(request, 'anasayfa.html', {'ilanlar': ilanlar, 'favori_idler': list(favori_idler), 'favoriler': favoriler})
+    return render(request, 'anasayfa.html', {
+        'ilanlar': ilanlar,
+        'favori_idler': list(favori_idler),
+        'favoriler': favoriler,
+        'arama': arama,
+    })
 
 def detay(request, ilan_id):
     if not request.user.is_authenticated:
