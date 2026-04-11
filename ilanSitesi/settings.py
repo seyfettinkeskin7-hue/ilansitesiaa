@@ -11,7 +11,7 @@ SECRET_KEY = 'django-insecure-bunu-degistir-123456'
 DEBUG = False
 
 ALLOWED_HOSTS = [
-    'ilansitesiaa-production.up.railway.app',
+    'web-production-720eb3.up.railway.app',
     'seyfettin65.pythonanywhere.com',
     'localhost',
     '127.0.0.1',
@@ -96,7 +96,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # --- CSRF GÜVENLİK AYARLARI ---
 CSRF_TRUSTED_ORIGINS = [
-    'https://ilansitesiaa-production.up.railway.app',
+    'https://web-production-720eb3.up.railway.app',
     'https://seyfettin65.pythonanywhere.com',
 ]
 
