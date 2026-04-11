@@ -8,14 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-bunu-degistir-123456'
 
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = [
-    'web-production-720eb3.up.railway.app',
-    'seyfettin65.pythonanywhere.com',
-    'localhost',
-    '127.0.0.1',
-]
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'ilanlar',
@@ -94,7 +89,6 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# --- CSRF GÜVENLİK AYARLARI ---
 CSRF_TRUSTED_ORIGINS = [
     'https://web-production-720eb3.up.railway.app',
     'https://seyfettin65.pythonanywhere.com',
