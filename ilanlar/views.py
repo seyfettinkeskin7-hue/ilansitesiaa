@@ -19,7 +19,11 @@ def anasayfa(request):
     else:
         ilanlar = Ilan.objects.all().order_by('-tarih')
     
-    haberler = Haber.objects.filter(aktif=True)
+    try:
+        haberler = Haber.objects.filter(aktif=True)
+    except:
+        haberler = []
+
     favori_idler = Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True)
     favoriler = Ilan.objects.filter(id__in=favori_idler)
     return render(request, 'anasayfa.html', {
