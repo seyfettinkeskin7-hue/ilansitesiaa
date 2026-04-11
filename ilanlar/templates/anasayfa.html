@@ -1,10 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>İlan Sitem</title>
+    <title>Dingönüllüleri</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial; background: #f5f5f5; }
+
+        /* SIDEBAR */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 1000; transition: left 0.3s; overflow-y: auto; }
+        .sidebar.acik { left: 0; }
+        .sidebar-header { background: #FF6000; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header h3 { font-size: 18px; }
+        .sidebar-kapat { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .sidebar-icerik { padding: 15px; }
+        .sidebar-ilan { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; text-decoration: none; color: #333; }
+        .sidebar-ilan img { width: 60px; height: 50px; object-fit: cover; border-radius: 6px; }
+        .sidebar-ilan-bilgi h4 { font-size: 13px; margin-bottom: 3px; }
+        .sidebar-ilan-bilgi p { font-size: 11px; color: #888; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; display: none; }
+        .overlay.acik { display: block; }
+
         .header { background: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .logo { display: flex; align-items: center; gap: 8px; }
         .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
@@ -15,6 +30,8 @@
         .header-sag a { color: #555; text-decoration: none; font-size: 13px; }
         .btn-ilan { background: #FF6000; color: white !important; padding: 8px 16px; border-radius: 6px; font-size: 13px; }
         .btn-cikis { background: none; border: none; color: #555; cursor: pointer; font-size: 13px; }
+        .btn-favori { background: none; border: none; color: #555; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+
         .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1400') center/cover; padding: 80px 30px; text-align: center; color: white; }
         .hero h1 { font-size: 36px; margin-bottom: 30px; }
         .arama-kutu { background: white; border-radius: 8px; padding: 20px; max-width: 900px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; }
@@ -35,101 +52,155 @@
         .favori-btn { position: absolute; top: 8px; right: 8px; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
         .favori-btn.aktif { color: red; }
         .sil-btn { display: block; text-align: center; background: #fee; color: #c00; border: none; width: 100%; padding: 5px; font-size: 12px; cursor: pointer; }
+
+        /* HARİTA */
+        .harita-bolum { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .harita-bolum h2 { font-size: 22px; color: #333; margin-bottom: 15px; }
+        #harita { width: 100%; height: 400px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
     </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <div class="logo-icon">🏠</div>
-            <div class="logo-text">İlan <span>Sitem</span></div>
-        </div>
-        <div class="nav">
-            <a href="/">Anasayfa</a>
-        </div>
-        <div class="header-sag">
-            {% if user.is_authenticated %}
-                <span style="font-size:13px; color:#555;">Merhaba, {{ user.username }}!</span>
-                <form method="post" action="/cikis/" style="display:inline;">
-                    {% csrf_token %}
-                    <button class="btn-cikis" type="submit">Çıkış Yap</button>
-                </form>
-            {% else %}
-                <a href="/giris/">Giriş Yap / Üye Ol</a>
-            {% endif %}
-            <a href="/ilan-ekle/" class="btn-ilan">Ücretsiz İlan Ver</a>
-        </div>
-    </div>
 
-    <div class="hero">
-        <h1>Hayalinizdeki Evi Bulun!</h1>
-        <div class="arama-kutu">
-            <input type="text" placeholder="Konum (İlçe/Mahalle)">
-            <select><option>Satılık</option><option>Kiralık</option></select>
-            <select><option>Daire</option><option>Villa</option><option>Arsa</option></select>
-            <button>ARA</button>
-        </div>
+<!-- SIDEBAR -->
+<div class="overlay" id="overlay" onclick="sidebarKapat()"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>❤ Favorilerim</h3>
+        <button class="sidebar-kapat" onclick="sidebarKapat()">✕</button>
     </div>
-
-    <div class="bolum">
-        <h2>Son İlanlar</h2>
-        <div class="grid">
-            {% for ilan in ilanlar %}
-            <div class="ilan-kart">
-                <a href="/favori/{{ ilan.id }}/">
-                    <button class="favori-btn {% if ilan.id in favori_idler %}aktif{% endif %}">
-                        {% if ilan.id in favori_idler %}❤{% else %}♡{% endif %}
-                    </button>
-                </a>
-                <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
-                    {% with ilk=ilan.medyalar.first %}
-                    {% if ilk %}
-                    <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
-                    {% else %}
-                    <div class="resim-yok">Resim Yok</div>
-                    {% endif %}
-                    {% endwith %}
-                    <div class="ilan-kart-icerik">
-                        <h3>{{ ilan.baslik }}</h3>
-                        <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
-                        <div class="ilan-konum">📍 {{ ilan.konum }}</div>
-                    </div>
-                </a>
-                {% if ilan.kullanici == user %}
-                <form method="post" action="/ilan-sil/{{ ilan.id }}/">
-                    {% csrf_token %}
-                    <button class="sil-btn" type="submit" onclick="return confirm('İlanı silmek istediğine emin misin?')">🗑 İlanı Sil</button>
-                </form>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-
-    {% if favoriler %}
-    <div class="bolum" style="margin-top: 40px;">
-        <h2>❤ Favorilerim</h2>
-        <div class="grid">
+    <div class="sidebar-icerik">
+        {% if favoriler %}
             {% for ilan in favoriler %}
-            <div class="ilan-kart">
-                <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
-                    {% with ilk=ilan.medyalar.first %}
-                    {% if ilk %}
-                    <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
-                    {% else %}
-                    <div class="resim-yok">Resim Yok</div>
-                    {% endif %}
-                    {% endwith %}
-                    <div class="ilan-kart-icerik">
-                        <h3>{{ ilan.baslik }}</h3>
-                        <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
-                        <div class="ilan-konum">📍 {{ ilan.konum }}</div>
-                    </div>
-                </a>
-            </div>
+            <a href="/ilan/{{ ilan.id }}/" class="sidebar-ilan">
+                {% with ilk=ilan.medyalar.first %}
+                {% if ilk %}
+                <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+                {% else %}
+                <div style="width:60px;height:50px;background:#eee;border-radius:6px;"></div>
+                {% endif %}
+                {% endwith %}
+                <div class="sidebar-ilan-bilgi">
+                    <h4>{{ ilan.baslik }}</h4>
+                    <p>{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</p>
+                    <p>📍 {{ ilan.konum }}</p>
+                </div>
+            </a>
             {% endfor %}
-        </div>
+        {% else %}
+            <p style="color:#aaa; margin-top:20px; text-align:center;">Henüz favori eklenmedi.</p>
+        {% endif %}
     </div>
-    {% endif %}
+</div>
 
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon">🕌</div>
+        <div class="logo-text">Dingönüllüleri</div>
+    </div>
+    <div class="nav">
+        <a href="/">Anasayfa</a>
+    </div>
+    <div class="header-sag">
+        {% if user.is_authenticated %}
+            <button class="btn-favori" onclick="sidebarAc()">❤ Favorilerim</button>
+            <span style="font-size:13px; color:#555;">Merhaba, {{ user.username }}!</span>
+            <form method="post" action="/cikis/" style="display:inline;">
+                {% csrf_token %}
+                <button class="btn-cikis" type="submit">Çıkış Yap</button>
+            </form>
+        {% else %}
+            <a href="/giris/">Giriş Yap / Üye Ol</a>
+        {% endif %}
+        <a href="/ilan-ekle/" class="btn-ilan">Ücretsiz İlan Ver</a>
+    </div>
+</div>
+
+<div class="hero">
+    <h1>Hayalinizdeki Evi Bulun!</h1>
+    <div class="arama-kutu">
+        <input type="text" placeholder="Konum (İlçe/Mahalle)">
+        <select><option>Satılık</option><option>Kiralık</option></select>
+        <select><option>Daire</option><option>Villa</option><option>Arsa</option></select>
+        <button>ARA</button>
+    </div>
+</div>
+
+<div class="bolum">
+    <h2>Son İlanlar</h2>
+    <div class="grid">
+        {% for ilan in ilanlar %}
+        <div class="ilan-kart">
+            <a href="/favori/{{ ilan.id }}/">
+                <button class="favori-btn {% if ilan.id in favori_idler %}aktif{% endif %}">
+                    {% if ilan.id in favori_idler %}❤{% else %}♡{% endif %}
+                </button>
+            </a>
+            <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
+                {% with ilk=ilan.medyalar.first %}
+                {% if ilk %}
+                <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+                {% else %}
+                <div class="resim-yok">Resim Yok</div>
+                {% endif %}
+                {% endwith %}
+                <div class="ilan-kart-icerik">
+                    <h3>{{ ilan.baslik }}</h3>
+                    <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
+                    <div class="ilan-konum">📍 {{ ilan.konum }}</div>
+                </div>
+            </a>
+            {% if ilan.kullanici == user %}
+            <form method="post" action="/ilan-sil/{{ ilan.id }}/">
+                {% csrf_token %}
+                <button class="sil-btn" type="submit" onclick="return confirm('İlanı silmek istediğine emin misin?')">🗑 İlanı Sil</button>
+            </form>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- HARİTA -->
+<div class="harita-bolum">
+    <h2>🗺 İlanları Haritada Gör</h2>
+    <div id="harita"></div>
+</div>
+
+<script>
+    // Sidebar
+    function sidebarAc() {
+        document.getElementById('sidebar').classList.add('acik');
+        document.getElementById('overlay').classList.add('acik');
+    }
+    function sidebarKapat() {
+        document.getElementById('sidebar').classList.remove('acik');
+        document.getElementById('overlay').classList.remove('acik');
+    }
+
+    // Harita
+    var harita = L.map('harita').setView([39.0, 35.0], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(harita);
+
+    var ilanlar = [
+        {% for ilan in ilanlar %}
+        { baslik: "{{ ilan.baslik }}", konum: "{{ ilan.konum }}", url: "/ilan/{{ ilan.id }}/" },
+        {% endfor %}
+    ];
+
+    ilanlar.forEach(function(ilan) {
+        fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(ilan.konum) + '&format=json&limit=1')
+        .then(r => r.json())
+        .then(data => {
+            if (data.length > 0) {
+                var marker = L.marker([data[0].lat, data[0].lon]).addTo(harita);
+                marker.bindPopup('<a href="' + ilan.url + '">' + ilan.baslik + '</a><br>📍 ' + ilan.konum);
+            }
+        });
+    });
+</script>
 </body>
 </html>
