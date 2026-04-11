@@ -1,10 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q
-from .models import Ilan, IlanMedya, Favori
+from .models import Ilan, IlanMedya, Favori, Haber
 
 def anasayfa(request):
     if not request.user.is_authenticated:
@@ -20,10 +19,12 @@ def anasayfa(request):
     else:
         ilanlar = Ilan.objects.all().order_by('-tarih')
     
+    haberler = Haber.objects.filter(aktif=True)
     favori_idler = Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True)
     favoriler = Ilan.objects.filter(id__in=favori_idler)
     return render(request, 'anasayfa.html', {
         'ilanlar': ilanlar,
+        'haberler': haberler,
         'favori_idler': list(favori_idler),
         'favoriler': favoriler,
         'arama': arama,
