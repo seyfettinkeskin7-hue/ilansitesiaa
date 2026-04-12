@@ -109,4 +109,31 @@ def favori_ekle(request, ilan_id):
     favori, olusturuldu = Favori.objects.get_or_create(kullanici=request.user, ilan=ilan)
     if not olusturuldu:
         favori.delete()
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+    return redirect(request.META.get('HTTP_REFERER', '/'))def panel(request):
+    if not request.user.is_superuser:
+        return redirect('/')
+    haberler = Haber.objects.all().order_by('-tarih')
+    ilanlar = Ilan.objects.all().order_by('-tarih')
+    return render(request, 'panel.html', {'haberler': haberler, 'ilanlar': ilanlar})
+
+def haber_ekle(request):
+    if not request.user.is_superuser:
+        return redirect('/')
+    if request.method == 'POST':
+        Haber.objects.create(
+            baslik=request.POST.get('baslik', ''),
+            aciklama=request.POST.get('aciklama', ''),
+            etiket=request.POST.get('etiket', 'DUYURU'),
+            renk=request.POST.get('renk', '#1a1a2e'),
+            resim=request.FILES.get('resim'),
+            aktif=True,
+        )
+    return redirect('/panel/')
+
+def haber_sil(request, haber_id):
+    if not request.user.is_superuser:
+        return redirect('/')
+    if request.method == 'POST':
+        haber = get_object_or_404(Haber, id=haber_id)
+        haber.delete()
+    return redirect('/panel/')
