@@ -17,4 +17,6 @@ urlpatterns = [
     path('panel/', views.panel),
     path('panel/haber-ekle/', views.haber_ekle),
     path('panel/haber-sil/<int:haber_id>/', views.haber_sil),
+    path('muftulukler/', views.muftulukler),
+    path('muftulukler/<str:il>/', views.muftuluk_il),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

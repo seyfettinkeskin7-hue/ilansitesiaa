@@ -132,4 +132,8 @@ def haber_sil(request, haber_id):
     if request.method == 'POST':
         haber = get_object_or_404(Haber, id=haber_id)
         haber.delete()
-    return redirect('/panel/')
+    return redirect('/panel/')def muftulukler(request):
+    return render(request, 'muftulukler.html')
+
+def muftuluk_il(request, il):
+    return render(request, 'muftuluk_il.html', {'il': il})
