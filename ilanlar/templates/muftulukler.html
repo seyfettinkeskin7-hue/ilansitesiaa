@@ -1,4 +1,4 @@
-cat > ilanlar/templates/muftuluk_il.html << 'DOSYASONU'
+cat > ~/ILANSITESI/ilanlar/templates/muftuluk_il.html << 'EOF'
 <!DOCTYPE html>
 <html>
 <head>
@@ -52,13 +52,13 @@ cat > ilanlar/templates/muftuluk_il.html << 'DOSYASONU'
                 <div class="muft-isim">{{ il|title }} İl Müftülüğü</div>
                 <div class="muft-adres">Diyanet İşleri Başkanlığı - {{ il|title }} İl Müftülüğü</div>
             </div>
-            <a href="https://www.google.com/search?q={{ il }}+il+muftulugu+diyanet" target="_blank" class="muft-link">Resmi Sayfaya Git →</a>
+            <a href="https://{{ il }}.diyanet.gov.tr/Sayfalar/home.aspx" target="_blank" class="muft-link">Resmi Sayfaya Git →</a>
         </div>
         <div class="bolum-baslik">İlçe Müftülükleri</div>
         <div class="ilce-grid" id="ilceGrid"></div>
     </div>
 <script>
-const ilceler = {
+var ilceler = {
     "adana": ["Aladağ","Ceyhan","Çukurova","Feke","İmamoğlu","Karaisalı","Karataş","Kozan","Pozantı","Saimbeyli","Sarıçam","Seyhan","Tufanbeyli","Yumurtalık","Yüreğir"],
     "adiyaman": ["Besni","Çelikhan","Gerger","Gölbaşı","Kahta","Merkez","Samsat","Sincik","Tut"],
     "afyonkarahisar": ["Başmakçı","Bayat","Bolvadin","Çay","Dazkırı","Dinar","Emirdağ","İhsaniye","Merkez","Sandıklı","Sinanpaşa","Sultandağı","Şuhut"],
@@ -142,20 +142,23 @@ const ilceler = {
     "zonguldak": ["Alaplı","Çaycuma","Devrek","Ereğli","Gökçebey","Kilimli","Kozlu","Merkez"]
 };
 
-const il = "{{ il }}";
-const grid = document.getElementById('ilceGrid');
-const ilceListe = ilceler[il] || [];
+var il = "{{ il }}";
+var grid = document.getElementById('ilceGrid');
+var ilceListe = ilceler[il] || [];
 
 ilceListe.forEach(function(ilce) {
-    const arama = encodeURIComponent(ilce + ' ' + il + ' ilçe müftülüğü diyanet');
-    const div = document.createElement('a');
+    var ilceSlug = ilce.toLowerCase()
+        .replace(/\u011f/g,'g').replace(/\u00fc/g,'u').replace(/\u015f/g,'s')
+        .replace(/\u0131/g,'i').replace(/\u00f6/g,'o').replace(/\u00e7/g,'c')
+        .replace(/\u0130/g,'i').replace(/i\u0307/g,'i').replace(/ /g,'-');
+    var div = document.createElement('a');
     div.className = 'ilce-kart';
-    div.href = 'https://www.google.com/search?q=' + arama;
+    div.href = 'https://' + il + '.diyanet.gov.tr/' + ilceSlug + '/Sayfalar/home.aspx';
     div.target = '_blank';
-    div.innerHTML = '<h3>🕌 ' + ilce + ' İlçe Müftülüğü</h3><p>Aramak için tıkla →</p>';
+    div.innerHTML = '<h3>🕌 ' + ilce + ' İlçe Müftülüğü</h3><p>Resmi sayfaya git →</p>';
     grid.appendChild(div);
 });
 </script>
 </body>
 </html>
-DOSYASONU
+EOF
