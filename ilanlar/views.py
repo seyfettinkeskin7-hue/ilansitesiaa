@@ -8,22 +8,17 @@ from .models import Ilan, IlanMedya, Favori, Haber
 def anasayfa(request):
     if not request.user.is_authenticated:
         return redirect('/giris/')
-    
     arama = request.GET.get('arama', '').strip()
-    
     if arama:
         ilanlar = Ilan.objects.filter(
-            Q(konum__icontains=arama) |
-            Q(baslik__icontains=arama)
+            Q(konum__icontains=arama) | Q(baslik__icontains=arama)
         ).order_by('-tarih')
     else:
         ilanlar = Ilan.objects.all().order_by('-tarih')
-    
     try:
         haberler = Haber.objects.filter(aktif=True)
     except:
         haberler = []
-
     favori_idler = Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True)
     favoriler = Ilan.objects.filter(id__in=favori_idler)
     return render(request, 'anasayfa.html', {
@@ -109,7 +104,9 @@ def favori_ekle(request, ilan_id):
     favori, olusturuldu = Favori.objects.get_or_create(kullanici=request.user, ilan=ilan)
     if not olusturuldu:
         favori.delete()
-    return redirect(request.META.get('HTTP_REFERER', '/'))def panel(request):
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def panel(request):
     if not request.user.is_superuser:
         return redirect('/')
     haberler = Haber.objects.all().order_by('-tarih')
