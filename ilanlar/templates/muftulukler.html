@@ -1,3 +1,4 @@
+cat > ilanlar/templates/muftuluk_il.html << 'DOSYASONU'
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,24 +11,20 @@
         .logo-text { font-size: 20px; font-weight: bold; color: #333; }
         .header-sag { margin-left: auto; display: flex; gap: 15px; }
         .header-sag a { color: #555; text-decoration: none; font-size: 13px; }
-
         .icerik { max-width: 1000px; margin: 30px auto; padding: 0 20px; }
         .breadcrumb { font-size: 13px; color: #aaa; margin-bottom: 20px; }
         .breadcrumb a { color: #FF6000; text-decoration: none; }
-
         .il-baslik { font-size: 28px; font-weight: bold; color: #333; margin-bottom: 6px; }
         .il-alt { font-size: 14px; color: #888; margin-bottom: 25px; }
-
-        .il-muftuluk-kart { background: white; border-radius: 12px; padding: 20px 25px; border: 1px solid #eee; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; }
-        .il-muftuluk-kart:hover { border-color: #FF6000; box-shadow: 0 4px 12px rgba(255,96,0,0.1); }
+        .il-muftuluk-kart { background: white; border-radius: 12px; padding: 20px 25px; border: 1px solid #eee; margin-bottom: 25px; display: flex; align-items: center; gap: 15px; }
         .muft-ikon { width: 50px; height: 50px; background: #fff3ec; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
         .muft-bilgi { flex: 1; }
         .muft-isim { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 4px; }
         .muft-adres { font-size: 13px; color: #888; }
         .muft-link { background: #FF6000; color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px; text-decoration: none; white-space: nowrap; font-weight: bold; }
         .muft-link:hover { background: #e55500; }
-
-        .ilce-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 25px; }
+        .bolum-baslik { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 15px; }
+        .ilce-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         .ilce-kart { background: white; border-radius: 10px; padding: 16px; border: 1px solid #eee; text-decoration: none; color: #333; display: block; transition: all 0.2s; }
         .ilce-kart:hover { border-color: #FF6000; color: #FF6000; transform: translateY(-2px); }
         .ilce-kart h3 { font-size: 14px; font-weight: bold; margin-bottom: 4px; }
@@ -43,30 +40,23 @@
             <a href="/">Anasayfa</a>
         </div>
     </div>
-
     <div class="icerik">
         <div class="breadcrumb">
             <a href="/">Anasayfa</a> › <a href="/muftulukler/">Müftülükler</a> › {{ il|title }}
         </div>
-
         <div class="il-baslik">🕌 {{ il|title }} İl Müftülüğü</div>
         <div class="il-alt">{{ il|title }} iline bağlı il ve ilçe müftülükleri</div>
-
-        <!-- İL MÜFTÜLÜĞü -->
         <div class="il-muftuluk-kart">
             <div class="muft-ikon">🕌</div>
             <div class="muft-bilgi">
                 <div class="muft-isim">{{ il|title }} İl Müftülüğü</div>
                 <div class="muft-adres">Diyanet İşleri Başkanlığı - {{ il|title }} İl Müftülüğü</div>
             </div>
-            <a href="https://{{ il }}.diyanet.gov.tr" target="_blank" class="muft-link">Resmi Sayfaya Git →</a>
+            <a href="https://www.google.com/search?q={{ il }}+il+muftulugu+diyanet" target="_blank" class="muft-link">Resmi Sayfaya Git →</a>
         </div>
-
-        <!-- İLÇE MÜFTÜLÜKLERİ -->
-        <h2 style="font-size:18px; color:#333; margin-bottom:15px;">İlçe Müftülükleri</h2>
+        <div class="bolum-baslik">İlçe Müftülükleri</div>
         <div class="ilce-grid" id="ilceGrid"></div>
     </div>
-
 <script>
 const ilceler = {
     "adana": ["Aladağ","Ceyhan","Çukurova","Feke","İmamoğlu","Karaisalı","Karataş","Kozan","Pozantı","Saimbeyli","Sarıçam","Seyhan","Tufanbeyli","Yumurtalık","Yüreğir"],
@@ -156,22 +146,16 @@ const il = "{{ il }}";
 const grid = document.getElementById('ilceGrid');
 const ilceListe = ilceler[il] || [];
 
-ilceListe.forEach(ilce => {
-    const ilceSlug = ilce.toLowerCase()
-        .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
-        .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
-        .replace(/İ/g,'i').replace(/ /g,'-');
-    const ilSlug = il.toLowerCase()
-        .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
-        .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c');
-
+ilceListe.forEach(function(ilce) {
+    const arama = encodeURIComponent(ilce + ' ' + il + ' ilçe müftülüğü diyanet');
     const div = document.createElement('a');
     div.className = 'ilce-kart';
-    div.href = 'https://' + ilSlug + '.diyanet.gov.tr/' + ilceSlug + '-ilce-muftulugu';
+    div.href = 'https://www.google.com/search?q=' + arama;
     div.target = '_blank';
-    div.innerHTML = '<h3>🕌 ' + ilce + ' İlçe Müftülüğü</h3><p>Resmi sayfaya git →</p>';
+    div.innerHTML = '<h3>🕌 ' + ilce + ' İlçe Müftülüğü</h3><p>Aramak için tıkla →</p>';
     grid.appendChild(div);
 });
 </script>
 </body>
 </html>
+DOSYASONU
