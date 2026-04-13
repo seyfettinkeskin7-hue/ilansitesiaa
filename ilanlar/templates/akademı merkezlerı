@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Akademi Merkezleri - Dingönüllüleri</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        
+        .header { background: white; padding: 12px 30px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
+        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
+        .header-sag { margin-left: auto; }
+        .header-sag a { color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
+        
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        
+        .ust-kontrol { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .sayfa-baslik { font-size: 26px; font-weight: bold; color: #333; }
+        
+        #geri-btn { 
+            display: none; background: #333; color: white; border: none; padding: 10px 20px; 
+            border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold;
+        }
+        #geri-btn:hover { background: #FF6000; }
+
+        .grid-alani { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        
+        .kart { 
+            background: white; border: 1px solid #ddd; border-radius: 10px; padding: 25px 15px; 
+            text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; color: #333;
+        }
+        .kart:hover { border-color: #FF6000; transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .il-isim { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .ikon { font-size: 36px; margin-bottom: 12px; }
+        
+        .akademi-kart h3 { font-size: 15px; margin-bottom: 15px; line-height: 1.4; }
+        .resmi-link-yazi { display: inline-block; background: #FF6000; color: white; padding: 8px 16px; border-radius: 5px; font-size: 13px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-icon">🕌</div>
+        <div class="logo-text">Dingönüllüleri</div>
+        <div class="header-sag"><a href="/">← Anasayfa</a></div>
+    </div>
+
+    <div class="container">
+        <div class="ust-kontrol">
+            <h1 class="sayfa-baslik" id="sayfa-baslik">🎓 Akademi Merkezleri</h1>
+            <button id="geri-btn" onclick="illeriGoster()">← İllere Dön</button>
+        </div>
+
+        <div class="grid-alani" id="liste-alani"></div>
+    </div>
+
+    <script>
+        // Tüm akademi verisi burada!
+        const AKADEMI_VERISI = {
+            "Ankara": [
+                {"ad": "Rıfat Börekçi Dini İhtisas Merkezi", "url": "https://rifatborekci.diyanet.gov.tr/"},
+                {"ad": "Ankara Dini Yüksek İhtisas Merkezi", "url": "https://ankaradihtisas.diyanet.gov.tr/"}
+            ],
+            "İstanbul": [
+                {"ad": "Haseki Dini Yüksek İhtisas Merkezi", "url": "https://haseki.diyanet.gov.tr/"},
+                {"ad": "Pendik Dini İhtisas Merkezi", "url": "https://pendik.diyanet.gov.tr/"}
+            ],
+            "Konya": [
+                {"ad": "Selçuk Dini Yüksek İhtisas Merkezi", "url": "https://selcuk.diyanet.gov.tr/"}
+            ],
+            "Kayseri": [
+                {"ad": "Dini Yüksek İhtisas Merkezi", "url": "https://kayseridihtisas.diyanet.gov.tr/"}
+            ],
+            "Bursa": [
+                {"ad": "Bursa Dini İhtisas Merkezi", "url": "https://bursaihtisas.diyanet.gov.tr/"}
+            ],
+            "Antalya": [
+                {"ad": "Hacı Celal Yılmaz Dini İhtisas Merkezi", "url": "https://antalyaihtisas.diyanet.gov.tr/"}
+            ]
+        };
+
+        const listeAlani = document.getElementById('liste-alani');
+        const baslik = document.getElementById('sayfa-baslik');
+        const geriBtn = document.getElementById('geri-btn');
+
+        function illeriGoster() {
+            listeAlani.innerHTML = ''; 
+            baslik.innerText = '🎓 Akademi Merkezleri';
+            geriBtn.style.display = 'none'; 
+
+            for (const ilAdi in AKADEMI_VERISI) {
+                const div = document.createElement('div');
+                div.className = 'kart';
+                div.innerHTML = `
+                    <div class="ikon">📍</div>
+                    <div class="il-isim">${ilAdi}</div>
+                    <div style="font-size:13px; color:#888;">${AKADEMI_VERISI[ilAdi].length} Merkez</div>
+                `;
+                
+                div.onclick = function() {
+                    akademileriGoster(ilAdi);
+                };
+                
+                listeAlani.appendChild(div);
+            }
+        }
+
+        function akademileriGoster(secilenIl) {
+            listeAlani.innerHTML = ''; 
+            baslik.innerText = `🎓 ${secilenIl} Akademi Merkezleri`;
+            geriBtn.style.display = 'block'; 
+
+            const akademiler = AKADEMI_VERISI[secilenIl];
+
+            akademiler.forEach(function(akademi) {
+                const a = document.createElement('a');
+                a.className = 'kart akademi-kart';
+                a.href = akademi.url;
+                a.target = '_blank'; 
+                
+                a.innerHTML = `
+                    <div class="ikon">🎓</div>
+                    <h3>${akademi.ad}</h3>
+                    <span class="resmi-link-yazi">Resmi Sayfaya Git →</span>
+                `;
+                
+                listeAlani.appendChild(a);
+            });
+        }
+
+        window.onload = illeriGoster;
+
+    </script>
+</body>
+</html>
