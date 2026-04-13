@@ -145,11 +145,18 @@ var il = "{{ il }}";
 var grid = document.getElementById('ilceGrid');
 var ilceListe = ilceler[il] || [];
 
+function turkceSlug(str) {
+    return str
+        .replace(/Ğ/g,'g').replace(/Ü/g,'u').replace(/Ş/g,'s')
+        .replace(/İ/g,'i').replace(/Ö/g,'o').replace(/Ç/g,'c').replace(/I/g,'i')
+        .toLowerCase()
+        .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
+        .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c')
+        .replace(/ /g,'-');
+}
+
 ilceListe.forEach(function(ilce) {
-    var ilceSlug = ilce.toLowerCase()
-        .replace(/\u011f/g,'g').replace(/\u00fc/g,'u').replace(/\u015f/g,'s')
-        .replace(/\u0131/g,'i').replace(/\u00f6/g,'o').replace(/\u00e7/g,'c')
-        .replace(/\u0130/g,'i').replace(/i\u0307/g,'i').replace(/ /g,'-');
+    var ilceSlug = turkceSlug(ilce);
     var div = document.createElement('a');
     div.className = 'ilce-kart';
     div.href = 'https://' + il + '.diyanet.gov.tr/' + ilceSlug + '/Sayfalar/home.aspx';
