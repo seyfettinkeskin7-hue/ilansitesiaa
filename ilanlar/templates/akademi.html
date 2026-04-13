@@ -24,18 +24,22 @@
         }
         #geri-btn:hover { background: #FF6000; }
 
-        .grid-alani { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+        /* Ana kategoriler için yan yana iki büyük kart tasarımı */
+        .grid-kategori { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
+        /* İçeri girildiğinde merkezleri listelemek için daha küçük kartlar */
+        .grid-merkez { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
         
         .kart { 
-            background: white; border: 1px solid #ddd; border-radius: 10px; padding: 25px 15px; 
+            background: white; border: 1px solid #ddd; border-radius: 10px; padding: 30px 20px; 
             text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; color: #333;
         }
-        .kart:hover { border-color: #FF6000; transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .kart:hover { border-color: #FF6000; transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        .il-isim { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
-        .ikon { font-size: 36px; margin-bottom: 12px; }
+        .kategori-isim { font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #333; }
+        .ikon { font-size: 45px; margin-bottom: 15px; }
         
-        .akademi-kart h3 { font-size: 15px; margin-bottom: 15px; line-height: 1.4; }
+        .akademi-kart { padding: 25px 15px; }
+        .akademi-kart h3 { font-size: 16px; margin-bottom: 15px; line-height: 1.4; color: #333; }
         .resmi-link-yazi { display: inline-block; background: #FF6000; color: white; padding: 8px 16px; border-radius: 5px; font-size: 13px; font-weight: bold; }
     </style>
 </head>
@@ -50,34 +54,21 @@
     <div class="container">
         <div class="ust-kontrol">
             <h1 class="sayfa-baslik" id="sayfa-baslik">🎓 Akademi Merkezleri</h1>
-            <button id="geri-btn" onclick="illeriGoster()">← İllere Dön</button>
+            <button id="geri-btn" onclick="kategorileriGoster()">← Kategorilere Dön</button>
         </div>
 
-        <div class="grid-alani" id="liste-alani"></div>
+        <div id="liste-alani"></div>
     </div>
 
     <script>
-        // Tüm akademi verisi burada!
+        // İki ana kategori ve içindeki merkezler (Resimdekileri örnek olarak ekledim, linkleri sonra düzeltiriz)
         const AKADEMI_VERISI = {
-            "Ankara": [
-                {"ad": "Rıfat Börekçi Dini İhtisas Merkezi", "url": "https://rifatborekci.diyanet.gov.tr/"},
-                {"ad": "Ankara Dini Yüksek İhtisas Merkezi", "url": "https://ankaradihtisas.diyanet.gov.tr/"}
+            "Dini İhtisas Merkezleri": [
+                {"ad": "Ankara Rıfat Börekçi Dini İhtisas Merkezi", "url": "https://rifatborekci.diyanet.gov.tr/"},
+                {"ad": "Antalya H. Mehmet Gebizli Dini İhtisas Merkezi", "url": "#"}
             ],
-            "İstanbul": [
-                {"ad": "Haseki Dini Yüksek İhtisas Merkezi", "url": "https://haseki.diyanet.gov.tr/"},
-                {"ad": "Pendik Dini İhtisas Merkezi", "url": "https://pendik.diyanet.gov.tr/"}
-            ],
-            "Konya": [
-                {"ad": "Selçuk Dini Yüksek İhtisas Merkezi", "url": "https://selcuk.diyanet.gov.tr/"}
-            ],
-            "Kayseri": [
-                {"ad": "Dini Yüksek İhtisas Merkezi", "url": "https://kayseridihtisas.diyanet.gov.tr/"}
-            ],
-            "Bursa": [
-                {"ad": "Bursa Dini İhtisas Merkezi", "url": "https://bursaihtisas.diyanet.gov.tr/"}
-            ],
-            "Antalya": [
-                {"ad": "Hacı Celal Yılmaz Dini İhtisas Merkezi", "url": "https://antalyaihtisas.diyanet.gov.tr/"}
+            "Dini Yüksek İhtisas Merkezleri": [
+                {"ad": "Uluslararası İstanbul Haseki Dini Yüksek İhtisas Merkezi", "url": "https://haseki.diyanet.gov.tr/"}
             ]
         };
 
@@ -85,44 +76,46 @@
         const baslik = document.getElementById('sayfa-baslik');
         const geriBtn = document.getElementById('geri-btn');
 
-        function illeriGoster() {
+        function kategorileriGoster() {
             listeAlani.innerHTML = ''; 
+            listeAlani.className = 'grid-kategori'; // İki büyük kart görünümü
             baslik.innerText = '🎓 Akademi Merkezleri';
             geriBtn.style.display = 'none'; 
 
-            for (const ilAdi in AKADEMI_VERISI) {
+            for (const kategoriAdi in AKADEMI_VERISI) {
                 const div = document.createElement('div');
                 div.className = 'kart';
                 div.innerHTML = `
-                    <div class="ikon">📍</div>
-                    <div class="il-isim">${ilAdi}</div>
-                    <div style="font-size:13px; color:#888;">${AKADEMI_VERISI[ilAdi].length} Merkez</div>
+                    <div class="ikon">🏛️</div>
+                    <div class="kategori-isim">${kategoriAdi}</div>
+                    <div style="font-size:15px; color:#888;">${AKADEMI_VERISI[kategoriAdi].length} Merkez Bulunuyor</div>
                 `;
                 
                 div.onclick = function() {
-                    akademileriGoster(ilAdi);
+                    merkezleriGoster(kategoriAdi);
                 };
                 
                 listeAlani.appendChild(div);
             }
         }
 
-        function akademileriGoster(secilenIl) {
+        function merkezleriGoster(secilenKategori) {
             listeAlani.innerHTML = ''; 
-            baslik.innerText = `🎓 ${secilenIl} Akademi Merkezleri`;
+            listeAlani.className = 'grid-merkez'; // Çoklu küçük kart görünümü
+            baslik.innerText = `🏛️ ${secilenKategori}`;
             geriBtn.style.display = 'block'; 
 
-            const akademiler = AKADEMI_VERISI[secilenIl];
+            const merkezler = AKADEMI_VERISI[secilenKategori];
 
-            akademiler.forEach(function(akademi) {
+            merkezler.forEach(function(merkez) {
                 const a = document.createElement('a');
                 a.className = 'kart akademi-kart';
-                a.href = akademi.url;
+                a.href = merkez.url;
                 a.target = '_blank'; 
                 
                 a.innerHTML = `
                     <div class="ikon">🎓</div>
-                    <h3>${akademi.ad}</h3>
+                    <h3>${merkez.ad}</h3>
                     <span class="resmi-link-yazi">Resmi Sayfaya Git →</span>
                 `;
                 
@@ -130,7 +123,8 @@
             });
         }
 
-        window.onload = illeriGoster;
+        // Sayfa yüklendiğinde ana kategorileri göster
+        window.onload = kategorileriGoster;
 
     </script>
 </body>
