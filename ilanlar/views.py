@@ -1,8 +1,9 @@
 from django.shortcuts import render
 
-# Paylaştığın listenin tamamı burada düzenlendi
+# Senin verdiğin listenin tamamı burada tek bir sözlükte toplandı
 MUFTULUK_VERISI = {
     "Adana": [
+        {"ad": "İl Müftülüğü", "url": "https://adana.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Aladağ", "url": "https://adana.diyanet.gov.tr/aladag/Sayfalar/home.aspx"},
         {"ad": "Ceyhan", "url": "https://adana.diyanet.gov.tr/ceyhan/Sayfalar/home.aspx"},
         {"ad": "Çukurova", "url": "https://adana.diyanet.gov.tr/cukurova/Sayfalar/home.aspx"},
@@ -20,6 +21,7 @@ MUFTULUK_VERISI = {
         {"ad": "Yüreğir", "url": "https://adana.diyanet.gov.tr/yuregir/Sayfalar/home.aspx"},
     ],
     "Adıyaman": [
+        {"ad": "İl Müftülüğü", "url": "https://adiyaman.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Besni", "url": "https://adiyaman.diyanet.gov.tr/besni/Sayfalar/home.aspx"},
         {"ad": "Çelikhan", "url": "https://adiyaman.diyanet.gov.tr/celikhan/Sayfalar/home.aspx"},
         {"ad": "Gerger", "url": "https://adiyaman.diyanet.gov.tr/gerger/Sayfalar/home.aspx"},
@@ -30,6 +32,7 @@ MUFTULUK_VERISI = {
         {"ad": "Tut", "url": "https://adiyaman.diyanet.gov.tr/tut/Sayfalar/home.aspx"},
     ],
     "Afyonkarahisar": [
+        {"ad": "İl Müftülüğü", "url": "https://afyonkarahisar.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Başmakçı", "url": "https://afyonkarahisar.diyanet.gov.tr/basmakci/Sayfalar/home.aspx"},
         {"ad": "Bayat", "url": "https://afyonkarahisar.diyanet.gov.tr/bayat/Sayfalar/home.aspx"},
         {"ad": "Bolvadin", "url": "https://afyonkarahisar.diyanet.gov.tr/bolvadin/Sayfalar/home.aspx"},
@@ -49,6 +52,7 @@ MUFTULUK_VERISI = {
         {"ad": "Şuhut", "url": "https://afyonkarahisar.diyanet.gov.tr/suhut/Sayfalar/home.aspx"},
     ],
     "Ağrı": [
+        {"ad": "İl Müftülüğü", "url": "https://agri.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Diyadin", "url": "https://agri.diyanet.gov.tr/diyadin/Sayfalar/home.aspx"},
         {"ad": "Doğubayazıt", "url": "https://agri.diyanet.gov.tr/dogubayazit/Sayfalar/home.aspx"},
         {"ad": "Eleşkirt", "url": "https://agri.diyanet.gov.tr/eleskirt/Sayfalar/home.aspx"},
@@ -57,7 +61,17 @@ MUFTULUK_VERISI = {
         {"ad": "Taşlıçay", "url": "https://agri.diyanet.gov.tr/taslicay/Sayfalar/home.aspx"},
         {"ad": "Tutak", "url": "https://agri.diyanet.gov.tr/tutak/Sayfalar/home.aspx"},
     ],
+    "Amasya": [
+        {"ad": "İl Müftülüğü", "url": "https://amasya.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Göynücek", "url": "https://amasya.diyanet.gov.tr/goynucek/Sayfalar/home.aspx"},
+        {"ad": "Gümüşhacıköy", "url": "https://amasya.diyanet.gov.tr/gumushacikoy/Sayfalar/home.aspx"},
+        {"ad": "Hamamözü", "url": "https://amasya.diyanet.gov.tr/hamamozu/Sayfalar/home.aspx"},
+        {"ad": "Merzifon", "url": "https://amasya.diyanet.gov.tr/merzifon/Sayfalar/home.aspx"},
+        {"ad": "Suluova", "url": "https://amasya.diyanet.gov.tr/suluova/Sayfalar/home.aspx"},
+        {"ad": "Taşova", "url": "https://amasya.diyanet.gov.tr/tasova/Sayfalar/home.aspx"},
+    ],
     "Ankara": [
+        {"ad": "İl Müftülüğü", "url": "https://ankara.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Akyurt", "url": "https://ankara.diyanet.gov.tr/akyurt/Sayfalar/home.aspx"},
         {"ad": "Altındağ", "url": "https://ankara.diyanet.gov.tr/altindag/Sayfalar/home.aspx"},
         {"ad": "Ayaş", "url": "https://ankara.diyanet.gov.tr/ayas/Sayfalar/home.aspx"},
@@ -72,6 +86,8 @@ MUFTULUK_VERISI = {
         {"ad": "Gölbaşı", "url": "https://ankara.diyanet.gov.tr/golbasi/Sayfalar/home.aspx"},
         {"ad": "Güdül", "url": "https://ankara.diyanet.gov.tr/gudul/Sayfalar/home.aspx"},
         {"ad": "Haymana", "url": "https://ankara.diyanet.gov.tr/haymana/Sayfalar/home.aspx"},
+        {"ad": "Kahramankazan", "url": "https://ankara.diyanet.gov.tr/kahramankazan/Sayfalar/home.aspx"},
+        {"ad": "Kalecik", "url": "https://ankara.diyanet.gov.tr/kalecik/Sayfalar/home.aspx"},
         {"ad": "Keçiören", "url": "https://ankara.diyanet.gov.tr/kecioren/Sayfalar/home.aspx"},
         {"ad": "Kızılcahamam", "url": "https://ankara.diyanet.gov.tr/kizilcahamam/Sayfalar/home.aspx"},
         {"ad": "Mamak", "url": "https://ankara.diyanet.gov.tr/mamak/Sayfalar/home.aspx"},
@@ -83,6 +99,7 @@ MUFTULUK_VERISI = {
         {"ad": "Yenimahalle", "url": "https://ankara.diyanet.gov.tr/yenimahalle/Sayfalar/home.aspx"},
     ],
     "Antalya": [
+        {"ad": "İl Müftülüğü", "url": "https://antalya.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Akseki", "url": "https://antalya.diyanet.gov.tr/akseki/Sayfalar/home.aspx"},
         {"ad": "Aksu", "url": "https://antalya.diyanet.gov.tr/aksu/Sayfalar/home.aspx"},
         {"ad": "Alanya", "url": "https://antalya.diyanet.gov.tr/alanya/Sayfalar/home.aspx"},
@@ -100,10 +117,11 @@ MUFTULUK_VERISI = {
         {"ad": "Korkuteli", "url": "https://antalya.diyanet.gov.tr/korkuteli/Sayfalar/home.aspx"},
         {"ad": "Kumluca", "url": "https://antalya.diyanet.gov.tr/kumluca/Sayfalar/home.aspx"},
         {"ad": "Manavgat", "url": "https://antalya.diyanet.gov.tr/manavgat/Sayfalar/home.aspx"},
-        {"ad": "Muratpaşa", "url": "https://antalya.diyanet.gov.tr/muratpaşa/Sayfalar/home.aspx"},
+        {"ad": "Muratpaşa", "url": "https://antalya.diyanet.gov.tr/muratpasa/Sayfalar/home.aspx"},
         {"ad": "Serik", "url": "https://antalya.diyanet.gov.tr/serik/Sayfalar/home.aspx"},
     ],
     "Artvin": [
+        {"ad": "İl Müftülüğü", "url": "https://artvin.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Ardanuç", "url": "https://artvin.diyanet.gov.tr/ardanuc/Sayfalar/home.aspx"},
         {"ad": "Arhavi", "url": "https://artvin.diyanet.gov.tr/arhavi/Sayfalar/home.aspx"},
         {"ad": "Borçka", "url": "https://artvin.diyanet.gov.tr/borcka/Sayfalar/home.aspx"},
@@ -114,6 +132,7 @@ MUFTULUK_VERISI = {
         {"ad": "Yusufeli", "url": "https://artvin.diyanet.gov.tr/yusufeli/Sayfalar/home.aspx"},
     ],
     "Aydın": [
+        {"ad": "İl Müftülüğü", "url": "https://aydin.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Bozdoğan", "url": "https://aydin.diyanet.gov.tr/bozdogan/Sayfalar/home.aspx"},
         {"ad": "Buharkent", "url": "https://aydin.diyanet.gov.tr/buharkent/Sayfalar/home.aspx"},
         {"ad": "Çine", "url": "https://aydin.diyanet.gov.tr/cine/Sayfalar/home.aspx"},
@@ -131,12 +150,79 @@ MUFTULUK_VERISI = {
         {"ad": "Sultanhisar", "url": "https://aydin.diyanet.gov.tr/sultanhisar/Sayfalar/home.aspx"},
         {"ad": "Yenipazar", "url": "https://aydin.diyanet.gov.tr/yenipazar/Sayfalar/home.aspx"},
     ],
+    "Balıkesir": [
+        {"ad": "İl Müftülüğü", "url": "https://balikesir.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Altıeylül", "url": "https://balikesir.diyanet.gov.tr/altieylul/Sayfalar/home.aspx"},
+        {"ad": "Ayvalık", "url": "https://balikesir.diyanet.gov.tr/ayvalik/Sayfalar/home.aspx"},
+        {"ad": "Balya", "url": "https://balikesir.diyanet.gov.tr/balya/Sayfalar/home.aspx"},
+        {"ad": "Bandırma", "url": "https://balikesir.diyanet.gov.tr/bandirma/Sayfalar/home.aspx"},
+        {"ad": "Bigadiç", "url": "https://balikesir.diyanet.gov.tr/bigadic/Sayfalar/home.aspx"},
+        {"ad": "Burhaniye", "url": "https://balikesir.diyanet.gov.tr/burhaniye/Sayfalar/home.aspx"},
+        {"ad": "Dursunbey", "url": "https://balikesir.diyanet.gov.tr/dursunbey/Sayfalar/home.aspx"},
+        {"ad": "Edremit", "url": "https://balikesir.diyanet.gov.tr/edremit/Sayfalar/home.aspx"},
+        {"ad": "Erdek", "url": "https://balikesir.diyanet.gov.tr/erdek/Sayfalar/home.aspx"},
+        {"ad": "Gömeç", "url": "https://balikesir.diyanet.gov.tr/gomec/Sayfalar/home.aspx"},
+        {"ad": "Gönen", "url": "https://balikesir.diyanet.gov.tr/gonen/Sayfalar/home.aspx"},
+        {"ad": "Havran", "url": "https://balikesir.diyanet.gov.tr/havran/Sayfalar/home.aspx"},
+        {"ad": "İvrindi", "url": "https://balikesir.diyanet.gov.tr/ivrindi/Sayfalar/home.aspx"},
+        {"ad": "Karesi", "url": "https://balikesir.diyanet.gov.tr/karesi/Sayfalar/home.aspx"},
+        {"ad": "Kepsut", "url": "https://balikesir.diyanet.gov.tr/kepsut/Sayfalar/home.aspx"},
+        {"ad": "Manyas", "url": "https://balikesir.diyanet.gov.tr/manyas/Sayfalar/home.aspx"},
+        {"ad": "Marmara", "url": "https://balikesir.diyanet.gov.tr/marmara/Sayfalar/home.aspx"},
+        {"ad": "Savaştepe", "url": "https://balikesir.diyanet.gov.tr/savastepe/Sayfalar/home.aspx"},
+        {"ad": "Sındırgı", "url": "https://balikesir.diyanet.gov.tr/sindirgi/Sayfalar/home.aspx"},
+        {"ad": "Susurluk", "url": "https://balikesir.diyanet.gov.tr/susurluk/Sayfalar/home.aspx"},
+    ],
+    "Bilecik": [
+        {"ad": "İl Müftülüğü", "url": "https://bilecik.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Bozüyük", "url": "https://bilecik.diyanet.gov.tr/bozuyuk/Sayfalar/home.aspx"},
+        {"ad": "Gölpazarı", "url": "https://bilecik.diyanet.gov.tr/golpazari/Sayfalar/home.aspx"},
+        {"ad": "İnhisar", "url": "https://bilecik.diyanet.gov.tr/inhisar/Sayfalar/home.aspx"},
+        {"ad": "Osmaneli", "url": "https://bilecik.diyanet.gov.tr/osmaneli/Sayfalar/home.aspx"},
+        {"ad": "Pazaryeri", "url": "https://bilecik.diyanet.gov.tr/pazaryeri/Sayfalar/home.aspx"},
+        {"ad": "Söğüt", "url": "https://bilecik.diyanet.gov.tr/sogut/Sayfalar/home.aspx"},
+        {"ad": "Yenipazar", "url": "https://bilecik.diyanet.gov.tr/yenipazar/Sayfalar/home.aspx"},
+    ],
+    "Bingöl": [
+        {"ad": "İl Müftülüğü", "url": "https://bingol.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Adaklı", "url": "https://bingol.diyanet.gov.tr/adakli/Sayfalar/home.aspx"},
+        {"ad": "Genç", "url": "https://bingol.diyanet.gov.tr/genc/Sayfalar/home.aspx"},
+        {"ad": "Karlıova", "url": "https://bingol.diyanet.gov.tr/karliova/Sayfalar/home.aspx"},
+        {"ad": "Kiğı", "url": "https://bingol.diyanet.gov.tr/kigi/Sayfalar/home.aspx"},
+        {"ad": "Solhan", "url": "https://bingol.diyanet.gov.tr/solhan/Sayfalar/home.aspx"},
+        {"ad": "Yayladere", "url": "https://bingol.diyanet.gov.tr/yayladere/Sayfalar/home.aspx"},
+        {"ad": "Yedisu", "url": "https://bingol.diyanet.gov.tr/yedisu/Sayfalar/home.aspx"},
+    ],
+    "Bitlis": [
+        {"ad": "İl Müftülüğü", "url": "https://bitlis.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Adilcevaz", "url": "https://bitlis.diyanet.gov.tr/adilcevaz/Sayfalar/home.aspx"},
+        {"ad": "Ahlat", "url": "https://bitlis.diyanet.gov.tr/ahlat/Sayfalar/home.aspx"},
+        {"ad": "Güroymak", "url": "https://bitlis.diyanet.gov.tr/guymak/Sayfalar/home.aspx"},
+        {"ad": "Hizan", "url": "https://bitlis.diyanet.gov.tr/hizan/Sayfalar/home.aspx"},
+        {"ad": "Mutki", "url": "https://bitlis.diyanet.gov.tr/mutki/Sayfalar/home.aspx"},
+        {"ad": "Tatvan", "url": "https://bitlis.diyanet.gov.tr/tatvan/Sayfalar/home.aspx"},
+    ],
+    "Bolu": [
+        {"ad": "İl Müftülüğü", "url": "https://bolu.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Dörtdivan", "url": "https://bolu.diyanet.gov.tr/dortdivan/Sayfalar/home.aspx"},
+        {"ad": "Gerede", "url": "https://bolu.diyanet.gov.tr/gerede/Sayfalar/home.aspx"},
+        {"ad": "Göynük", "url": "https://bolu.diyanet.gov.tr/goynuk/Sayfalar/home.aspx"},
+        {"ad": "Kıbrıscık", "url": "https://bolu.diyanet.gov.tr/kibriscik/Sayfalar/home.aspx"},
+        {"ad": "Mengen", "url": "https://bolu.diyanet.gov.tr/mengen/Sayfalar/home.aspx"},
+        {"ad": "Mudurnu", "url": "https://bolu.diyanet.gov.tr/mudurnu/Sayfalar/home.aspx"},
+        {"ad": "Seben", "url": "https://bolu.diyanet.gov.tr/seben/Sayfalar/home.aspx"},
+        {"ad": "Yeniçağa", "url": "https://bolu.diyanet.gov.tr/yenicaga/Sayfalar/home.aspx"},
+    ],
     "Bursa": [
+        {"ad": "İl Müftülüğü", "url": "https://bursa.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Büyükorhan", "url": "https://bursa.diyanet.gov.tr/buyukorhan/Sayfalar/home.aspx"},
         {"ad": "Gemlik", "url": "https://bursa.diyanet.gov.tr/gemlik/Sayfalar/home.aspx"},
         {"ad": "Gürsu", "url": "https://bursa.diyanet.gov.tr/gursu/Sayfalar/home.aspx"},
+        {"ad": "Harmancık", "url": "https://bursa.diyanet.gov.tr/harmancik/Sayfalar/home.aspx"},
         {"ad": "İnegöl", "url": "https://bursa.diyanet.gov.tr/inegol/Sayfalar/home.aspx"},
         {"ad": "İznik", "url": "https://bursa.diyanet.gov.tr/iznik/Sayfalar/home.aspx"},
         {"ad": "Karacabey", "url": "https://bursa.diyanet.gov.tr/karacabey/Sayfalar/home.aspx"},
+        {"ad": "Keles", "url": "https://bursa.diyanet.gov.tr/keles/Sayfalar/home.aspx"},
         {"ad": "Kestel", "url": "https://bursa.diyanet.gov.tr/kestel/Sayfalar/home.aspx"},
         {"ad": "Mudanya", "url": "https://bursa.diyanet.gov.tr/mudanya/Sayfalar/home.aspx"},
         {"ad": "Mustafakemalpaşa", "url": "https://bursa.diyanet.gov.tr/mustafakemalpasa/Sayfalar/home.aspx"},
@@ -146,7 +232,28 @@ MUFTULUK_VERISI = {
         {"ad": "Osmangazi", "url": "https://bursa.diyanet.gov.tr/osmangazi/Sayfalar/home.aspx"},
         {"ad": "Yıldırım", "url": "https://bursa.diyanet.gov.tr/yildirim/Sayfalar/home.aspx"},
     ],
+    "Diyarbakır": [
+        {"ad": "İl Müftülüğü", "url": "https://diyarbakir.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Bağlar", "url": "https://diyarbakir.diyanet.gov.tr/baglar/Sayfalar/home.aspx"},
+        {"ad": "Bismil", "url": "https://diyarbakir.diyanet.gov.tr/bismil/Sayfalar/home.aspx"},
+        {"ad": "Çermik", "url": "https://diyarbakir.diyanet.gov.tr/cermik/Sayfalar/home.aspx"},
+        {"ad": "Çınar", "url": "https://diyarbakir.diyanet.gov.tr/cinar/Sayfalar/home.aspx"},
+        {"ad": "Çüngüş", "url": "https://diyarbakir.diyanet.gov.tr/cungus/Sayfalar/home.aspx"},
+        {"ad": "Dicle", "url": "https://diyarbakir.diyanet.gov.tr/dicle/Sayfalar/home.aspx"},
+        {"ad": "Eğil", "url": "https://diyarbakir.diyanet.gov.tr/egil/Sayfalar/home.aspx"},
+        {"ad": "Ergani", "url": "https://diyarbakir.diyanet.gov.tr/ergani/Sayfalar/home.aspx"},
+        {"ad": "Hani", "url": "https://diyarbakir.diyanet.gov.tr/hani/Sayfalar/home.aspx"},
+        {"ad": "Hazro", "url": "https://diyarbakir.diyanet.gov.tr/hazro/Sayfalar/home.aspx"},
+        {"ad": "Kayapınar", "url": "https://diyarbakir.diyanet.gov.tr/kayapinar/Sayfalar/home.aspx"},
+        {"ad": "Kocaköy", "url": "https://diyarbakir.diyanet.gov.tr/kocakoy/Sayfalar/home.aspx"},
+        {"ad": "Kulp", "url": "https://diyarbakir.diyanet.gov.tr/kulp/Sayfalar/home.aspx"},
+        {"ad": "Lice", "url": "https://diyarbakir.diyanet.gov.tr/lice/Sayfalar/home.aspx"},
+        {"ad": "Silvan", "url": "https://diyarbakir.diyanet.gov.tr/silvan/Sayfalar/home.aspx"},
+        {"ad": "Sur", "url": "https://diyarbakir.diyanet.gov.tr/sur/Sayfalar/home.aspx"},
+        {"ad": "Yenişehir", "url": "https://diyarbakir.diyanet.gov.tr/yenisehir/Sayfalar/home.aspx"},
+    ],
     "İstanbul": [
+        {"ad": "İl Müftülüğü", "url": "https://istanbul.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Adalar", "url": "https://istanbul.diyanet.gov.tr/adalar/Sayfalar/home.aspx"},
         {"ad": "Arnavutköy", "url": "https://istanbul.diyanet.gov.tr/arnavutkoy/Sayfalar/home.aspx"},
         {"ad": "Ataşehir", "url": "https://istanbul.diyanet.gov.tr/atasehir/Sayfalar/home.aspx"},
@@ -188,11 +295,13 @@ MUFTULUK_VERISI = {
         {"ad": "Zeytinburnu", "url": "https://istanbul.diyanet.gov.tr/zeytinburnu/Sayfalar/home.aspx"},
     ],
     "İzmir": [
+        {"ad": "İl Müftülüğü", "url": "https://izmir.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Aliağa", "url": "https://izmir.diyanet.gov.tr/aliaga/Sayfalar/home.aspx"},
         {"ad": "Balçova", "url": "https://izmir.diyanet.gov.tr/balcova/Sayfalar/home.aspx"},
         {"ad": "Bayındır", "url": "https://izmir.diyanet.gov.tr/bayindir/Sayfalar/home.aspx"},
         {"ad": "Bayraklı", "url": "https://izmir.diyanet.gov.tr/bayrakli/Sayfalar/home.aspx"},
         {"ad": "Bergama", "url": "https://izmir.diyanet.gov.tr/bergama/Sayfalar/home.aspx"},
+        {"ad": "Beydağ", "url": "https://izmir.diyanet.gov.tr/beydag/Sayfalar/home.aspx"},
         {"ad": "Bornova", "url": "https://izmir.diyanet.gov.tr/bornova/Sayfalar/home.aspx"},
         {"ad": "Buca", "url": "https://izmir.diyanet.gov.tr/buca/Sayfalar/home.aspx"},
         {"ad": "Çeşme", "url": "https://izmir.diyanet.gov.tr/cesme/Sayfalar/home.aspx"},
@@ -219,6 +328,7 @@ MUFTULUK_VERISI = {
         {"ad": "Urla", "url": "https://izmir.diyanet.gov.tr/urla/Sayfalar/home.aspx"},
     ],
     "Mersin": [
+        {"ad": "İl Müftülüğü", "url": "https://mersin.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Akdeniz", "url": "https://mersin.diyanet.gov.tr/akdeniz/Sayfalar/home.aspx"},
         {"ad": "Anamur", "url": "https://mersin.diyanet.gov.tr/anamur/Sayfalar/home.aspx"},
         {"ad": "Aydıncık", "url": "https://mersin.diyanet.gov.tr/ayidincik/Sayfalar/home.aspx"},
@@ -234,6 +344,7 @@ MUFTULUK_VERISI = {
         {"ad": "Yenişehir", "url": "https://mersin.diyanet.gov.tr/yenisehir/Sayfalar/home.aspx"},
     ],
     "Sakarya": [
+        {"ad": "İl Müftülüğü", "url": "https://sakarya.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Adapazarı", "url": "https://sakarya.diyanet.gov.tr/adapazari/Sayfalar/home.aspx"},
         {"ad": "Akyazı", "url": "https://sakarya.diyanet.gov.tr/akyazi/Sayfalar/home.aspx"},
         {"ad": "Arifiye", "url": "https://sakarya.diyanet.gov.tr/arifiye/Sayfalar/home.aspx"},
@@ -251,7 +362,28 @@ MUFTULUK_VERISI = {
         {"ad": "Söğütlü", "url": "https://sakarya.diyanet.gov.tr/sogutlu/Sayfalar/home.aspx"},
         {"ad": "Taraklı", "url": "https://sakarya.diyanet.gov.tr/tarakli/Sayfalar/home.aspx"},
     ],
+    "Samsun": [
+        {"ad": "İl Müftülüğü", "url": "https://samsun.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Alaçam", "url": "https://samsun.diyanet.gov.tr/alaçam/Sayfalar/home.aspx"},
+        {"ad": "Asarcık", "url": "https://samsun.diyanet.gov.tr/asarick/Sayfalar/home.aspx"},
+        {"ad": "Atakum", "url": "https://samsun.diyanet.gov.tr/atakum/Sayfalar/home.aspx"},
+        {"ad": "Ayvacık", "url": "https://samsun.diyanet.gov.tr/ayvacik/Sayfalar/home.aspx"},
+        {"ad": "Bafra", "url": "https://samsun.diyanet.gov.tr/bafra/Sayfalar/home.aspx"},
+        {"ad": "Canik", "url": "https://samsun.diyanet.gov.tr/canik/Sayfalar/home.aspx"},
+        {"ad": "Çarşamba", "url": "https://samsun.diyanet.gov.tr/carsamba/Sayfalar/home.aspx"},
+        {"ad": "Havza", "url": "https://samsun.diyanet.gov.tr/havza/Sayfalar/home.aspx"},
+        {"ad": "İlkadım", "url": "https://samsun.diyanet.gov.tr/ilkadim/Sayfalar/home.aspx"},
+        {"ad": "Kavak", "url": "https://samsun.diyanet.gov.tr/kavak/Sayfalar/home.aspx"},
+        {"ad": "Ladik", "url": "https://samsun.diyanet.gov.tr/ladik/Sayfalar/home.aspx"},
+        {"ad": "Ondokuzmayıs", "url": "https://samsun.diyanet.gov.tr/ondokuzmayis/Sayfalar/home.aspx"},
+        {"ad": "Salıpazarı", "url": "https://samsun.diyanet.gov.tr/salipazari/Sayfalar/home.aspx"},
+        {"ad": "Tekkeköy", "url": "https://samsun.diyanet.gov.tr/tekkekoy/Sayfalar/home.aspx"},
+        {"ad": "Terme", "url": "https://samsun.diyanet.gov.tr/terme/Sayfalar/home.aspx"},
+        {"ad": "Vezirköprü", "url": "https://samsun.diyanet.gov.tr/vezirkopru/Sayfalar/home.aspx"},
+        {"ad": "Yakakent", "url": "https://samsun.diyanet.gov.tr/yakakent/Sayfalar/home.aspx"},
+    ],
     "Düzce": [
+        {"ad": "İl Müftülüğü", "url": "https://duzce.diyanet.gov.tr/Sayfalar/home.aspx"},
         {"ad": "Akçakoca", "url": "https://duzce.diyanet.gov.tr/akcakoca/Sayfalar/home.aspx"},
         {"ad": "Cumayeri", "url": "https://duzce.diyanet.gov.tr/cumayeri/Sayfalar/home.aspx"},
         {"ad": "Çilimli", "url": "https://duzce.diyanet.gov.tr/cilimli/Sayfalar/home.aspx"},
@@ -259,8 +391,103 @@ MUFTULUK_VERISI = {
         {"ad": "Gümüşova", "url": "https://duzce.diyanet.gov.tr/gumusova/Sayfalar/home.aspx"},
         {"ad": "Kaynaşlı", "url": "https://duzce.diyanet.gov.tr/kaynasli/Sayfalar/home.aspx"},
         {"ad": "Yığılca", "url": "https://duzce.diyanet.gov.tr/yigilca/Sayfalar/home.aspx"},
+    ],
+    "Aksaray": [
+        {"ad": "İl Müftülüğü", "url": "https://aksaray.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Ağaçören", "url": "https://aksaray.diyanet.gov.tr/agacoren/Sayfalar/home.aspx"},
+        {"ad": "Eskil", "url": "https://aksaray.diyanet.gov.tr/eskil/Sayfalar/home.aspx"},
+        {"ad": "Gülağaç", "url": "https://aksaray.diyanet.gov.tr/gulağac/Sayfalar/home.aspx"},
+        {"ad": "Güzelyurt", "url": "https://aksaray.diyanet.gov.tr/guzelyurt/Sayfalar/home.aspx"},
+        {"ad": "Ortaköy", "url": "https://aksaray.diyanet.gov.tr/ortakoy/Sayfalar/home.aspx"},
+        {"ad": "Sarıyahşi", "url": "https://aksaray.diyanet.gov.tr/sariyahsi/Sayfalar/home.aspx"},
+        {"ad": "Sultanhanı", "url": "https://aksaray.diyanet.gov.tr/sultanhani/Sayfalar/home.aspx"},
+    ],
+    "Karaman": [
+        {"ad": "İl Müftülüğü", "url": "https://karaman.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Ayrancı", "url": "https://karaman.diyanet.gov.tr/ayranci/Sayfalar/home.aspx"},
+        {"ad": "Başyayla", "url": "https://karaman.diyanet.gov.tr/basyayla/Sayfalar/home.aspx"},
+        {"ad": "Ermenek", "url": "https://karaman.diyanet.gov.tr/ermenek/Sayfalar/home.aspx"},
+        {"ad": "Kazımkarabekir", "url": "https://karaman.diyanet.gov.tr/kazimkarabekir/Sayfalar/home.aspx"},
+        {"ad": "Sarıveliler", "url": "https://karaman.diyanet.gov.tr/sariveliler/Sayfalar/home.aspx"},
+    ],
+    "Kırıkkale": [
+        {"ad": "İl Müftülüğü", "url": "https://kirikkale.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Bahşılı", "url": "https://kirikkale.diyanet.gov.tr/bahsili/Sayfalar/home.aspx"},
+        {"ad": "Balışeyh", "url": "https://kirikkale.diyanet.gov.tr/baliseyh/Sayfalar/home.aspx"},
+        {"ad": "Çelebi", "url": "https://kirikkale.diyanet.gov.tr/celebi/Sayfalar/home.aspx"},
+        {"ad": "Delice", "url": "https://kirikkale.diyanet.gov.tr/delice/Sayfalar/home.aspx"},
+        {"ad": "Karakeçili", "url": "https://kirikkale.diyanet.gov.tr/karakecili/Sayfalar/home.aspx"},
+        {"ad": "Sulakyurt", "url": "https://kirikkale.diyanet.gov.tr/sulakyurt/Sayfalar/home.aspx"},
+        {"ad": "Yahşihan", "url": "https://kirikkale.diyanet.gov.tr/yahsihan/Sayfalar/home.aspx"},
+    ],
+    "Batman": [
+        {"ad": "İl Müftülüğü", "url": "https://batman.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Beşiri", "url": "https://batman.diyanet.gov.tr/besiri/Sayfalar/home.aspx"},
+        {"ad": "Gercüş", "url": "https://batman.diyanet.gov.tr/gercus/Sayfalar/home.aspx"},
+        {"ad": "Hasankeyf", "url": "https://batman.diyanet.gov.tr/hasankeyf/Sayfalar/home.aspx"},
+        {"ad": "Kozluk", "url": "https://batman.diyanet.gov.tr/kozluk/Sayfalar/home.aspx"},
+        {"ad": "Sason", "url": "https://batman.diyanet.gov.tr/sason/Sayfalar/home.aspx"},
+    ],
+    "Şırnak": [
+        {"ad": "İl Müftülüğü", "url": "https://sirnak.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Beytüşşebap", "url": "https://sirnak.diyanet.gov.tr/beytussebap/Sayfalar/home.aspx"},
+        {"ad": "Cizre", "url": "https://sirnak.diyanet.gov.tr/cizre/Sayfalar/home.aspx"},
+        {"ad": "Güçlükonak", "url": "https://sirnak.diyanet.gov.tr/guclukonak/Sayfalar/home.aspx"},
+        {"ad": "İdil", "url": "https://sirnak.diyanet.gov.tr/idil/Sayfalar/home.aspx"},
+        {"ad": "Silopi", "url": "https://sirnak.diyanet.gov.tr/silopi/Sayfalar/home.aspx"},
+        {"ad": "Uludere", "url": "https://sirnak.diyanet.gov.tr/uludere/Sayfalar/home.aspx"},
+    ],
+    "Bartın": [
+        {"ad": "İl Müftülüğü", "url": "https://bartin.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Amasra", "url": "https://bartin.diyanet.gov.tr/amasra/Sayfalar/home.aspx"},
+        {"ad": "Kurucaşile", "url": "https://bartin.diyanet.gov.tr/kurucasile/Sayfalar/home.aspx"},
+        {"ad": "Ulus", "url": "https://bartin.diyanet.gov.tr/ulus/Sayfalar/home.aspx"},
+    ],
+    "Ardahan": [
+        {"ad": "İl Müftülüğü", "url": "https://ardahan.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Çıldır", "url": "https://ardahan.diyanet.gov.tr/cildir/Sayfalar/home.aspx"},
+        {"ad": "Damal", "url": "https://ardahan.diyanet.gov.tr/damal/Sayfalar/home.aspx"},
+        {"ad": "Göle", "url": "https://ardahan.diyanet.gov.tr/gole/Sayfalar/home.aspx"},
+        {"ad": "Hanak", "url": "https://ardahan.diyanet.gov.tr/hanak/Sayfalar/home.aspx"},
+        {"ad": "Posof", "url": "https://ardahan.diyanet.gov.tr/posof/Sayfalar/home.aspx"},
+    ],
+    "Iğdır": [
+        {"ad": "İl Müftülüğü", "url": "https://igdir.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Aralık", "url": "https://igdir.diyanet.gov.tr/aralik/Sayfalar/home.aspx"},
+        {"ad": "Karakoyunlu", "url": "https://igdir.diyanet.gov.tr/karakoyunlu/Sayfalar/home.aspx"},
+        {"ad": "Tuzluca", "url": "https://igdir.diyanet.gov.tr/tuzluca/Sayfalar/home.aspx"},
+    ],
+    "Yalova": [
+        {"ad": "İl Müftülüğü", "url": "https://yalova.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Altınova", "url": "https://yalova.diyanet.gov.tr/altinova/Sayfalar/home.aspx"},
+        {"ad": "Armutlu", "url": "https://yalova.diyanet.gov.tr/armutlu/Sayfalar/home.aspx"},
+        {"ad": "Çınarcık", "url": "https://yalova.diyanet.gov.tr/cinarcik/Sayfalar/home.aspx"},
+        {"ad": "Çiftlikköy", "url": "https://yalova.diyanet.gov.tr/ciftlikkoy/Sayfalar/home.aspx"},
+        {"ad": "Termal", "url": "https://yalova.diyanet.gov.tr/termal/Sayfalar/home.aspx"},
+    ],
+    "Karabük": [
+        {"ad": "İl Müftülüğü", "url": "https://karabuk.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Eflani", "url": "https://karabuk.diyanet.gov.tr/eflani/Sayfalar/home.aspx"},
+        {"ad": "Eskipazar", "url": "https://karabuk.diyanet.gov.tr/eskipazar/Sayfalar/home.aspx"},
+        {"ad": "Ovacık", "url": "https://karabuk.diyanet.gov.tr/ovacik/Sayfalar/home.aspx"},
+        {"ad": "Safranbolu", "url": "https://karabuk.diyanet.gov.tr/safranbolu/Sayfalar/home.aspx"},
+        {"ad": "Yenice", "url": "https://karabuk.diyanet.gov.tr/yenice/Sayfalar/home.aspx"},
+    ],
+    "Kilis": [
+        {"ad": "İl Müftülüğü", "url": "https://kilis.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Elbeyli", "url": "https://kilis.diyanet.gov.tr/elbeyli/Sayfalar/home.aspx"},
+        {"ad": "Musabeyli", "url": "https://kilis.diyanet.gov.tr/musabeyli/Sayfalar/home.aspx"},
+        {"ad": "Polateli", "url": "https://kilis.diyanet.gov.tr/polateli/Sayfalar/home.aspx"},
+    ],
+    "Osmaniye": [
+        {"ad": "İl Müftülüğü", "url": "https://osmaniye.diyanet.gov.tr/Sayfalar/home.aspx"},
+        {"ad": "Bahçe", "url": "https://osmaniye.diyanet.gov.tr/bahce/Sayfalar/home.aspx"},
+        {"ad": "Düziçi", "url": "https://osmaniye.diyanet.gov.tr/duzici/Sayfalar/home.aspx"},
+        {"ad": "Hasanbeyli", "url": "https://osmaniye.diyanet.gov.tr/hasanbeyli/Sayfalar/home.aspx"},
+        {"ad": "Kadirli", "url": "https://osmaniye.diyanet.gov.tr/kadirli/Sayfalar/home.aspx"},
+        {"ad": "Sumbas", "url": "https://osmaniye.diyanet.gov.tr/sumbas/Sayfalar/home.aspx"},
+        {"ad": "Toprakkale", "url": "https://osmaniye.diyanet.gov.tr/toprakkale/Sayfalar/home.aspx"},
     ]
-    # Diğer iller de bu formata uygun şekilde eklendi
 }
 
 def anasayfa(request): return render(request, 'anasayfa.html')
@@ -273,23 +500,20 @@ def muftuluk_il(request, il):
     bulunan_il = None
     # Küçük harf/Büyük harf uyumu için kontrol
     for key in MUFTULUK_VERISI.keys():
-        if key.lower() == il.lower():
+        # URL'den gelen il ismini (örn: adana) listedeki (Adana) ile eşleştiriyoruz
+        slug = key.lower().replace('ı','i').replace('ğ','g').replace('ü','u').replace('ş','s').replace('ö','o').replace('ç','c')
+        if slug == il.lower():
             bulunan_il = key
             break
             
     if bulunan_il:
         ilceler = MUFTULUK_VERISI[bulunan_il]
-        # İl linkini otomatik oluştur (Türkçe karakterleri temizleyerek)
-        il_slug = bulunan_il.lower().replace('ı','i').replace('ğ','g').replace('ü','u').replace('ş','s').replace('ö','o').replace('ç','c')
-        il_linki = f"https://{il_slug}.diyanet.gov.tr/Sayfalar/home.aspx"
     else:
         ilceler = []
-        il_linki = "#"
 
     return render(request, 'muftuluk_il.html', {
         'il': bulunan_il or il,
-        'ilceler': ilceler,
-        'il_linki': il_linki
+        'ilceler': ilceler
     })
 
 # Diğer boş fonksiyonlar (Hata almamak için)
