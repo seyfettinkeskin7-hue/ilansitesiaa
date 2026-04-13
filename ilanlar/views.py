@@ -527,3 +527,5 @@ def favori_ekle(request, ilan_id): return render(request, 'anasayfa.html')
 def panel(request): return render(request, 'panel.html')
 def haber_ekle(request): return render(request, 'panel.html')
 def haber_sil(request, haber_id): return render(request, 'panel.html')
+def akademi(request): 
+    return render(request, 'akademi.html')

@@ -19,4 +19,7 @@ urlpatterns = [
     path('panel/haber-sil/<int:haber_id>/', views.haber_sil),
     path('muftulukler/', views.muftulukler),
     path('muftulukler/<str:il>/', views.muftuluk_il),
+    
+    # Akademi sayfamızın yolu buraya eklendi
+    path('akademi/', views.akademi), 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
