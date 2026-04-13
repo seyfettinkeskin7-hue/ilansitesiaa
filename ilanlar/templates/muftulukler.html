@@ -11,14 +11,12 @@
         .geri-don { color: #FF6000; text-decoration: none; font-weight: bold; font-size: 14px; }
         .geri-don:hover { text-decoration: underline; }
         
-        /* İllerin sıralandığı alan */
         .il-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 15px;
         }
         
-        /* İl kartlarının tasarımı */
         .il-kart {
             background-color: white;
             padding: 20px;
@@ -47,9 +45,9 @@
         </div>
 
         <div class="il-grid">
-            {% for il in iller_listesi %}
-            <a href="/muftulukler/{{ il.slug }}/" class="il-kart">
-                {{ il.isim }}
+            {% for il_adi in iller %}
+            <a href="/muftulukler/{{ il_adi|lower|replace:'ı','i'|replace:'ğ','g'|replace:'ü','u'|replace:'ş','s'|replace:'ö','o'|replace:'ç','c' }}/" class="il-kart">
+                {{ il_adi }}
             </a>
             {% endfor %}
         </div>
