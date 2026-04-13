@@ -4,21 +4,58 @@
     <title>Müftülükler - Dingönüllüleri</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial; background: #f5f5f5; padding: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto; }
-        .il-kart { background: white; padding: 20px; text-align: center; border-radius: 10px; border: 1px solid #ddd; text-decoration: none; color: #333; font-weight: bold; }
-        .il-kart:hover { border-color: #FF6000; color: #FF6000; }
-        .baslik { text-align: center; margin-bottom: 30px; font-size: 24px; }
+        body { font-family: Arial; background: #f5f5f5; }
+        .header { background: white; padding: 12px 30px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
+        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
+        .header-sag { margin-left: auto; }
+        .header-sag a { color: #555; text-decoration: none; font-size: 13px; }
+        .icerik { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .sayfa-baslik { font-size: 26px; font-weight: bold; color: #333; margin-bottom: 8px; }
+        .sayfa-aciklama { font-size: 14px; color: #888; margin-bottom: 20px; }
+        .arama-kutu { background: white; border-radius: 8px; padding: 12px 16px; border: 1px solid #ddd; display: flex; gap: 10px; margin-bottom: 25px; max-width: 500px; }
+        .arama-kutu input { flex: 1; border: none; outline: none; font-size: 15px; color: #333; }
+        .il-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+        .il-kart { background: white; border-radius: 10px; padding: 16px 12px; text-align: center; border: 1px solid #eee; text-decoration: none; color: #333; transition: all 0.2s; display: block; }
+        .il-kart:hover { border-color: #FF6000; color: #FF6000; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(255,96,0,0.1); }
+        .il-kart .il-ikon { font-size: 24px; margin-bottom: 8px; }
+        .il-kart .il-isim { font-size: 13px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1 class="baslik">🕌 İl Müftülükleri</h1>
-    <div class="grid">
-        {% for il in iller %}
-        <a href="/muftulukler/{{ il|lower|replace:'ı','i'|replace:'ç','c'|replace:'ö','o'|replace:'ü','u'|replace:'ş','s'|replace:'ğ','g' }}/" class="il-kart">
-            {{ il }}
-        </a>
-        {% endfor %}
+    <div class="header">
+        <div class="logo-icon">🕌</div>
+        <div class="logo-text">Dingönüllüleri</div>
+        <div class="header-sag"><a href="/">← Anasayfa</a></div>
     </div>
+    <div class="icerik">
+        <div class="sayfa-baslik">🕌 İl Müftülükleri</div>
+        <div class="sayfa-aciklama">Türkiye'nin 81 iline ait müftülükler. İle tıklayınca ilçe müftülüklerine ulaşabilirsiniz.</div>
+        <div class="arama-kutu">
+            <span>🔍</span>
+            <input type="text" id="aramaInput" placeholder="İl ara..." oninput="ilAra()">
+        </div>
+        
+        <div class="il-grid" id="ilGrid">
+            {% for il in iller_listesi %}
+            <a href="/muftulukler/{{ il.slug }}/" class="il-kart" data-il="{{ il.isim|lower }}">
+                <div class="il-ikon">🕌</div>
+                <div class="il-isim">{{ il.isim }}</div>
+            </a>
+            {% endfor %}
+        </div>
+        
+    </div>
+    <script>
+        function ilAra() {
+            var aramaMetni = document.getElementById('aramaInput').value.toLowerCase()
+                .replace(/ğ/g,'g').replace(/ü/g,'u').replace(/ş/g,'s')
+                .replace(/ı/g,'i').replace(/ö/g,'o').replace(/ç/g,'c');
+            document.querySelectorAll('.il-kart').forEach(function(kart) {
+                var ilAdi = kart.dataset.il;
+                kart.style.display = ilAdi.includes(aramaMetni) ? 'block' : 'none';
+            });
+        }
+    </script>
 </body>
 </html>
