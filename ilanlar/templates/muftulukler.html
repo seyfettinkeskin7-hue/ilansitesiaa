@@ -2,56 +2,173 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>İl Müftülükleri - Dingönüllüleri</title>
+    <title>İl ve İlçe Müftülükleri - Dingönüllüleri</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f5f5f5; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .ust-kisim { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
-        .baslik { color: #333; font-size: 28px; margin: 0; }
-        .geri-don { color: #FF6000; text-decoration: none; font-weight: bold; font-size: 14px; }
-        .geri-don:hover { text-decoration: underline; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
         
-        .il-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-        }
+        /* Üst Header */
+        .header { background: white; padding: 12px 30px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
+        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
+        .header-sag { margin-left: auto; }
+        .header-sag a { color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
         
-        .il-kart {
-            background-color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            color: #333;
-            font-weight: bold;
-            border: 1px solid #ddd;
-            transition: all 0.2s ease;
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        
+        .ust-kontrol { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
+        .sayfa-baslik { font-size: 26px; font-weight: bold; color: #333; }
+        
+        /* Geri Dön Butonu (Sadece ilçelerdeyken görünür) */
+        #geri-btn { 
+            display: none; background: #333; color: white; border: none; padding: 10px 20px; 
+            border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold;
         }
-        .il-kart:hover {
-            border-color: #FF6000;
-            color: #FF6000;
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        #geri-btn:hover { background: #FF6000; }
+
+        /* Grid Sistemi */
+        .grid-alani { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        
+        /* Kart Tasarımları */
+        .kart { 
+            background: white; border: 1px solid #ddd; border-radius: 10px; padding: 20px 15px; 
+            text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; color: #333;
         }
+        .kart:hover { border-color: #FF6000; transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        
+        .il-isim { font-size: 16px; font-weight: bold; }
+        
+        .ilce-kart h3 { font-size: 14px; margin-bottom: 10px; }
+        .resmi-link-yazi { display: inline-block; background: #FF6000; color: white; padding: 6px 12px; border-radius: 5px; font-size: 12px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="ust-kisim">
-            <h1 class="baslik">🕌 İl Müftülükleri</h1>
-            <a href="/" class="geri-don">← Anasayfaya Dön</a>
-        </div>
-
-        <div class="il-grid">
-            {% for il_adi in iller %}
-            <a href="/muftulukler/{{ il_adi|lower|replace:'ı','i'|replace:'ğ','g'|replace:'ü','u'|replace:'ş','s'|replace:'ö','o'|replace:'ç','c' }}/" class="il-kart">
-                {{ il_adi }}
-            </a>
-            {% endfor %}
-        </div>
+    <div class="header">
+        <div class="logo-icon">🕌</div>
+        <div class="logo-text">Dingönüllüleri</div>
+        <div class="header-sag"><a href="/">← Anasayfa</a></div>
     </div>
 
+    <div class="container">
+        <div class="ust-kontrol">
+            <h1 class="sayfa-baslik" id="sayfa-baslik">🕌 İl Müftülükleri</h1>
+            <button id="geri-btn" onclick="illeriGoster()">← İllere Dön</button>
+        </div>
+
+        <div class="grid-alani" id="liste-alani"></div>
+    </div>
+
+    <script>
+        // BÜTÜN VERİYİ BURAYA GÖMÜYORUZ (Python'a gerek kalmadı)
+        const MUFTULUK_VERISI = {
+            "Adana": [
+                {"ad": "İl Müftülüğü", "url": "https://adana.diyanet.gov.tr/Sayfalar/home.aspx"},
+                {"ad": "Aladağ", "url": "https://adana.diyanet.gov.tr/aladag/Sayfalar/home.aspx"},
+                {"ad": "Ceyhan", "url": "https://adana.diyanet.gov.tr/ceyhan/Sayfalar/home.aspx"},
+                {"ad": "Çukurova", "url": "https://adana.diyanet.gov.tr/cukurova/Sayfalar/home.aspx"},
+                {"ad": "Seyhan", "url": "https://adana.diyanet.gov.tr/seyhan/Sayfalar/home.aspx"},
+                {"ad": "Yüreğir", "url": "https://adana.diyanet.gov.tr/yuregir/Sayfalar/home.aspx"}
+            ],
+            "Ankara": [
+                {"ad": "İl Müftülüğü", "url": "https://ankara.diyanet.gov.tr/Sayfalar/home.aspx"},
+                {"ad": "Altındağ", "url": "https://ankara.diyanet.gov.tr/altindag/Sayfalar/home.aspx"},
+                {"ad": "Çankaya", "url": "https://ankara.diyanet.gov.tr/cankaya/Sayfalar/home.aspx"},
+                {"ad": "Etimesgut", "url": "https://ankara.diyanet.gov.tr/etimesgut/Sayfalar/home.aspx"},
+                {"ad": "Keçiören", "url": "https://ankara.diyanet.gov.tr/kecioren/Sayfalar/home.aspx"},
+                {"ad": "Mamak", "url": "https://ankara.diyanet.gov.tr/mamak/Sayfalar/home.aspx"},
+                {"ad": "Yenimahalle", "url": "https://ankara.diyanet.gov.tr/yenimahalle/Sayfalar/home.aspx"}
+            ],
+            "İstanbul": [
+                {"ad": "İl Müftülüğü", "url": "https://istanbul.diyanet.gov.tr/Sayfalar/home.aspx"},
+                {"ad": "Beşiktaş", "url": "https://istanbul.diyanet.gov.tr/besiktas/Sayfalar/home.aspx"},
+                {"ad": "Fatih", "url": "https://istanbul.diyanet.gov.tr/fatih/Sayfalar/home.aspx"},
+                {"ad": "Kadıköy", "url": "https://istanbul.diyanet.gov.tr/kadikoy/Sayfalar/home.aspx"},
+                {"ad": "Üsküdar", "url": "https://istanbul.diyanet.gov.tr/uskudar/Sayfalar/home.aspx"}
+            ],
+            "İzmir": [
+                {"ad": "İl Müftülüğü", "url": "https://izmir.diyanet.gov.tr/Sayfalar/home.aspx"},
+                {"ad": "Bornova", "url": "https://izmir.diyanet.gov.tr/bornova/Sayfalar/home.aspx"},
+                {"ad": "Buca", "url": "https://izmir.diyanet.gov.tr/buca/Sayfalar/home.aspx"},
+                {"ad": "Karşıyaka", "url": "https://izmir.diyanet.gov.tr/karsiyaka/Sayfalar/home.aspx"},
+                {"ad": "Konak", "url": "https://izmir.diyanet.gov.tr/konak/Sayfalar/home.aspx"}
+            ],
+            "Bursa": [
+                {"ad": "İl Müftülüğü", "url": "https://bursa.diyanet.gov.tr/Sayfalar/home.aspx"},
+                {"ad": "Nilüfer", "url": "https://bursa.diyanet.gov.tr/nilufer/Sayfalar/home.aspx"},
+                {"ad": "Osmangazi", "url": "https://bursa.diyanet.gov.tr/osmangazi/Sayfalar/home.aspx"},
+                {"ad": "Yıldırım", "url": "https://bursa.diyanet.gov.tr/yildirim/Sayfalar/home.aspx"}
+            ],
+            "Düzce": [
+                {"ad": "İl Müftülüğü", "url": "https://duzce.diyanet.gov.tr/Sayfalar/home.aspx"},
+                {"ad": "Akçakoca", "url": "https://duzce.diyanet.gov.tr/akcakoca/Sayfalar/home.aspx"},
+                {"ad": "Cumayeri", "url": "https://duzce.diyanet.gov.tr/cumayeri/Sayfalar/home.aspx"},
+                {"ad": "Çilimli", "url": "https://duzce.diyanet.gov.tr/cilimli/Sayfalar/home.aspx"},
+                {"ad": "Gölyaka", "url": "https://duzce.diyanet.gov.tr/golyaka/Sayfalar/home.aspx"},
+                {"ad": "Gümüşova", "url": "https://duzce.diyanet.gov.tr/gumusova/Sayfalar/home.aspx"},
+                {"ad": "Kaynaşlı", "url": "https://duzce.diyanet.gov.tr/kaynasli/Sayfalar/home.aspx"},
+                {"ad": "Yığılca", "url": "https://duzce.diyanet.gov.tr/yigilca/Sayfalar/home.aspx"}
+            ]
+            // İstersen diğer illeri de buraya virgül koyarak aynı formatta ekleyebilirsin.
+        };
+
+        const listeAlani = document.getElementById('liste-alani');
+        const baslik = document.getElementById('sayfa-baslik');
+        const geriBtn = document.getElementById('geri-btn');
+
+        // Sayfa ilk açıldığında İlleri listeler
+        function illeriGoster() {
+            listeAlani.innerHTML = ''; // İçeriyi temizle
+            baslik.innerText = '🕌 İl Müftülükleri';
+            geriBtn.style.display = 'none'; // Geri butonunu gizle
+
+            // Verideki şehirleri tek tek butona çevir
+            for (const ilAdi in MUFTULUK_VERISI) {
+                const div = document.createElement('div');
+                div.className = 'kart';
+                div.innerHTML = `<div class="il-isim">${ilAdi}</div>`;
+                
+                // İle tıklanınca çalışacak olay
+                div.onclick = function() {
+                    ilceleriGoster(ilAdi);
+                };
+                
+                listeAlani.appendChild(div);
+            }
+        }
+
+        // Bir ile tıklandığında o ilin ilçelerini listeler
+        function ilceleriGoster(secilenIl) {
+            listeAlani.innerHTML = ''; // İçeriyi temizle
+            baslik.innerText = `🕌 ${secilenIl} Müftülükleri`;
+            geriBtn.style.display = 'block'; // Geri butonunu göster
+
+            const ilceler = MUFTULUK_VERISI[secilenIl];
+
+            if (!ilceler || ilceler.length === 0) {
+                listeAlani.innerHTML = '<p style="color:#888;">Bu ile ait veri bulunamadı.</p>';
+                return;
+            }
+
+            // O ilin ilçelerini tek tek linke çevir
+            ilceler.forEach(function(ilce) {
+                const a = document.createElement('a');
+                a.className = 'kart ilce-kart';
+                a.href = ilce.url;
+                a.target = '_blank'; // Yeni sekmede açsın
+                
+                a.innerHTML = `
+                    <h3>${ilce.ad}</h3>
+                    <span class="resmi-link-yazi">Resmi Sayfaya Git →</span>
+                `;
+                
+                listeAlani.appendChild(a);
+            });
+        }
+
+        // Sayfa yüklendiğinde otomatik olarak illeri göster fonksiyonunu çalıştır
+        window.onload = illeriGoster;
+
+    </script>
 </body>
 </html>
