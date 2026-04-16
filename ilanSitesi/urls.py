@@ -6,7 +6,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.anasayfa),
+    path('', views.animasyon),            # ← boş URL artık animasyona gidiyor
+    path('anasayfa/', views.anasayfa),    # ← asıl site buraya taşındı
     path('ilan/<int:ilan_id>/', views.detay),
     path('kayit/', views.kayit),
     path('giris/', views.giris),
@@ -19,7 +20,5 @@ urlpatterns = [
     path('panel/haber-sil/<int:haber_id>/', views.haber_sil),
     path('muftulukler/', views.muftulukler),
     path('muftulukler/<str:il>/', views.muftuluk_il),
-    
-    # Akademi sayfamızın yolu buraya eklendi
-    path('akademi/', views.akademi), 
+    path('akademi/', views.akademi),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
