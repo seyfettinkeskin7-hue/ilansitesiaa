@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from .models import Haber, Ilan, Favori
 
 MUFTULUK_VERISI = {
     # ... (aynı kalıyor, değiştirme)
@@ -8,7 +9,8 @@ def animasyon(request):
     return render(request, 'animasyon.html')
 
 def anasayfa(request):
-    return render(request, 'anasayfa.html')
+    haberler = Haber.objects.filter(aktif=True).order_by('-tarih')
+    return render(request, 'anasayfa.html', {'haberler': haberler})
 
 def muftulukler(request):
     iller = sorted(MUFTULUK_VERISI.keys())
