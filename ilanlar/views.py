@@ -32,9 +32,9 @@ def muftuluk_il(request, il):
 
 def kayit(request):
     if request.method == 'POST':
-        kullanici_adi = request.POST.get('kullanici_adi')
+        kullanici_adi = request.POST.get('username')
         email = request.POST.get('email')
-        sifre = request.POST.get('sifre')
+        sifre = request.POST.get('password')
         sifre2 = request.POST.get('sifre2')
         if sifre != sifre2:
             messages.error(request, 'Şifreler eşleşmiyor!')
@@ -49,8 +49,8 @@ def kayit(request):
 
 def giris(request):
     if request.method == 'POST':
-        kullanici_adi = request.POST.get('kullanici_adi')
-        sifre = request.POST.get('sifre')
+        kullanici_adi = request.POST.get('username')
+        sifre = request.POST.get('password')
         user = authenticate(request, username=kullanici_adi, password=sifre)
         if user:
             login(request, user)
