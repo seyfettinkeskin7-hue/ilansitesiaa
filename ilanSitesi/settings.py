@@ -6,7 +6,7 @@ import cloudinary.api
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-bunu-degistir-123456'
+SECRET_KEY = '8CVgaUuCLMw481jkhlNwvi9VamWWZhu0CmFxMYDJFUne_nBGtHQTTV7aoQD1mdXGVGs'
 
 DEBUG = True
 
