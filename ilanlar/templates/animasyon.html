@@ -271,7 +271,7 @@
     function giris() {
         document.getElementById('scene').classList.add('exit');
         setTimeout(() => {
-            window.location.href = '/anasayfa/';
+            document.cookie = 'animasyon_goruldu=1; max-age=31536000; path=/'; window.location.href = '/anasayfa/';
         }, 900);
     }
 
