@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.animasyon),            # ← boş URL artık animasyona gidiyor
+    path('', views.anasayfa),            # ← boş URL artık animasyona gidiyor
     path('anasayfa/', views.anasayfa, name='anasayfa'),    # ← asıl site buraya taşındı
     path('ilan/<int:ilan_id>/', views.detay),
     path('kayit/', views.kayit),
