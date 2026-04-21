@@ -104,3 +104,12 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 GS_BUCKET_NAME = 'ilansitesi-medya'
 GS_CREDENTIALS = 'google-credentials.json'
+
+# Google credentials from environment
+import base64, json, os
+from google.oauth2 import service_account
+
+_creds_b64 = os.environ.get('GS_CREDENTIALS_BASE64')
+if _creds_b64:
+    _creds_json = json.loads(base64.b64decode(_creds_b64))
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(_creds_json)
