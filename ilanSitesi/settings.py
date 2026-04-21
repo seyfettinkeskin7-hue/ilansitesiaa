@@ -102,7 +102,7 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
 # Google Cloud Storage
 DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-GS_BUCKET_NAME = 'ilansitesi-medya'
+GS_BUCKET_NAME = 'projem6565'
 GS_CREDENTIALS = 'google-credentials.json'
 
 # Google credentials from environment
