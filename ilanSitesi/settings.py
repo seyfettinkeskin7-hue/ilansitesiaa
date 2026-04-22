@@ -110,6 +110,5 @@ from google.oauth2 import service_account
 
 _creds_b64 = os.environ.get('GS_CREDENTIALS_BASE64')
 if _creds_b64:
-    _creds_b64 += "==" * (4 - len(_creds_b64) % 4 if len(_creds_b64) % 4 else 0)
-    _creds_json = json.loads(base64.b64decode(_creds_b64))
+    _creds_json = json.loads(base64.b64decode(_creds_b64 + '=='))
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(_creds_json)
