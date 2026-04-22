@@ -57,6 +57,11 @@ class IlanMedya(models.Model):
     dosya = models.ImageField(upload_to='medya/')
     tip = models.CharField(max_length=10, choices=MEDYA_TIPLERI, default='resim')
 
+    def delete(self, *args, **kwargs):
+        if self.dosya:
+            self.dosya.delete(save=False)
+        super().delete(*args, **kwargs)
+
     def __str__(self):
         return f"{self.ilan.baslik} - {self.tip}"
 
