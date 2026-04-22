@@ -116,10 +116,7 @@
                     <p>{{ ilan.konum }} · {{ ilan.tarih|date:"d.m.Y" }}</p>
                 </div>
                 <a href="/ilan/{{ ilan.id }}/" style="color:#FF6000; font-size:13px; text-decoration:none;">Görüntüle</a>
-                <form method="post" action="/ilan-sil/{{ ilan.id }}/">
-                    {% csrf_token %}
-                    <button type="submit" class="btn-sil" onclick="return confirm('İlanı silmek istediğine emin misin?')">🗑 Sil</button>
-                </form>
+
             </div>
             {% endfor %}
         </div>
