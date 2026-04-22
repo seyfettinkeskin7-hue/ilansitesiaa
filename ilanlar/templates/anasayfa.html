@@ -769,10 +769,7 @@
                 </div>
             </a>
             {% if ilan.kullanici == user %}
-            <form method="post" action="/ilan-sil/{{ ilan.id }}/">
-                {% csrf_token %}
-                <button class="sil-btn" type="submit" onclick="return confirm('İlanı silmek istediğine emin misin?')">🗑 İlanı Sil</button>
-            </form>
+
             {% endif %}
         </div>
         {% endfor %}
