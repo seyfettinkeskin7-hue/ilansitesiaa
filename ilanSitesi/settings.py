@@ -93,7 +93,14 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 import base64, json, os
 from google.oauth2 import service_account
 
-DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.gcloud.GoogleCloudStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 GS_BUCKET_NAME = 'projem6565'
 
 _creds_b64 = os.environ.get('GS_CREDENTIALS_BASE64')
