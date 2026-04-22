@@ -13,6 +13,11 @@ class Haber(models.Model):
     def __str__(self):
         return self.baslik
 
+    def delete(self, *args, **kwargs):
+        if self.resim:
+            self.resim.delete(save=False)
+        super().delete(*args, **kwargs)
+
     class Meta:
         ordering = ['-tarih']
 
