@@ -1,8 +1,5 @@
 from pathlib import Path
 import os
-import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -19,9 +16,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'cloudinary_storage',
     'django.contrib.staticfiles',
-    'cloudinary',
     'storages',
 ]
 
@@ -79,12 +74,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-cloudinary.config(
-    cloud_name='dgftemdmf',
-    api_key='951388755267358',
-    api_secret='3jO2sWOflD1gxiLDdykoxSTiqRc',
-)
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
