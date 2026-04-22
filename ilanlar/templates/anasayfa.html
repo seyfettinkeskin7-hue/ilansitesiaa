@@ -5,572 +5,231 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial; background: #f5f5f5; }
 
-        /* ============================================================
-           INTRO ANİMASYON STİLLERİ
-           ============================================================ */
-        :root {
-          --navy: #0d1b6e;
-          --navy-dark: #07104a;
-          --navy-mid: #1a2a8a;
-          --gold: #d4a843;
-          --gold-light: #f0c96a;
-          --gold-dim: #a07828;
-          --cream: #f5e6c0;
-          --sky: #c8d8f8;
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+            background: linear-gradient(145deg, #e8edf2 0%, #f0f4f8 40%, #e6ecf2 100%);
+            min-height: 100vh;
+            padding-bottom: 110px;
         }
 
-        #intro-overlay {
-          position: fixed;
-          inset: 0;
-          z-index: 9999;
-          background: var(--navy-dark);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
+        /* GLASS KARTI */
+        .glass {
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.75);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
         }
 
-        #intro-overlay .skip-hint {
-          position: absolute;
-          bottom: 20px;
-          right: 24px;
-          color: rgba(212,168,67,0.5);
-          font-size: 12px;
-          letter-spacing: 2px;
-          font-family: Arial, sans-serif;
+        /* HAMBURGER */
+        .hamburger {
+            position: fixed; left: 15px; top: 15px; z-index: 1998;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 12px; width: 40px; height: 40px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         }
-
-        #scene {
-          position: relative;
-          width: 900px;
-          height: 500px;
-          overflow: hidden;
-          border-radius: 8px;
-          background: linear-gradient(180deg, #0d1b6e 0%, #1a2a8a 40%, #0d1b6e 100%);
-          box-shadow: 0 0 80px rgba(13,27,110,0.8);
-        }
-
-        #scene.exit {
-          animation: slideOutLeft 1s cubic-bezier(0.7,0,1,0.5) forwards;
-        }
-        @keyframes slideOutLeft {
-          from { transform: translateX(0); opacity: 1; }
-          to   { transform: translateX(-110%); opacity: 0; }
-        }
-
-        .rays {
-          position: absolute;
-          inset: 0;
-          opacity: 0;
-          animation: raysIn 1.5s ease forwards 2s;
-        }
-        @keyframes raysIn { to { opacity: 1; } }
-        .rays svg { width: 100%; height: 100%; }
-
-        .stars { position: absolute; inset: 0; pointer-events: none; }
-        .star {
-          position: absolute;
-          background: var(--gold);
-          clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
-          opacity: 0;
-          animation: starPop 0.5s ease forwards;
-        }
-
-        .cloud {
-          position: absolute;
-          opacity: 0;
-          transform: translateY(60px);
-          animation: cloudRise 1.2s ease forwards;
-        }
-        .cloud svg { filter: drop-shadow(0 4px 12px rgba(13,27,110,0.4)); }
-
-        #mosque-wrap {
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          transform: translateX(-50%) translateY(100%);
-          animation: mosqueRise 1.4s cubic-bezier(0.16,1,0.3,1) forwards 0.3s;
-          width: 560px;
-        }
-        @keyframes mosqueRise { to { transform: translateX(-50%) translateY(0); } }
-
-        .aura {
-          position: absolute;
-          bottom: 60px;
-          left: 50%;
-          transform: translateX(-50%);
-          width: 520px;
-          height: 300px;
-          background: radial-gradient(ellipse 80% 70% at 50% 80%, rgba(255,255,255,0.18) 0%, transparent 70%);
-          pointer-events: none;
-          opacity: 0;
-          animation: auraIn 1s ease forwards 1.2s;
-        }
-        @keyframes auraIn { to { opacity: 1; } }
-
-        #title-wrap {
-          position: absolute;
-          top: 0; left: 0; right: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding-top: 18px;
-          transform: translateY(-100%);
-          opacity: 0;
-          animation: titleDrop 1s cubic-bezier(0.34,1.4,0.64,1) forwards 2.2s;
-        }
-        @keyframes titleDrop { to { transform: translateY(0); opacity: 1; } }
-
-        .tc-text {
-          font-family: 'Amiri', serif;
-          font-size: 13px;
-          letter-spacing: 7px;
-          color: rgba(212,168,67,0.75);
-          margin-bottom: 4px;
-        }
-
-        .main-title-text {
-          font-family: 'Cinzel', serif;
-          font-size: 28px;
-          font-weight: 900;
-          letter-spacing: 4px;
-          color: var(--gold-light);
-          text-shadow: 0 0 30px rgba(212,168,67,0.6), 0 2px 6px rgba(0,0,0,0.6);
-          line-height: 1.2;
-          text-align: center;
-        }
-        .main-title-text span {
-          display: block;
-          font-size: 20px;
-          font-weight: 700;
-          letter-spacing: 8px;
-          color: var(--gold);
-          margin-top: 2px;
-        }
-
-        .title-divider { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
-        .tdiv-line { width: 60px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); }
-        .tdiv-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 6px rgba(212,168,67,0.7); }
-
-        .lantern {
-          position: absolute;
-          top: 0;
-          transform: translateY(-120px);
-          opacity: 0;
-          animation: lanternDrop 1s cubic-bezier(0.34,1.3,0.64,1) forwards;
-          transform-origin: top center;
-        }
-        .lantern.swinging {
-          animation: lanternDrop 1s cubic-bezier(0.34,1.3,0.64,1) forwards,
-                     swing 3s ease-in-out 1s infinite;
-        }
-        @keyframes lanternDrop { to { transform: translateY(0); opacity: 1; } }
-        @keyframes swing {
-          0%,100% { transform: rotate(-5deg); }
-          50%      { transform: rotate(5deg); }
-        }
-
-        .rope {
-          position: absolute;
-          top: 0;
-          height: 2px;
-          background: linear-gradient(90deg, transparent, var(--gold-dim), var(--gold-dim), transparent);
-          opacity: 0;
-          animation: ropeIn 0.8s ease forwards;
-        }
-        @keyframes ropeIn { to { opacity: 0.6; } }
-
-        .corner-star { position: absolute; opacity: 0; animation: cstarIn 0.6s ease forwards; }
-        @keyframes cstarIn { to { opacity: 1; } }
-
-        #bottom-orn {
-          position: absolute;
-          bottom: 10px;
-          left: 50%;
-          transform: translateX(-50%);
-          opacity: 0;
-          animation: fadeIn 0.8s ease forwards 3.2s;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .born-line { width: 120px; height: 1px; background: linear-gradient(90deg, transparent, rgba(212,168,67,0.5), transparent); }
-        .born-diamond { width: 5px; height: 5px; background: var(--gold-dim); transform: rotate(45deg); }
-
-        @keyframes fadeIn   { to { opacity: 1; } }
-        @keyframes cloudRise { to { opacity: 0.9; transform: translateY(0); } }
-        @keyframes starPop  { to { opacity: 1; } }
-
-        /* ============================================================
-           SİTE STİLLERİ
-           ============================================================ */
-
-        /* SOL MENÜ */
-        .sol-menu { position: fixed; top: 0; left: -260px; width: 260px; height: 100%; background: white; box-shadow: 2px 0 15px rgba(0,0,0,0.15); z-index: 2000; transition: left 0.3s; display: flex; flex-direction: column; }
-        .sol-menu.acik { left: 0; }
-        .sol-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1999; display: none; }
-        .sol-menu-overlay.acik { display: block; }
-
-        .sol-menu-profil { padding: 20px 16px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 12px; }
-        .sol-menu-avatar { width: 40px; height: 40px; border-radius: 50%; background: #FF6000; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; flex-shrink: 0; }
-        .sol-menu-isim { font-size: 14px; font-weight: bold; color: #333; }
-        .sol-menu-rol { font-size: 11px; color: #999; }
-
-        .sol-menu-kapat { position: absolute; top: 14px; right: 14px; background: none; border: none; font-size: 20px; color: #999; cursor: pointer; }
-
-        .sol-menu-nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
-        .sol-menu-baslik { font-size: 10px; color: #aaa; padding: 10px 10px 4px; letter-spacing: 0.08em; }
-        .sol-menu-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: #444; font-size: 14px; text-decoration: none; margin-bottom: 2px; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
-        .sol-menu-link:hover { background: #f5f5f5; }
-        .sol-menu-link.aktif { background: #fff3ec; color: #FF6000; font-weight: bold; }
-        .sol-menu-link .badge { margin-left: auto; background: #FF6000; color: white; font-size: 11px; padding: 1px 7px; border-radius: 999px; }
-        .sol-menu-link.admin-link { color: #1a1a2e; }
-        .sol-menu-link.admin-link:hover { background: #1a1a2e15; }
-
-        .sol-menu-alt { padding: 12px 8px; border-top: 1px solid #eee; }
-
-        /* HAMBURGEr BUTONU */
-        .hamburger { position: fixed; left: 15px; top: 15px; z-index: 1998; background: white; border: 1px solid #eee; border-radius: 8px; width: 38px; height: 38px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
         .hamburger span { display: block; width: 18px; height: 2px; background: #333; border-radius: 2px; }
 
-        /* SIDEBAR (FAVORİLER - sağ) */
-        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 1000; transition: left 0.3s; overflow-y: auto; }
+        /* SOL MENÜ */
+        .sol-menu { position: fixed; top: 0; left: -260px; width: 260px; height: 100%; background: rgba(255,255,255,0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: 4px 0 30px rgba(0,0,0,0.1); z-index: 2000; transition: left 0.3s; display: flex; flex-direction: column; }
+        .sol-menu.acik { left: 0; }
+        .sol-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 1999; display: none; }
+        .sol-menu-overlay.acik { display: block; }
+        .sol-menu-profil { padding: 20px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; gap: 12px; }
+        .sol-menu-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#FF6000,#ff8c42); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; flex-shrink: 0; }
+        .sol-menu-isim { font-size: 14px; font-weight: 600; color: #222; }
+        .sol-menu-rol { font-size: 11px; color: #999; }
+        .sol-menu-kapat { position: absolute; top: 14px; right: 14px; background: none; border: none; font-size: 20px; color: #999; cursor: pointer; }
+        .sol-menu-nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
+        .sol-menu-baslik { font-size: 10px; color: #bbb; padding: 10px 10px 4px; letter-spacing: 0.1em; font-weight: 600; }
+        .sol-menu-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: #444; font-size: 14px; text-decoration: none; margin-bottom: 2px; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.2s; }
+        .sol-menu-link:hover { background: rgba(255,96,0,0.06); }
+        .sol-menu-link.aktif { background: rgba(255,96,0,0.1); color: #FF6000; font-weight: 600; }
+        .sol-menu-link .badge { margin-left: auto; background: #FF6000; color: white; font-size: 11px; padding: 1px 7px; border-radius: 999px; }
+        .sol-menu-alt { padding: 12px 8px; border-top: 1px solid rgba(0,0,0,0.06); }
+
+        /* SIDEBAR */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: rgba(255,255,255,0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: 4px 0 20px rgba(0,0,0,0.1); z-index: 1000; transition: left 0.3s; overflow-y: auto; }
         .sidebar.acik { left: 0; }
-        .sidebar-header { background: #FF6000; color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .sidebar-header { background: linear-gradient(135deg,#FF6000,#ff8c42); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 0 0; }
         .sidebar-header h3 { font-size: 18px; }
         .sidebar-kapat { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
         .sidebar-icerik { padding: 15px; }
-        .sidebar-ilan { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #eee; text-decoration: none; color: #333; }
-        .sidebar-ilan img { width: 60px; height: 50px; object-fit: cover; border-radius: 6px; }
-        .sidebar-ilan-bilgi h4 { font-size: 13px; margin-bottom: 3px; }
+        .sidebar-ilan { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); text-decoration: none; color: #333; }
+        .sidebar-ilan img { width: 60px; height: 50px; object-fit: cover; border-radius: 8px; }
+        .sidebar-ilan-bilgi h4 { font-size: 13px; margin-bottom: 3px; font-weight: 600; }
         .sidebar-ilan-bilgi p { font-size: 11px; color: #888; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 999; display: none; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 999; display: none; }
         .overlay.acik { display: block; }
 
         /* HEADER */
-        .header { background: white; padding: 12px 30px 12px 65px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .logo { display: flex; align-items: center; gap: 8px; }
-        .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
-        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
-        .header-sag { display: flex; align-items: center; gap: 15px; margin-left: auto; }
-        .btn-ilan { background: #FF6000; color: white !important; padding: 8px 16px; border-radius: 6px; font-size: 13px; text-decoration: none; }
-        .btn-cikis { background: none; border: none; color: #555; cursor: pointer; font-size: 13px; }
-        .btn-favori { background: none; border: none; color: #FF6000; cursor: pointer; font-size: 13px; }
+        .header {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-bottom: 1px solid rgba(255,255,255,0.8);
+            padding: 12px 20px 12px 65px;
+            display: flex; align-items: center; gap: 16px;
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+        }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { background: linear-gradient(135deg,#FF6000,#ff8c42); color: white; padding: 8px; border-radius: 10px; font-size: 20px; box-shadow: 0 2px 8px rgba(255,96,0,0.3); }
+        .logo-text { font-size: 18px; font-weight: 700; color: #222; }
+        .header-sag { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+        .btn-ilan { background: linear-gradient(135deg,#FF6000,#ff8c42); color: white !important; padding: 8px 18px; border-radius: 10px; font-size: 13px; text-decoration: none; font-weight: 600; box-shadow: 0 2px 10px rgba(255,96,0,0.3); }
+        .btn-cikis { background: none; border: none; color: #666; cursor: pointer; font-size: 13px; }
+        .btn-favori { background: none; border: none; color: #FF6000; cursor: pointer; font-size: 13px; font-weight: 500; }
 
         /* HABER SLAYT */
-        .haber-wrapper { position: relative; background: #111; overflow: hidden; height: 280px; }
-        .haber-slider { display: flex; transition: transform 0.5s ease; height: 100%; }
-        .haber-slide { min-width: 100%; height: 100%; display: flex; align-items: center; padding: 40px 80px; position: relative; }
-        .haber-slide-resim { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; }
+        .haber-wrapper {
+            margin: 16px;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 260px;
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.75);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            position: relative;
+        }
+        .haber-slider { display: flex; transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94); height: 100%; }
+        .haber-slide { min-width: 100%; height: 100%; display: flex; align-items: center; padding: 40px 50px; position: relative; }
+        .haber-slide-resim { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.85; border-radius: 20px; }
         .haber-slide-icerik { position: relative; z-index: 1; }
-        .haber-etiket { display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; margin-bottom: 14px; }
-        .haber-baslik { color: white; font-size: 26px; font-weight: bold; line-height: 1.3; max-width: 600px; margin-bottom: 10px; }
-        .haber-aciklama { color: #ccc; font-size: 14px; }
-        .haber-ok { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 2; }
-        .haber-ok.sol { left: 15px; }
-        .haber-ok.sag { right: 15px; }
-        .haber-noktalar { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 2; }
-        .haber-nokta { width: 30px; height: 30px; border-radius: 50%; background: rgba(255,255,255,0.3); color: white; font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; }
-        .haber-nokta.aktif { background: #FF6000; }
+        .haber-etiket { display: inline-block; padding: 5px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; color: white; margin-bottom: 14px; letter-spacing: 0.05em; }
+        .haber-baslik { color: white; font-size: 24px; font-weight: 700; line-height: 1.3; max-width: 600px; margin-bottom: 8px; text-shadow: 0 1px 8px rgba(0,0,0,0.3); }
+        .haber-aciklama { color: rgba(255,255,255,0.85); font-size: 14px; }
+        .haber-ok { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4); color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; z-index: 2; }
+        .haber-ok.sol { left: 12px; }
+        .haber-ok.sag { right: 12px; }
+        .haber-noktalar { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 2; }
+        .haber-nokta { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; border: none; transition: all 0.2s; }
+        .haber-nokta.aktif { background: white; width: 20px; border-radius: 4px; }
 
         /* ARAMA */
-        .arama-bolum { background: white; padding: 16px 30px; border-bottom: 1px solid #eee; }
-        .arama-ic { display: flex; gap: 10px; max-width: 800px; margin: 0 auto; }
-        .arama-ic input { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; outline: none; }
-        .arama-ic button { background: #FF6000; color: white; border: none; padding: 12px 28px; border-radius: 8px; font-size: 15px; cursor: pointer; font-weight: bold; }
+        .arama-bolum { padding: 0 16px 16px; }
+        .arama-ic { display: flex; gap: 10px; }
+        .arama-ic input {
+            flex: 1; padding: 13px 18px;
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.85);
+            border-radius: 14px; font-size: 15px; outline: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            color: #333;
+        }
+        .arama-ic input::placeholder { color: #aaa; }
+        .arama-ic button {
+            background: linear-gradient(135deg,#FF6000,#ff8c42);
+            color: white; border: none; padding: 13px 24px;
+            border-radius: 14px; font-size: 14px; cursor: pointer;
+            font-weight: 700; box-shadow: 0 2px 10px rgba(255,96,0,0.3);
+        }
 
         /* KATEGORİLER */
-        .kategoriler { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; max-width: 1200px; margin: 25px auto; padding: 0 20px; }
-        .kategori-kart { background: white; border-radius: 12px; padding: 20px; text-align: center; border: 1px solid #eee; cursor: pointer; text-decoration: none; display: block; transition: transform 0.2s; }
-        .kategori-kart:hover { transform: translateY(-3px); border-color: #FF6000; }
+        .kategoriler { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 1200px; margin: 0 auto 20px; padding: 0 16px; }
+        .kategori-kart {
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 18px; padding: 20px 12px; text-align: center;
+            cursor: pointer; text-decoration: none; display: block;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+        }
+        .kategori-kart:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
         .kategori-ikon { font-size: 32px; margin-bottom: 10px; }
-        .kategori-isim { font-weight: bold; font-size: 15px; color: #333; margin-bottom: 5px; }
-        .kategori-aciklama { font-size: 12px; color: #888; }
+        .kategori-isim { font-weight: 700; font-size: 13px; color: #222; margin-bottom: 4px; }
+        .kategori-aciklama { font-size: 11px; color: #888; }
 
         /* İLANLAR */
-        .bolum { max-width: 1200px; margin: 0 auto 30px; padding: 0 20px; }
-        .bolum h2 { font-size: 22px; color: #333; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
-        .ilan-kart { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; position: relative; }
-        .ilan-kart:hover { transform: translateY(-3px); }
-        .ilan-kart img { width: 100%; height: 150px; object-fit: cover; }
-        .ilan-kart-icerik { padding: 10px; }
-        .ilan-kart h3 { font-size: 13px; color: #333; margin-bottom: 5px; }
+        .bolum { max-width: 1200px; margin: 0 auto 24px; padding: 0 16px; }
+        .bolum h2 { font-size: 20px; color: #222; margin-bottom: 16px; font-weight: 700; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .ilan-kart {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.85);
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s; position: relative;
+        }
+        .ilan-kart:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .ilan-kart img { width: 100%; height: 140px; object-fit: cover; }
+        .ilan-kart-icerik { padding: 10px 12px 12px; }
+        .ilan-kart h3 { font-size: 13px; color: #222; margin-bottom: 5px; font-weight: 600; }
         .ilan-detay { font-size: 11px; color: #888; margin: 3px 0; }
-        .ilan-konum { font-size: 11px; color: #888; }
-        .resim-yok { width: 100%; height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 13px; }
-        .favori-btn { position: absolute; top: 8px; right: 8px; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
-        .favori-btn.aktif { color: red; }
-        .sil-btn { display: block; text-align: center; background: #fee; color: #c00; border: none; width: 100%; padding: 5px; font-size: 12px; cursor: pointer; }
+        .ilan-konum { font-size: 11px; color: #999; }
+        .resim-yok { width: 100%; height: 140px; background: rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
+        .favori-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.75); backdrop-filter: blur(10px); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 15px; cursor: pointer; box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+        .favori-btn.aktif { color: #FF6000; }
         .bos-sonuc { text-align: center; padding: 50px; color: #aaa; font-size: 16px; }
 
         /* HARİTA */
-        .harita-bolum { max-width: 1200px; margin: 0 auto 30px; padding: 0 20px; }
-        .harita-bolum h2 { font-size: 22px; color: #333; margin-bottom: 15px; }
-        #harita { width: 100%; height: 400px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .harita-bolum { max-width: 1200px; margin: 0 auto 24px; padding: 0 16px; }
+        .harita-bolum h2 { font-size: 20px; color: #222; margin-bottom: 14px; font-weight: 700; }
+        #harita { width: 100%; height: 380px; border-radius: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.8); }
+
+        /* BOTTOM NAV */
+        body { padding-bottom: 110px; }
+        .bnav-wrap {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+            padding: 10px 12px 28px 12px;
+            background: rgba(240,243,247,0.7);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-top: 0.5px solid rgba(255,255,255,0.6);
+        }
+        .bnav-inner {
+            display: flex;
+            background: rgba(255,255,255,0.35);
+            border: 0.5px solid rgba(255,255,255,0.7);
+            border-radius: 20px; padding: 4px; position: relative;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+        .bnav-slider {
+            position: absolute; top: 4px; bottom: 4px; border-radius: 16px;
+            background: rgba(255,255,255,0.75);
+            border: 0.5px solid rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            transition: left 0.35s cubic-bezier(0.34,1.15,0.64,1), width 0.35s cubic-bezier(0.34,1.15,0.64,1);
+            pointer-events: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,1);
+        }
+        .bnav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 4px; height: 58px; font-size: 10px;
+            font-weight: 600; cursor: pointer; color: rgba(0,0,0,0.35);
+            position: relative; z-index: 1; border-radius: 16px;
+            transition: color 0.3s; text-decoration: none; user-select: none;
+        }
+        .bnav-item.active { color: #FF6000; }
+        .bnav-item svg { width: 22px; height: 22px; }
+
+        @keyframes bnavSlideR { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes bnavSlideL { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
     </style>
 </head>
 <body>
 
-<!-- ============================================================
-     INTRO ANİMASYON OVERLAY
-     Tıklayarak geçmek için tıklayın
-     ============================================================ -->
-<div id="intro-overlay" onclick="skipIntro()">
-
-  <div id="scene">
-
-    <!-- IŞINLAR -->
-    <div class="rays">
-      <svg viewBox="0 0 900 500" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <radialGradient id="rayGrad" cx="50%" cy="85%" r="70%">
-            <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
-            <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
-          </radialGradient>
-        </defs>
-        <g opacity="0.5" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="1">
-          <line x1="450" y1="480" x2="0"   y2="0"/>
-          <line x1="450" y1="480" x2="60"  y2="0"/>
-          <line x1="450" y1="480" x2="130" y2="0"/>
-          <line x1="450" y1="480" x2="200" y2="0"/>
-          <line x1="450" y1="480" x2="280" y2="0"/>
-          <line x1="450" y1="480" x2="360" y2="0"/>
-          <line x1="450" y1="480" x2="450" y2="0"/>
-          <line x1="450" y1="480" x2="540" y2="0"/>
-          <line x1="450" y1="480" x2="620" y2="0"/>
-          <line x1="450" y1="480" x2="700" y2="0"/>
-          <line x1="450" y1="480" x2="780" y2="0"/>
-          <line x1="450" y1="480" x2="850" y2="0"/>
-          <line x1="450" y1="480" x2="900" y2="0"/>
-          <line x1="450" y1="480" x2="900" y2="100"/>
-          <line x1="450" y1="480" x2="900" y2="250"/>
-          <line x1="450" y1="480" x2="0"   y2="250"/>
-        </g>
-        <ellipse cx="450" cy="480" rx="380" ry="220" fill="url(#rayGrad)"/>
-      </svg>
-    </div>
-
-    <!-- BULUTLAR -->
-    <div class="cloud" style="left:-20px; bottom:120px; animation-delay:0.6s;">
-      <svg width="200" height="110" viewBox="0 0 200 110">
-        <g fill="#c8d8f8" opacity="0.85">
-          <ellipse cx="70" cy="80" rx="68" ry="32"/>
-          <ellipse cx="50" cy="65" rx="40" ry="30"/>
-          <ellipse cx="90" cy="55" rx="38" ry="28"/>
-          <ellipse cx="130" cy="70" rx="45" ry="25"/>
-          <ellipse cx="155" cy="80" rx="35" ry="22"/>
-        </g>
-      </svg>
-    </div>
-    <div class="cloud" style="right:-20px; bottom:100px; animation-delay:0.8s;">
-      <svg width="210" height="120" viewBox="0 0 210 120">
-        <g fill="#c8d8f8" opacity="0.85">
-          <ellipse cx="140" cy="90" rx="68" ry="32"/>
-          <ellipse cx="160" cy="72" rx="42" ry="30"/>
-          <ellipse cx="118" cy="60" rx="40" ry="28"/>
-          <ellipse cx="80"  cy="75" rx="45" ry="26"/>
-          <ellipse cx="50"  cy="85" rx="38" ry="24"/>
-        </g>
-      </svg>
-    </div>
-    <div class="cloud" style="left:100px; bottom:200px; animation-delay:1s;">
-      <svg width="130" height="70" viewBox="0 0 130 70">
-        <g fill="#b0c4ee" opacity="0.7">
-          <ellipse cx="65" cy="55" rx="60" ry="20"/>
-          <ellipse cx="45" cy="42" rx="32" ry="22"/>
-          <ellipse cx="80" cy="38" rx="28" ry="20"/>
-        </g>
-      </svg>
-    </div>
-    <div class="cloud" style="right:100px; bottom:210px; animation-delay:1.1s;">
-      <svg width="130" height="70" viewBox="0 0 130 70">
-        <g fill="#b0c4ee" opacity="0.7">
-          <ellipse cx="65" cy="55" rx="58" ry="20"/>
-          <ellipse cx="85" cy="42" rx="30" ry="22"/>
-          <ellipse cx="50" cy="40" rx="26" ry="18"/>
-        </g>
-      </svg>
-    </div>
-
-    <!-- AURA -->
-    <div class="aura"></div>
-
-    <!-- CAMİ SVG -->
-    <div id="mosque-wrap">
-      <svg viewBox="0 0 560 320" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#1a2a9a"/>
-            <stop offset="100%" stop-color="#0d1b6e"/>
-          </linearGradient>
-          <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#f0c96a"/>
-            <stop offset="100%" stop-color="#c9920a"/>
-          </linearGradient>
-          <linearGradient id="domeGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#2236b0"/>
-            <stop offset="100%" stop-color="#0d1b6e"/>
-          </linearGradient>
-        </defs>
-        <rect x="0" y="300" width="560" height="20" fill="#0d1b6e"/>
-        <rect x="100" y="160" width="360" height="140" fill="url(#wallGrad)"/>
-        <rect x="30"  y="200" width="90"  height="100" fill="#1530a0"/>
-        <rect x="440" y="200" width="90"  height="100" fill="#1530a0"/>
-        <rect x="50"  y="220" width="28" height="40" fill="url(#goldGrad)" rx="14"/>
-        <rect x="86"  y="220" width="28" height="40" fill="url(#goldGrad)" rx="14"/>
-        <rect x="446" y="220" width="28" height="40" fill="url(#goldGrad)" rx="14"/>
-        <rect x="482" y="220" width="28" height="40" fill="url(#goldGrad)" rx="14"/>
-        <rect x="226" y="218" width="48" height="62" fill="url(#goldGrad)" rx="24"/>
-        <rect x="268" y="218" width="48" height="62" fill="url(#goldGrad)" rx="24"/>
-        <rect x="284" y="218" width="56" height="62" fill="url(#goldGrad)" rx="28"/>
-        <ellipse cx="280" cy="218" rx="56" ry="14" fill="#1a2a9a"/>
-        <rect x="224" y="218" width="112" height="62" fill="url(#goldGrad)"/>
-        <ellipse cx="280" cy="218" rx="56" ry="30" fill="url(#goldGrad)"/>
-        <ellipse cx="280" cy="218" rx="44" ry="22" fill="#1530a0"/>
-        <rect x="130" y="195" width="22" height="32" fill="url(#goldGrad)" rx="11"/>
-        <rect x="162" y="195" width="22" height="32" fill="url(#goldGrad)" rx="11"/>
-        <rect x="376" y="195" width="22" height="32" fill="url(#goldGrad)" rx="11"/>
-        <rect x="408" y="195" width="22" height="32" fill="url(#goldGrad)" rx="11"/>
-        <rect x="80" y="145" width="400" height="18" fill="#1a2a9a"/>
-        <rect x="60" y="195" width="440" height="8"  fill="#1a2a9a"/>
-        <ellipse cx="280" cy="148" rx="80"  ry="22" fill="#1a2a9a"/>
-        <path d="M200 148 Q200 60 280 48 Q360 60 360 148 Z" fill="url(#domeGrad)"/>
-        <path d="M218 148 Q218 80 280 70 Q342 80 342 148" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <path d="M236 148 Q236 90 280 82 Q324 90 324 148" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
-        <circle cx="280" cy="50" r="12" fill="none" stroke="#d4a843" stroke-width="2.5"/>
-        <circle cx="285" cy="50" r="9"  fill="url(#domeGrad)"/>
-        <line  x1="280" y1="38" x2="280" y2="30" stroke="#d4a843" stroke-width="2"/>
-        <polygon points="288,35 289.5,39 294,39 290.5,41.5 292,45.5 288,43 284,45.5 285.5,41.5 282,39 286.5,39" fill="#d4a843"/>
-        <rect x="82"  y="90" width="26" height="115" fill="#1530a0"/>
-        <rect x="78"  y="85" width="34" height="8"   fill="#1a2a9a"/>
-        <ellipse cx="95" cy="86" rx="17" ry="8" fill="#1a2a9a"/>
-        <path d="M82 86 Q82 50 95 42 Q108 50 108 86 Z" fill="#203aaa"/>
-        <line x1="95" y1="42" x2="95" y2="32" stroke="#d4a843" stroke-width="2"/>
-        <polygon points="100,36 101,40 105,40 102,42 103,46 100,44 97,46 98,42 95,40 99,40" fill="#d4a843"/>
-        <rect x="78"  y="128" width="34" height="5" fill="#d4a843" rx="1"/>
-        <rect x="89"  y="145" width="12" height="20" fill="url(#goldGrad)" rx="6"/>
-        <rect x="452" y="90" width="26" height="115" fill="#1530a0"/>
-        <rect x="448" y="85" width="34" height="8"   fill="#1a2a9a"/>
-        <ellipse cx="465" cy="86" rx="17" ry="8" fill="#1a2a9a"/>
-        <path d="M452 86 Q452 50 465 42 Q478 50 478 86 Z" fill="#203aaa"/>
-        <line x1="465" y1="42" x2="465" y2="32" stroke="#d4a843" stroke-width="2"/>
-        <polygon points="470,36 471,40 475,40 472,42 473,46 470,44 467,46 468,42 465,40 469,40" fill="#d4a843"/>
-        <rect x="448" y="128" width="34" height="5" fill="#d4a843" rx="1"/>
-        <rect x="459" y="145" width="12" height="20" fill="url(#goldGrad)" rx="6"/>
-        <ellipse cx="280" cy="305" rx="160" ry="12" fill="rgba(212,168,67,0.12)"/>
-      </svg>
-    </div>
-
-    <!-- BAŞLIK YAZISI -->
-    <div id="title-wrap">
-      <div class="tc-text">T.C.</div>
-      <div class="main-title-text">
-        DİYANET İŞLERİ<span>BAŞKANLIĞI</span>
-      </div>
-      <div class="title-divider">
-        <div class="tdiv-line"></div>
-        <div class="tdiv-diamond"></div>
-        <div class="tdiv-diamond" style="opacity:0.5;width:4px;height:4px;margin:-1px 0;"></div>
-        <div class="tdiv-diamond"></div>
-        <div class="tdiv-line" style="transform:scaleX(-1)"></div>
-      </div>
-    </div>
-
-    <!-- İP BAĞLANTILARI -->
-    <div class="rope" id="rope1" style="left:0; width:340px; animation-delay:2.8s;"></div>
-    <div class="rope" id="rope2" style="right:0; width:260px; animation-delay:2.9s;"></div>
-
-    <!-- KANDİLLER -->
-    <div class="lantern swinging" style="left:30px; top:55px; animation-delay:2.9s; animation-duration:0.9s;">
-      <svg width="32" height="70" viewBox="0 0 32 70">
-        <line x1="16" y1="0" x2="16" y2="10" stroke="#c9a830" stroke-width="2"/>
-        <rect x="8" y="10" width="16" height="4" fill="#d4a843" rx="2"/>
-        <path d="M6 14 Q4 40 6 56 L26 56 Q28 40 26 14 Z" fill="#1a2a9a" stroke="#d4a843" stroke-width="1.5"/>
-        <rect x="9" y="22" width="5" height="18" fill="rgba(240,200,80,0.85)" rx="2"/>
-        <rect x="18" y="22" width="5" height="18" fill="rgba(240,200,80,0.85)" rx="2"/>
-        <rect x="5" y="54" width="22" height="5" fill="#d4a843" rx="2"/>
-        <path d="M11 59 Q12 68 16 70 Q20 68 21 59Z" fill="#d4a843"/>
-        <ellipse cx="16" cy="35" rx="4" ry="5" fill="rgba(255,200,60,0.3)"/>
-      </svg>
-    </div>
-    <div class="lantern swinging" style="left:140px; top:45px; animation-delay:3.05s; animation-duration:1s;">
-      <svg width="24" height="55" viewBox="0 0 24 55">
-        <line x1="12" y1="0" x2="12" y2="8" stroke="#c9a830" stroke-width="1.5"/>
-        <rect x="5" y="8" width="14" height="3" fill="#d4a843" rx="1.5"/>
-        <path d="M4 11 Q3 30 4 42 L20 42 Q21 30 20 11 Z" fill="#203aaa" stroke="#d4a843" stroke-width="1.5"/>
-        <rect x="7" y="17" width="4" height="14" fill="rgba(240,200,80,0.8)" rx="2"/>
-        <rect x="13" y="17" width="4" height="14" fill="rgba(240,200,80,0.8)" rx="2"/>
-        <rect x="3" y="40" width="18" height="4" fill="#d4a843" rx="2"/>
-        <path d="M8 44 Q9 52 12 54 Q15 52 16 44Z" fill="#d4a843"/>
-      </svg>
-    </div>
-    <div class="lantern swinging" style="right:30px; top:58px; animation-delay:3.0s; animation-duration:0.9s;">
-      <svg width="32" height="70" viewBox="0 0 32 70">
-        <line x1="16" y1="0" x2="16" y2="10" stroke="#c9a830" stroke-width="2"/>
-        <rect x="8" y="10" width="16" height="4" fill="#d4a843" rx="2"/>
-        <path d="M6 14 Q4 40 6 56 L26 56 Q28 40 26 14 Z" fill="#1a2a9a" stroke="#d4a843" stroke-width="1.5"/>
-        <rect x="9" y="22" width="5" height="18" fill="rgba(240,200,80,0.85)" rx="2"/>
-        <rect x="18" y="22" width="5" height="18" fill="rgba(240,200,80,0.85)" rx="2"/>
-        <rect x="5" y="54" width="22" height="5" fill="#d4a843" rx="2"/>
-        <path d="M11 59 Q12 68 16 70 Q20 68 21 59Z" fill="#d4a843"/>
-        <ellipse cx="16" cy="35" rx="4" ry="5" fill="rgba(255,200,60,0.3)"/>
-      </svg>
-    </div>
-    <div class="lantern swinging" style="right:148px; top:48px; animation-delay:3.1s; animation-duration:1.05s;">
-      <svg width="24" height="55" viewBox="0 0 24 55">
-        <line x1="12" y1="0" x2="12" y2="8" stroke="#c9a830" stroke-width="1.5"/>
-        <rect x="5" y="8" width="14" height="3" fill="#d4a843" rx="1.5"/>
-        <path d="M4 11 Q3 30 4 42 L20 42 Q21 30 20 11 Z" fill="#203aaa" stroke="#d4a843" stroke-width="1.5"/>
-        <rect x="7" y="17" width="4" height="14" fill="rgba(240,200,80,0.8)" rx="2"/>
-        <rect x="13" y="17" width="4" height="14" fill="rgba(240,200,80,0.8)" rx="2"/>
-        <rect x="3" y="40" width="18" height="4" fill="#d4a843" rx="2"/>
-        <path d="M8 44 Q9 52 12 54 Q15 52 16 44Z" fill="#d4a843"/>
-      </svg>
-    </div>
-
-    <!-- KÖŞE YILDIZLAR -->
-    <div class="corner-star" style="left:22px; top:110px; animation-delay:3.0s;">
-      <svg width="22" height="22" viewBox="0 0 22 22"><polygon points="11,1 13.5,8 21,8 15,13 17.5,20 11,16 4.5,20 7,13 1,8 8.5,8" fill="#d4a843"/></svg>
-    </div>
-    <div class="corner-star" style="right:22px; top:110px; animation-delay:3.15s;">
-      <svg width="18" height="18" viewBox="0 0 18 18"><polygon points="9,1 11,6.5 17,6.5 12,10.5 14,16 9,12.5 4,16 6,10.5 1,6.5 7,6.5" fill="#d4a843"/></svg>
-    </div>
-    <div class="corner-star" style="left:180px; top:130px; animation-delay:3.2s;">
-      <svg width="14" height="14" viewBox="0 0 14 14"><polygon points="7,0.5 8.5,5 13,5 9.5,8 11,12.5 7,10 3,12.5 4.5,8 1,5 5.5,5" fill="#c9a830" opacity="0.8"/></svg>
-    </div>
-    <div class="corner-star" style="right:180px; top:135px; animation-delay:3.25s;">
-      <svg width="14" height="14" viewBox="0 0 14 14"><polygon points="7,0.5 8.5,5 13,5 9.5,8 11,12.5 7,10 3,12.5 4.5,8 1,5 5.5,5" fill="#c9a830" opacity="0.8"/></svg>
-    </div>
-
-    <!-- ALT SÜSLEME -->
-    <div id="bottom-orn">
-      <div class="born-line"></div>
-      <div class="born-diamond"></div>
-      <div class="born-diamond" style="opacity:0.5;width:4px;height:4px;"></div>
-      <div class="born-diamond"></div>
-      <div class="born-line" style="transform:scaleX(-1)"></div>
-    </div>
-
-  </div><!-- /scene -->
-
-  <div class="skip-hint">ATLAMAK İÇİN TIKLAYIN</div>
-
-</div><!-- /intro-overlay -->
-<!-- ============================================================
-     INTRO BİTİŞ
-     ============================================================ -->
-
-
-<!-- HAMBURGEr BUTONU -->
+<!-- HAMBURGER -->
 <button class="hamburger" onclick="solMenuAc()">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span></span><span></span><span></span>
 </button>
 
 <!-- SOL MENÜ OVERLAY -->
@@ -579,7 +238,6 @@
 <!-- SOL MENÜ -->
 <div class="sol-menu" id="solMenu">
     <button class="sol-menu-kapat" onclick="solMenuKapat()">✕</button>
-
     <div class="sol-menu-profil">
         <div class="sol-menu-avatar">{{ user.username|first|upper }}</div>
         <div>
@@ -587,35 +245,26 @@
             <div class="sol-menu-rol">{% if user.is_superuser %}Admin{% else %}Üye{% endif %}</div>
         </div>
     </div>
-
     <div class="sol-menu-nav">
         <div class="sol-menu-baslik">MENU</div>
         <a href="/" class="sol-menu-link aktif">🏠 Anasayfa</a>
-
         <div class="sol-menu-baslik">HESABIM</div>
         <button class="sol-menu-link" onclick="solMenuKapat(); sidebarAc()">
             ❤ Favorilerim
-            {% if favoriler %}
-            <span class="badge">{{ favoriler|length }}</span>
-            {% endif %}
+            {% if favoriler %}<span class="badge">{{ favoriler|length }}</span>{% endif %}
         </button>
         <a href="/ilan-ekle/" class="sol-menu-link">➕ İlan Ver</a>
-
-        {% if user.is_superuser %}
-        <div class="sol-menu-baslik">YÖNETİM</div>
-
-        {% endif %}
+        {% if user.is_superuser %}<div class="sol-menu-baslik">YÖNETİM</div>{% endif %}
     </div>
-
     <div class="sol-menu-alt">
         <form method="post" action="/cikis/">
             {% csrf_token %}
-            <button type="submit" class="sol-menu-link" style="color:#c00;">🚪 Çıkış Yap</button>
+            <button type="submit" class="sol-menu-link" style="color:#e33;">🚪 Çıkış Yap</button>
         </form>
     </div>
 </div>
 
-<!-- FAVORİLER SIDEBAR (sağ) -->
+<!-- FAVORİLER SIDEBAR -->
 <div class="overlay" id="overlay" onclick="sidebarKapat()"></div>
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -627,11 +276,8 @@
             {% for ilan in favoriler %}
             <a href="/ilan/{{ ilan.id }}/" class="sidebar-ilan">
                 {% with ilk=ilan.medyalar.first %}
-                {% if ilk %}
-                <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
-                {% else %}
-                <div style="width:60px;height:50px;background:#eee;border-radius:6px;"></div>
-                {% endif %}
+                {% if ilk %}<img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+                {% else %}<div style="width:60px;height:50px;background:rgba(0,0,0,0.05);border-radius:8px;"></div>{% endif %}
                 {% endwith %}
                 <div class="sidebar-ilan-bilgi">
                     <h4>{{ ilan.baslik }}</h4>
@@ -641,7 +287,7 @@
             </a>
             {% endfor %}
         {% else %}
-            <p style="color:#aaa; margin-top:20px; text-align:center;">Henüz favori eklenmedi.</p>
+            <p style="color:#bbb;margin-top:20px;text-align:center;">Henüz favori eklenmedi.</p>
         {% endif %}
     </div>
 </div>
@@ -652,17 +298,17 @@
         <div class="logo-icon">🕌</div>
         <div class="logo-text">Dingönüllüleri</div>
     </div>
-    <a href="/" style="color:#555; text-decoration:none; font-size:14px;">Anasayfa</a>
+    <a href="/" style="color:#888;text-decoration:none;font-size:13px;">Anasayfa</a>
     <div class="header-sag">
         {% if user.is_authenticated %}
             <button class="btn-favori" onclick="sidebarAc()">❤ Favorilerim</button>
-            <span style="font-size:13px; color:#555;">Merhaba, {{ user.username }}!</span>
+            <span style="font-size:13px;color:#666;">Merhaba, {{ user.username }}!</span>
             <form method="post" action="/cikis/" style="display:inline;">
                 {% csrf_token %}
                 <button class="btn-cikis" type="submit">Çıkış Yap</button>
             </form>
         {% else %}
-            <a href="/giris/" style="color:#555; text-decoration:none; font-size:13px;">Giriş Yap</a>
+            <a href="/giris/" style="color:#666;text-decoration:none;font-size:13px;">Giriş Yap</a>
         {% endif %}
         <a href="/ilan-ekle/" class="btn-ilan">Ücretsiz İlan Ver</a>
     </div>
@@ -674,9 +320,7 @@
         {% if haberler %}
             {% for haber in haberler %}
             <div class="haber-slide" style="background: {{ haber.renk }};">
-                {% if haber.resim %}
-                <img class="haber-slide-resim" src="{{ haber.resim.url }}" alt="{{ haber.baslik }}">
-                {% endif %}
+                {% if haber.resim %}<img class="haber-slide-resim" src="{{ haber.resim.url }}" alt="{{ haber.baslik }}">{% endif %}
                 <div class="haber-slide-icerik">
                     <div class="haber-etiket" style="background: #FF6000;">{{ haber.etiket }}</div>
                     <div class="haber-baslik">{{ haber.baslik }}</div>
@@ -685,7 +329,7 @@
             </div>
             {% endfor %}
         {% else %}
-            <div class="haber-slide" style="background: #1a1a2e;">
+            <div class="haber-slide" style="background: linear-gradient(135deg,#1a1a2e,#2d2d5e);">
                 <div class="haber-slide-icerik">
                     <div class="haber-etiket" style="background: #FF6000;">HOŞGELDİNİZ</div>
                     <div class="haber-baslik">Dingönüllüleri'ne Hoş Geldiniz!</div>
@@ -726,7 +370,7 @@
         <div class="kategori-isim">Müftülükler</div>
         <div class="kategori-aciklama">İl ve ilçe müftülükleri</div>
     </a>
-    <div class="kategori-kart" style="opacity:0.5; cursor:default;">
+    <div class="kategori-kart" style="opacity:0.5;cursor:default;">
         <div class="kategori-ikon">➕</div>
         <div class="kategori-isim">Yakında</div>
         <div class="kategori-aciklama">Yeni kategori</div>
@@ -740,7 +384,7 @@
     {% if not ilanlar %}
     <div class="bos-sonuc">
         <p>😕 "{{ arama }}" için ilan bulunamadı.</p>
-        <p style="margin-top:10px; font-size:14px;"><a href="/" style="color:#FF6000;">Tüm ilanları gör</a></p>
+        <p style="margin-top:10px;font-size:14px;"><a href="/" style="color:#FF6000;">Tüm ilanları gör</a></p>
     </div>
     {% endif %}
     {% else %}
@@ -756,11 +400,8 @@
             </a>
             <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
                 {% with ilk=ilan.medyalar.first %}
-                {% if ilk %}
-                <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
-                {% else %}
-                <div class="resim-yok">Resim Yok</div>
-                {% endif %}
+                {% if ilk %}<img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+                {% else %}<div class="resim-yok">Resim Yok</div>{% endif %}
                 {% endwith %}
                 <div class="ilan-kart-icerik">
                     <h3>{{ ilan.baslik }}</h3>
@@ -768,9 +409,6 @@
                     <div class="ilan-konum">📍 {{ ilan.konum }}</div>
                 </div>
             </a>
-            {% if ilan.kullanici == user %}
-
-            {% endif %}
         </div>
         {% endfor %}
     </div>
@@ -782,200 +420,7 @@
     <div id="harita"></div>
 </div>
 
-<script>
-    // ============================================================
-    // INTRO ANİMASYON
-    // ============================================================
-    function skipIntro() {
-        document.getElementById('scene').classList.add('exit');
-        setTimeout(() => {
-            document.getElementById('intro-overlay').style.display = 'none';
-        }, 1000);
-    }
-
-    // Animasyon ~5.8 saniye sonra otomatik kapanır
-    setTimeout(() => {
-        document.getElementById('scene').classList.add('exit');
-        setTimeout(() => {
-            document.getElementById('intro-overlay').style.display = 'none';
-        }, 1000);
-    }, 5800);
-
-    // ============================================================
-    // SOL MENÜ
-    // ============================================================
-    function solMenuAc() {
-        document.getElementById('solMenu').classList.add('acik');
-        document.getElementById('solMenuOverlay').classList.add('acik');
-    }
-    function solMenuKapat() {
-        document.getElementById('solMenu').classList.remove('acik');
-        document.getElementById('solMenuOverlay').classList.remove('acik');
-    }
-
-    function sidebarAc() {
-        document.getElementById('sidebar').classList.add('acik');
-        document.getElementById('overlay').classList.add('acik');
-    }
-    function sidebarKapat() {
-        document.getElementById('sidebar').classList.remove('acik');
-        document.getElementById('overlay').classList.remove('acik');
-    }
-
-    // ============================================================
-    // HABER SLAYT
-    // ============================================================
-    let simdiki = 0;
-    const slider = document.getElementById('haberSlider');
-    const noktalarDiv = document.getElementById('haberNoktalar');
-    const toplam = slider.children.length;
-
-    for (let i = 0; i < toplam; i++) {
-        const btn = document.createElement('button');
-        btn.className = 'haber-nokta' + (i === 0 ? ' aktif' : '');
-        btn.textContent = i + 1;
-        btn.onclick = () => haberGit(i);
-        noktalarDiv.appendChild(btn);
-    }
-
-    function haberGit(index) {
-        simdiki = index;
-        slider.style.transform = 'translateX(-' + (simdiki * 100) + '%)';
-        document.querySelectorAll('.haber-nokta').forEach((n, i) => {
-            n.classList.toggle('aktif', i === simdiki);
-        });
-    }
-
-    function haberDegistir(yon) {
-        haberGit((simdiki + yon + toplam) % toplam);
-    }
-
-    if (toplam > 1) setInterval(() => haberDegistir(1), 5000);
-
-    // ============================================================
-    // HARİTA
-    // ============================================================
-    var harita = L.map('harita').setView([39.0, 35.0], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '© OpenStreetMap'
-    }).addTo(harita);
-
-    var ilanlar = [
-        {% for ilan in ilanlar %}
-        { baslik: "{{ ilan.baslik }}", konum: "{{ ilan.konum }}", url: "/ilan/{{ ilan.id }}/" },
-        {% endfor %}
-    ];
-
-    ilanlar.forEach(function(ilan) {
-        fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(ilan.konum) + '&format=json&limit=1')
-        .then(r => r.json())
-        .then(data => {
-            if (data.length > 0) {
-                var marker = L.marker([data[0].lat, data[0].lon]).addTo(harita);
-                marker.bindPopup('<a href="' + ilan.url + '">' + ilan.baslik + '</a><br>📍 ' + ilan.konum);
-            }
-        });
-    });
-</script>
-
-
-
-
-<style>
-@keyframes slideInRight { from { opacity:0; transform: translateX(60px); } to { opacity:1; transform: translateX(0); } }
-@keyframes slideInLeft  { from { opacity:0; transform: translateX(-60px); } to { opacity:1; transform: translateX(0); } }
-@keyframes slideOutLeft  { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(-60px); } }
-@keyframes slideOutRight { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(60px); } }
-.page-slide-in-right { animation: slideInRight 0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-.page-slide-in-left  { animation: slideInLeft  0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-</style>
-<script>
-(function(){
-    var pages = ['/', '/ilanlar/', '/favoriler/', '/duyurular/'];
-    var path = window.location.pathname;
-    var currentIndex = pages.indexOf(path);
-    if(currentIndex === -1) currentIndex = 0;
-
-    // Aktif butonu işaretle
-    var ids = ['nav-home','nav-ilanlar','nav-favoriler','nav-duyurular'];
-    if(ids[currentIndex]) document.getElementById(ids[currentIndex]).classList.add('active');
-
-    // Sayfa girişinde animasyon
-    var dir = sessionStorage.getItem('navDir');
-    if(dir === 'right') document.body.classList.add('page-slide-in-right');
-    else if(dir === 'left') document.body.classList.add('page-slide-in-left');
-    sessionStorage.removeItem('navDir');
-
-    // Linklere tıklanınca yön belirle
-    document.querySelectorAll('.bottom-nav a').forEach(function(a){
-        a.addEventListener('click', function(e){
-            var href = a.getAttribute('href');
-            var targetIndex = pages.indexOf(href);
-            if(targetIndex === -1) return;
-            if(targetIndex === currentIndex) { e.preventDefault(); return; }
-            sessionStorage.setItem('navDir', targetIndex > currentIndex ? 'right' : 'left');
-        });
-    });
-})();
-</script>
 <!-- BOTTOM NAV -->
-<style>
-body { padding-bottom: 100px; }
-.bnav-wrap {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding: 8px 8px 26px 8px;
-    background: rgba(255,255,255,0.01);
-    backdrop-filter: blur(80px) saturate(300%) brightness(1.05);
-    -webkit-backdrop-filter: blur(80px) saturate(300%) brightness(1.05);
-    border-top: 0.5px solid rgba(255,255,255,0.08);
-}
-.bnav-inner {
-    display: flex;
-    background: rgba(255,255,255,0.03);
-    border: 0.5px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 3px;
-    position: relative;
-}
-.bnav-slider {
-    position: absolute;
-    top: 3px;
-    bottom: 3px;
-    border-radius: 15px;
-    background: rgba(255,255,255,0.1);
-    border: 0.5px solid rgba(255,255,255,0.2);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    transition: left 0.35s cubic-bezier(0.34,1.15,0.64,1), width 0.35s cubic-bezier(0.34,1.15,0.64,1);
-    pointer-events: none;
-    box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.3);
-}
-.bnav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    height: 58px;
-    font-size: 10px;
-    font-weight: 500;
-    cursor: pointer;
-    color: rgba(0,0,0,0.45);
-    position: relative;
-    z-index: 1;
-    border-radius: 15px;
-    transition: color 0.3s;
-    text-decoration: none;
-    user-select: none;
-}
-.bnav-item.active { color: #000000; }
-.bnav-item svg { width: 20px; height: 20px; }
-</style>
 <div class="bnav-wrap">
   <div class="bnav-inner" id="bnavInner">
     <div class="bnav-slider" id="bnavSlider"></div>
@@ -997,40 +442,64 @@ body { padding-bottom: 100px; }
     </a>
   </div>
 </div>
+
 <script>
-(function(){
-  var pages=['/','/ilanlar/','/favoriler/','/duyurular/'];
-  var path=window.location.pathname;
-  var cur=pages.indexOf(path);
-  if(cur===-1)cur=0;
-  var slider=document.getElementById('bnavSlider');
-  var inner=document.getElementById('bnavInner');
-  var items=document.querySelectorAll('.bnav-item');
-  function moveSlider(i){
-    var w=inner.offsetWidth-6;
-    var bw=w/4;
-    slider.style.left=(3+i*bw)+'px';
-    slider.style.width=bw+'px';
-  }
-  items[cur].classList.add('active');
-  setTimeout(function(){moveSlider(cur);},50);
-  window.addEventListener('resize',function(){moveSlider(cur);});
-  items.forEach(function(item,i){
-    item.addEventListener('click',function(e){
-      if(i===cur)return;
-      sessionStorage.setItem('navDir',i>cur?'right':'left');
+    function solMenuAc() { document.getElementById('solMenu').classList.add('acik'); document.getElementById('solMenuOverlay').classList.add('acik'); }
+    function solMenuKapat() { document.getElementById('solMenu').classList.remove('acik'); document.getElementById('solMenuOverlay').classList.remove('acik'); }
+    function sidebarAc() { document.getElementById('sidebar').classList.add('acik'); document.getElementById('overlay').classList.add('acik'); }
+    function sidebarKapat() { document.getElementById('sidebar').classList.remove('acik'); document.getElementById('overlay').classList.remove('acik'); }
+
+    // HABER SLAYT
+    let simdiki = 0;
+    const slider = document.getElementById('haberSlider');
+    const noktalarDiv = document.getElementById('haberNoktalar');
+    const toplam = slider.children.length;
+    for (let i = 0; i < toplam; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'haber-nokta' + (i === 0 ? ' aktif' : '');
+        btn.onclick = () => haberGit(i);
+        noktalarDiv.appendChild(btn);
+    }
+    function haberGit(index) {
+        simdiki = index;
+        slider.style.transform = 'translateX(-' + (simdiki * 100) + '%)';
+        document.querySelectorAll('.haber-nokta').forEach((n, i) => n.classList.toggle('aktif', i === simdiki));
+    }
+    function haberDegistir(yon) { haberGit((simdiki + yon + toplam) % toplam); }
+    if (toplam > 1) setInterval(() => haberDegistir(1), 5000);
+
+    // HARİTA
+    var harita = L.map('harita').setView([39.0, 35.0], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(harita);
+    var ilanlar = [{% for ilan in ilanlar %}{ baslik: "{{ ilan.baslik }}", konum: "{{ ilan.konum }}", url: "/ilan/{{ ilan.id }}/" },{% endfor %}];
+    ilanlar.forEach(function(ilan) {
+        fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(ilan.konum) + '&format=json&limit=1')
+        .then(r => r.json()).then(data => {
+            if (data.length > 0) {
+                var marker = L.marker([data[0].lat, data[0].lon]).addTo(harita);
+                marker.bindPopup('<a href="' + ilan.url + '">' + ilan.baslik + '</a><br>📍 ' + ilan.konum);
+            }
+        });
     });
-  });
-  var dir=sessionStorage.getItem('navDir');
-  if(dir){
-    document.body.style.animation=dir==='right'?'bnavSlideR 0.32s ease':'bnavSlideL 0.32s ease';
-    sessionStorage.removeItem('navDir');
-  }
-})();
+
+    // BOTTOM NAV
+    (function(){
+        var pages=['/','/ilanlar/','/favoriler/','/duyurular/'];
+        var path=window.location.pathname;
+        var cur=pages.indexOf(path); if(cur===-1)cur=0;
+        var slider=document.getElementById('bnavSlider');
+        var inner=document.getElementById('bnavInner');
+        var items=document.querySelectorAll('.bnav-item');
+        function moveSlider(i){ var w=inner.offsetWidth-8; var bw=w/4; slider.style.left=(4+i*bw)+'px'; slider.style.width=bw+'px'; }
+        items[cur].classList.add('active');
+        setTimeout(function(){ moveSlider(cur); }, 50);
+        window.addEventListener('resize', function(){ moveSlider(cur); });
+        items.forEach(function(item,i){
+            item.addEventListener('click', function(){ if(i!==cur) sessionStorage.setItem('navDir',i>cur?'right':'left'); });
+        });
+        var dir=sessionStorage.getItem('navDir');
+        if(dir){ document.body.style.animation=dir==='right'?'bnavSlideR 0.3s ease':'bnavSlideL 0.3s ease'; sessionStorage.removeItem('navDir'); }
+    })();
 </script>
-<style>
-@keyframes bnavSlideR{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-@keyframes bnavSlideL{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
-</style>
 </body>
 </html>
