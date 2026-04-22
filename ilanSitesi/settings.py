@@ -98,7 +98,8 @@ GS_BUCKET_NAME = 'projem6565'
 
 _creds_b64 = os.environ.get('GS_CREDENTIALS_BASE64')
 if _creds_b64:
-    print("✅ GCS credentials yuklendi")
+    import sys
+    print("✅ GCS credentials yuklendi", flush=True, file=sys.stderr)
     _creds_b64_padded = _creds_b64 + '=' * (4 - len(_creds_b64) % 4)
     _creds_json = json.loads(base64.b64decode(_creds_b64_padded))
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(_creds_json)
