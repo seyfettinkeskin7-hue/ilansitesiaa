@@ -48,6 +48,11 @@ class Ilan(models.Model):
     def __str__(self):
         return self.baslik
 
+    def delete(self, *args, **kwargs):
+        for medya in self.medyalar.all():
+            medya.delete()
+        super().delete(*args, **kwargs)
+
 class IlanMedya(models.Model):
     MEDYA_TIPLERI = [
         ('resim', 'Resim'),
