@@ -6,40 +6,46 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif; background: linear-gradient(145deg,#e8edf2,#f0f4f8); min-height: 100vh; padding-bottom: 110px; }
-        .header { background: rgba(255,255,255,0.6); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.8); padding: 12px 20px; display: flex; align-items: center; gap: 14px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.04); }
-        .geri { background: none; border: none; font-size: 22px; cursor: pointer; color: #555; text-decoration: none; }
-        .header h1 { font-size: 18px; font-weight: 700; color: #222; display: flex; align-items: center; gap: 8px; }
-        .icerik { max-width: 700px; margin: 0 auto; padding: 20px 16px; }
-        .hutbe-grup { background: rgba(255,255,255,0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.85); border-radius: 18px; overflow: hidden; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
-        .hutbe-grup-baslik { padding: 14px 18px; border-bottom: 1px solid rgba(0,0,0,0.06); }
-        .hutbe-tarih { font-size: 12px; color: #999; margin-bottom: 4px; }
-        .hutbe-adi { font-size: 16px; font-weight: 700; color: #222; }
-        .pdf-satir { display: flex; align-items: center; gap: 14px; padding: 14px 18px; text-decoration: none; color: #333; transition: background 0.2s; cursor: pointer; border: none; background: none; width: 100%; text-align: left; }
-        .pdf-satir:first-of-type { border-bottom: 1px solid rgba(0,0,0,0.05); }
-        .pdf-satir:hover { background: rgba(255,96,0,0.04); }
-        .pdf-ikon { width: 40px; height: 50px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
-        .pdf-ikon.normal { background: #fff3ec; border: 1px solid #ffd0b3; }
-        .pdf-ikon.telefon { background: #f0f5ff; border: 1px solid #b3caff; }
-        .pdf-ikon svg { width: 20px; height: 20px; }
-        .pdf-etiket { font-size: 8px; font-weight: 700; margin-top: 2px; letter-spacing: 0.05em; }
-        .pdf-bilgi { flex: 1; }
-        .pdf-tip { font-size: 14px; font-weight: 600; color: #222; margin-bottom: 3px; }
-        .pdf-aciklama { font-size: 12px; color: #999; }
-        .indir { width: 34px; height: 34px; border-radius: 50%; background: rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .indir svg { width: 16px; height: 16px; color: #888; }
-        .pdf-viewer { display: none; border-top: 1px solid rgba(0,0,0,0.06); }
-        .pdf-viewer.acik { display: block; }
-        .pdf-viewer iframe { width: 100%; height: 80vh; border: none; display: block; }
-        .pdf-viewer-kapat { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; background: rgba(0,0,0,0.02); font-size: 13px; color: #666; }
-        .pdf-viewer-kapat button { background: none; border: none; font-size: 18px; cursor: pointer; color: #999; }
+        .header { background: rgba(255,255,255,0.6); backdrop-filter: blur(30px); border-bottom: 1px solid rgba(255,255,255,0.8); padding: 12px 20px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 20px rgba(0,0,0,0.04); }
+        .geri { font-size: 22px; color: #555; text-decoration: none; }
+        .header h1 { font-size: 17px; font-weight: 700; color: #222; display: flex; align-items: center; gap: 8px; }
+        .icerik { max-width: 600px; margin: 0 auto; padding: 20px 16px; }
+        .hutbe-grup { background: rgba(255,255,255,0.65); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.85); border-radius: 18px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .hutbe-grup-baslik { padding: 12px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .hutbe-tarih { font-size: 11px; color: #aaa; margin-bottom: 3px; }
+        .hutbe-adi { font-size: 15px; font-weight: 700; color: #222; }
+        .pdf-row { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.2s; }
+        .pdf-row + .pdf-row { border-top: 1px solid rgba(0,0,0,0.05); }
+        .pdf-row:hover { background: rgba(255,96,0,0.04); }
+        .pik { width: 34px; height: 42px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+        .pik.n { background: #fff3ec; border: 1px solid #ffd0b3; }
+        .pik.t { background: #f0f5ff; border: 1px solid #b3caff; }
+        .pik svg { width: 15px; height: 15px; }
+        .pik-lbl { font-size: 7px; font-weight: 700; margin-top: 2px; letter-spacing: 0.05em; }
+        .prow-info { flex: 1; }
+        .prow-tip { font-size: 13px; font-weight: 600; color: #222; margin-bottom: 2px; }
+        .prow-alt { font-size: 11px; color: #aaa; }
+        .arrow { font-size: 18px; color: #ccc; }
         .bos { text-align: center; padding: 60px 20px; color: #bbb; font-size: 15px; }
+
+        /* PDF GÖRÜNTÜLEYICI SAYFA */
+        .pdf-sayfa { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9999; flex-direction: column; background: #fff; }
+        .pdf-sayfa.acik { display: flex; }
+        .pdf-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.08); flex-shrink: 0; }
+        .pdf-header-sol { display: flex; align-items: center; gap: 10px; }
+        .pdf-geri { background: none; border: none; font-size: 22px; color: #555; cursor: pointer; }
+        .pdf-baslik { font-size: 14px; font-weight: 600; color: #222; }
+        .pdf-indir { display: flex; align-items: center; gap: 5px; background: none; border: none; color: #FF6000; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .pdf-indir svg { width: 15px; height: 15px; }
+        .pdf-iframe { flex: 1; width: 100%; border: none; }
     </style>
 </head>
 <body>
+
 <div class="header">
     <a href="/" class="geri">‹</a>
     <h1>
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FF6000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF6000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
         Cuma Hutbeleri
     </h1>
 </div>
@@ -52,75 +58,64 @@
                 <div class="hutbe-tarih">{{ hutbe.tarih|date:"d F Y" }} · Cuma</div>
                 <div class="hutbe-adi">{{ hutbe.baslik }}</div>
             </div>
-
-            <button class="pdf-satir" onclick="pdfAc(this, '{{ hutbe.normal_pdf.url }}')">
-                <div class="pdf-ikon normal">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#FF6000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-                    <div class="pdf-etiket" style="color:#FF6000;">PDF</div>
+            <button class="pdf-row" onclick="pdfAc('{{ hutbe.normal_pdf.url }}', 'Normal Hutbe')">
+                <div class="pik n">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#FF6000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <div class="pik-lbl" style="color:#FF6000;">PDF</div>
                 </div>
-                <div class="pdf-bilgi">
-                    <div class="pdf-tip">Normal Hutbe</div>
-                    <div class="pdf-aciklama">Standart baskı formatı · A4</div>
+                <div class="prow-info">
+                    <div class="prow-tip">Normal Hutbe</div>
+                    <div class="prow-alt">Standart baskı · A4</div>
                 </div>
-                <div class="indir">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </div>
+                <span class="arrow">›</span>
             </button>
-            <div class="pdf-viewer" id="viewer-normal-{{ hutbe.id }}">
-                <div class="pdf-viewer-kapat">
-                    <span>Normal Hutbe</span>
-                    <button onclick="pdfKapat('viewer-normal-{{ hutbe.id }}')">✕</button>
+            <button class="pdf-row" onclick="pdfAc('{{ hutbe.telefon_pdf.url }}', 'Telefondan Hutbe')">
+                <div class="pik t">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#4466dd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                    <div class="pik-lbl" style="color:#4466dd;">PDF</div>
                 </div>
-                <iframe src="" data-src="{{ hutbe.normal_pdf.url }}"></iframe>
-            </div>
-
-            <button class="pdf-satir" onclick="pdfAc(this, '{{ hutbe.telefon_pdf.url }}')">
-                <div class="pdf-ikon telefon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#4466dd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
-                    <div class="pdf-etiket" style="color:#4466dd;">PDF</div>
+                <div class="prow-info">
+                    <div class="prow-tip">Telefondan Hutbe</div>
+                    <div class="prow-alt">Mobil okuma · Büyük yazı</div>
                 </div>
-                <div class="pdf-bilgi">
-                    <div class="pdf-tip">Telefondan Hutbe</div>
-                    <div class="pdf-aciklama">Mobil okuma formatı · Büyük yazı</div>
-                </div>
-                <div class="indir">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </div>
+                <span class="arrow">›</span>
             </button>
-            <div class="pdf-viewer" id="viewer-telefon-{{ hutbe.id }}">
-                <div class="pdf-viewer-kapat">
-                    <span>Telefondan Hutbe</span>
-                    <button onclick="pdfKapat('viewer-telefon-{{ hutbe.id }}')">✕</button>
-                </div>
-                <iframe src="" data-src="{{ hutbe.telefon_pdf.url }}"></iframe>
-            </div>
-
         </div>
         {% endfor %}
     {% else %}
-        <div class="bos">
-            <p>Henüz hutbe eklenmemiş.</p>
-        </div>
+        <div class="bos"><p>Henüz hutbe eklenmemiş.</p></div>
     {% endif %}
 </div>
 
+<!-- PDF GÖRÜNTÜLEYICI -->
+<div class="pdf-sayfa" id="pdfSayfa">
+    <div class="pdf-header">
+        <div class="pdf-header-sol">
+            <button class="pdf-geri" onclick="pdfKapat()">‹</button>
+            <span class="pdf-baslik" id="pdfBaslik"></span>
+        </div>
+        <a id="pdfIndirLink" href="#" download>
+            <button class="pdf-indir">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                İndir
+            </button>
+        </a>
+    </div>
+    <iframe class="pdf-iframe" id="pdfIframe" src=""></iframe>
+</div>
+
 <script>
-function pdfAc(btn, url) {
-    var viewer = btn.nextElementSibling;
-    var iframe = viewer.querySelector('iframe');
-    if (viewer.classList.contains('acik')) {
-        viewer.classList.remove('acik');
-        iframe.src = '';
-    } else {
-        viewer.classList.add('acik');
-        iframe.src = url;
-        viewer.scrollIntoView({behavior: 'smooth', block: 'start'});
-    }
+function pdfAc(url, baslik) {
+    document.getElementById('pdfBaslik').textContent = baslik;
+    document.getElementById('pdfIframe').src = url;
+    document.getElementById('pdfIndirLink').href = url;
+    document.getElementById('pdfSayfa').classList.add('acik');
+    document.body.style.overflow = 'hidden';
 }
-function pdfKapat(id) {
-    var viewer = document.getElementById(id);
-    viewer.classList.remove('acik');
-    viewer.querySelector('iframe').src = '';
+function pdfKapat() {
+    document.getElementById('pdfSayfa').classList.remove('acik');
+    document.getElementById('pdfIframe').src = '';
+    document.body.style.overflow = '';
 }
 </script>
 </body>
