@@ -274,15 +274,15 @@
     <div class="sidebar-icerik">
         {% if favoriler %}
             {% for ilan in favoriler %}
-            <a href="/ilan/{{ ilan.id }}/" class="sidebar-ilan">
-                {% with ilk=ilan.medyalar.first %}
-                {% if ilk %}<img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+            <a href="/ilan/{{ ilan.ilan.id }}/" class="sidebar-ilan">
+                {% with ilk=ilan.ilan.medyalar.first %}
+                {% if ilk %}<img src="{{ ilk.dosya.url }}" alt="{{ ilan.ilan.baslik }}">
                 {% else %}<div style="width:60px;height:50px;background:rgba(0,0,0,0.05);border-radius:8px;"></div>{% endif %}
                 {% endwith %}
                 <div class="sidebar-ilan-bilgi">
-                    <h4>{{ ilan.baslik }}</h4>
-                    <p>{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</p>
-                    <p>📍 {{ ilan.konum }}</p>
+                    <h4>{{ ilan.ilan.baslik }}</h4>
+                    <p>{{ ilan.ilan.oda_sayisi }} · {{ ilan.ilan.metrekare }} m²</p>
+                    <p>📍 {{ ilan.ilan.konum }}</p>
                 </div>
             </a>
             {% endfor %}

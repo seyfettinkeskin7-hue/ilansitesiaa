@@ -103,7 +103,10 @@ def ilan_sil(request, ilan_id):
 
 def detay(request, ilan_id):
     ilan = get_object_or_404(Ilan, id=ilan_id)
-    return render(request, 'detay.html', {'ilan': ilan})
+    favori = False
+    if request.user.is_authenticated:
+        favori = Favori.objects.filter(kullanici=request.user, ilan=ilan).exists()
+    return render(request, 'detay.html', {'ilan': ilan, 'favori': favori})
 
 def favori_ekle(request, ilan_id):
     if not request.user.is_authenticated:
