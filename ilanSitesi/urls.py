@@ -23,5 +23,6 @@ urlpatterns = [
     path('muftulukler/<str:il>/', views.muftuluk_il),
     path('akademi/', views.akademi),
     path('hutbeler/', views.hutbeler, name='hutbeler'),
+    path('hutbe-pdf/<int:hutbe_id>/<str:tip>/', views.hutbe_pdf, name='hutbe_pdf'),
     path('accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

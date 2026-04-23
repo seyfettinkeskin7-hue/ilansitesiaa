@@ -58,7 +58,7 @@
                 <div class="hutbe-tarih">{{ hutbe.tarih|date:"d F Y" }} · Cuma</div>
                 <div class="hutbe-adi">{{ hutbe.baslik }}</div>
             </div>
-            <button class="pdf-row" onclick="pdfAc('{{ hutbe.normal_pdf.url }}', 'Normal Hutbe')">
+            <button class="pdf-row" onclick="pdfAc('/hutbe-pdf/{{ hutbe.id }}/normal/', 'Normal Hutbe')">
                 <div class="pik n">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#FF6000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                     <div class="pik-lbl" style="color:#FF6000;">PDF</div>
@@ -69,7 +69,7 @@
                 </div>
                 <span class="arrow">›</span>
             </button>
-            <button class="pdf-row" onclick="pdfAc('{{ hutbe.telefon_pdf.url }}', 'Telefondan Hutbe')">
+            <button class="pdf-row" onclick="pdfAc('/hutbe-pdf/{{ hutbe.id }}/telefon/', 'Telefondan Hutbe')">
                 <div class="pik t">
                     <svg viewBox="0 0 24 24" fill="none" stroke="#4466dd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
                     <div class="pik-lbl" style="color:#4466dd;">PDF</div>
@@ -107,7 +107,7 @@
 <script>
 function pdfAc(url, baslik) {
     document.getElementById('pdfBaslik').textContent = baslik;
-    document.getElementById('pdfIframe').src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(url) + '&embedded=true';
+    document.getElementById('pdfIframe').src = url;
     document.getElementById('pdfIndirLink').href = url;
     document.getElementById('pdfSayfa').classList.add('acik');
     document.body.style.overflow = 'hidden';
