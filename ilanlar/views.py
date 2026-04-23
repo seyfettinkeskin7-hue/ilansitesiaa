@@ -138,3 +138,10 @@ def favorilerim(request):
         return redirect('giris')
     favoriler = Favori.objects.filter(kullanici=request.user).select_related('ilan')
     return render(request, 'favorilerim.html', {'favoriler': favoriler})
+
+def hutbeler(request):
+    if not request.user.is_authenticated:
+        return redirect('giris')
+    from .models import Hutbe
+    hutbeler = Hutbe.objects.filter(aktif=True)
+    return render(request, 'hutbeler.html', {'hutbeler': hutbeler})

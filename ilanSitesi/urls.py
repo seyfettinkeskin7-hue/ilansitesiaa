@@ -22,5 +22,6 @@ urlpatterns = [
     path('muftulukler/', views.muftulukler),
     path('muftulukler/<str:il>/', views.muftuluk_il),
     path('akademi/', views.akademi),
+    path('hutbeler/', views.hutbeler, name='hutbeler'),
     path('accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

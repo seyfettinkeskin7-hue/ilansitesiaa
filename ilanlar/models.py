@@ -79,3 +79,28 @@ class Favori(models.Model):
 
     def __str__(self):
         return f"{self.kullanici} - {self.ilan.baslik}"
+class Hutbe(models.Model):
+    baslik = models.CharField(max_length=200)
+    tarih = models.DateField()
+    normal_pdf = models.FileField(upload_to='hutbeler/')
+    telefon_pdf = models.FileField(upload_to='hutbeler/')
+    aktif = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.baslik
+
+    class Meta:
+        ordering = ['-tarih']
+
+class Hutbe(models.Model):
+    baslik = models.CharField(max_length=200)
+    tarih = models.DateField()
+    normal_pdf = models.FileField(upload_to='hutbeler/')
+    telefon_pdf = models.FileField(upload_to='hutbeler/')
+    aktif = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.baslik
+
+    class Meta:
+        ordering = ['-tarih']
