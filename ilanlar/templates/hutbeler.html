@@ -107,7 +107,7 @@
 <script>
 function pdfAc(url, baslik) {
     document.getElementById('pdfBaslik').textContent = baslik;
-    document.getElementById('pdfIframe').src = url;
+    document.getElementById('pdfIframe').src = 'https://docs.google.com/viewer?url=' + encodeURIComponent(url) + '&embedded=true';
     document.getElementById('pdfIndirLink').href = url;
     document.getElementById('pdfSayfa').classList.add('acik');
     document.body.style.overflow = 'hidden';
