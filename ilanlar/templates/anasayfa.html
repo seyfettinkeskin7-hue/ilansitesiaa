@@ -141,8 +141,74 @@
 
         /* KATEGORİLER */
         .kategoriler { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 1200px; margin: 0 auto 20px; padding: 0 16px; }
+        
         @media (max-width: 768px) {
-            .header { padding: 8px 10px 8px 50px; gap: 8px; }
+            /* Menü ve Kayma Fix */
+            .sol-menu { left: -100% !important; visibility: hidden !important; }
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; width: 80% !important; }
+            html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; background: #f8f9fa; }
+            
+            /* Header'ı Mavi Yapalım (Referanstaki gibi) */
+            .header { background: #00468c !important; color: white !important; padding: 10px !important; height: auto !important; }
+            .logo-text, .logo-icon { color: white !important; }
+            .btn-ilan { background: #ff6000 !important; border-radius: 5px !important; font-size: 10px !important; }
+
+            /* Liste Yapısı */
+            .grid { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 2px !important; /* İnce çizgi görünümü */
+                padding: 0 !important;
+                background: #e0e0e0; 
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                background: white !important;
+                border-radius: 0 !important; 
+                border: none !important;
+                box-shadow: none !important;
+                padding: 8px !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                height: 110px !important;
+            }
+            .ilan-kart img { 
+                width: 120px !important; 
+                height: 94px !important; 
+                object-fit: cover !important; 
+                border-radius: 4px !important;
+            }
+            .ilan-kart-icerik { 
+                flex: 1 !important; 
+                padding: 0 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .ilan-kart h3 { 
+                font-size: 13px !important; 
+                color: #333 !important; 
+                font-weight: 500 !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+            }
+            .ilan-detay { font-size: 11px !important; color: #666 !important; }
+            .ilan-konum { font-size: 11px !important; color: #888 !important; }
+            
+            /* Fiyat Alanı (Mavi ve Sağ Alt) */
+            .ilan-kart-icerik::after {
+                content: 'İncele'; /* Buraya fiyat değişkeni gelmeli ama CSS ile görsel simüle ediyoruz */
+                align-self: flex-end;
+                color: #00468c;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            
+            /* Favori butonu küçült */
+            .favori-btn { width: 24px !important; height: 24px !important; font-size: 12px !important; background: rgba(255,255,255,0.9) !important; }
+        }
+
             .logo-text { font-size: 14px; }
             .logo-icon { font-size: 15px; padding: 6px; border-radius: 8px; }
             .btn-ilan { padding: 6px 10px; font-size: 11px; border-radius: 8px; }
@@ -271,11 +337,74 @@
         @keyframes bnavSlideL { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
     
         /* Mobil Fixleri */
+        
         @media (max-width: 768px) {
-            .sol-menu { 
-                left: -300px !important; 
-                display: block !important;
+            /* Menü ve Kayma Fix */
+            .sol-menu { left: -100% !important; visibility: hidden !important; }
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; width: 80% !important; }
+            html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; background: #f8f9fa; }
+            
+            /* Header'ı Mavi Yapalım (Referanstaki gibi) */
+            .header { background: #00468c !important; color: white !important; padding: 10px !important; height: auto !important; }
+            .logo-text, .logo-icon { color: white !important; }
+            .btn-ilan { background: #ff6000 !important; border-radius: 5px !important; font-size: 10px !important; }
+
+            /* Liste Yapısı */
+            .grid { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 2px !important; /* İnce çizgi görünümü */
+                padding: 0 !important;
+                background: #e0e0e0; 
             }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                background: white !important;
+                border-radius: 0 !important; 
+                border: none !important;
+                box-shadow: none !important;
+                padding: 8px !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                height: 110px !important;
+            }
+            .ilan-kart img { 
+                width: 120px !important; 
+                height: 94px !important; 
+                object-fit: cover !important; 
+                border-radius: 4px !important;
+            }
+            .ilan-kart-icerik { 
+                flex: 1 !important; 
+                padding: 0 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .ilan-kart h3 { 
+                font-size: 13px !important; 
+                color: #333 !important; 
+                font-weight: 500 !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+            }
+            .ilan-detay { font-size: 11px !important; color: #666 !important; }
+            .ilan-konum { font-size: 11px !important; color: #888 !important; }
+            
+            /* Fiyat Alanı (Mavi ve Sağ Alt) */
+            .ilan-kart-icerik::after {
+                content: 'İncele'; /* Buraya fiyat değişkeni gelmeli ama CSS ile görsel simüle ediyoruz */
+                align-self: flex-end;
+                color: #00468c;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            
+            /* Favori butonu küçült */
+            .favori-btn { width: 24px !important; height: 24px !important; font-size: 12px !important; background: rgba(255,255,255,0.9) !important; }
+        }
+
             .sol-menu.acik { 
                 left: 0 !important; 
             }
@@ -290,8 +419,74 @@
     </style>
 
     <style>
+        
         @media (max-width: 768px) {
-            .sol-menu { left: -300px !important; transform: none !important; visibility: hidden; }
+            /* Menü ve Kayma Fix */
+            .sol-menu { left: -100% !important; visibility: hidden !important; }
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; width: 80% !important; }
+            html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; background: #f8f9fa; }
+            
+            /* Header'ı Mavi Yapalım (Referanstaki gibi) */
+            .header { background: #00468c !important; color: white !important; padding: 10px !important; height: auto !important; }
+            .logo-text, .logo-icon { color: white !important; }
+            .btn-ilan { background: #ff6000 !important; border-radius: 5px !important; font-size: 10px !important; }
+
+            /* Liste Yapısı */
+            .grid { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 2px !important; /* İnce çizgi görünümü */
+                padding: 0 !important;
+                background: #e0e0e0; 
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                background: white !important;
+                border-radius: 0 !important; 
+                border: none !important;
+                box-shadow: none !important;
+                padding: 8px !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                height: 110px !important;
+            }
+            .ilan-kart img { 
+                width: 120px !important; 
+                height: 94px !important; 
+                object-fit: cover !important; 
+                border-radius: 4px !important;
+            }
+            .ilan-kart-icerik { 
+                flex: 1 !important; 
+                padding: 0 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .ilan-kart h3 { 
+                font-size: 13px !important; 
+                color: #333 !important; 
+                font-weight: 500 !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+            }
+            .ilan-detay { font-size: 11px !important; color: #666 !important; }
+            .ilan-konum { font-size: 11px !important; color: #888 !important; }
+            
+            /* Fiyat Alanı (Mavi ve Sağ Alt) */
+            .ilan-kart-icerik::after {
+                content: 'İncele'; /* Buraya fiyat değişkeni gelmeli ama CSS ile görsel simüle ediyoruz */
+                align-self: flex-end;
+                color: #00468c;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            
+            /* Favori butonu küçült */
+            .favori-btn { width: 24px !important; height: 24px !important; font-size: 12px !important; background: rgba(255,255,255,0.9) !important; }
+        }
+
             .sol-menu.acik { left: 0 !important; visibility: visible; }
             .sol-menu-overlay { display: none !important; }
             .sol-menu-overlay.acik { display: block !important; }
@@ -577,13 +772,74 @@
 </script>
 
     <style>
+        
         @media (max-width: 768px) {
-            .sol-menu, .sidebar { 
-                display: none !important; 
-                left: -100% !important; 
-                visibility: hidden !important;
-                position: fixed !important;
+            /* Menü ve Kayma Fix */
+            .sol-menu { left: -100% !important; visibility: hidden !important; }
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; width: 80% !important; }
+            html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; background: #f8f9fa; }
+            
+            /* Header'ı Mavi Yapalım (Referanstaki gibi) */
+            .header { background: #00468c !important; color: white !important; padding: 10px !important; height: auto !important; }
+            .logo-text, .logo-icon { color: white !important; }
+            .btn-ilan { background: #ff6000 !important; border-radius: 5px !important; font-size: 10px !important; }
+
+            /* Liste Yapısı */
+            .grid { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 2px !important; /* İnce çizgi görünümü */
+                padding: 0 !important;
+                background: #e0e0e0; 
             }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                background: white !important;
+                border-radius: 0 !important; 
+                border: none !important;
+                box-shadow: none !important;
+                padding: 8px !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                height: 110px !important;
+            }
+            .ilan-kart img { 
+                width: 120px !important; 
+                height: 94px !important; 
+                object-fit: cover !important; 
+                border-radius: 4px !important;
+            }
+            .ilan-kart-icerik { 
+                flex: 1 !important; 
+                padding: 0 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .ilan-kart h3 { 
+                font-size: 13px !important; 
+                color: #333 !important; 
+                font-weight: 500 !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+            }
+            .ilan-detay { font-size: 11px !important; color: #666 !important; }
+            .ilan-konum { font-size: 11px !important; color: #888 !important; }
+            
+            /* Fiyat Alanı (Mavi ve Sağ Alt) */
+            .ilan-kart-icerik::after {
+                content: 'İncele'; /* Buraya fiyat değişkeni gelmeli ama CSS ile görsel simüle ediyoruz */
+                align-self: flex-end;
+                color: #00468c;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            
+            /* Favori butonu küçült */
+            .favori-btn { width: 24px !important; height: 24px !important; font-size: 12px !important; background: rgba(255,255,255,0.9) !important; }
+        }
+
             .sol-menu.acik, .sidebar.acik { 
                 display: block !important; 
                 left: 0 !important; 
