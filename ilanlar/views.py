@@ -18,7 +18,9 @@ def anasayfa(request):
         return redirect('giris')
     haberler = Haber.objects.filter(aktif=True).order_by('-tarih')
     ilanlar = Ilan.objects.all().order_by('-tarih')
-    return render(request, 'anasayfa.html', {'haberler': haberler, 'ilanlar': ilanlar})
+    favori_idler = list(Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True))
+    favoriler = Favori.objects.filter(kullanici=request.user).select_related('ilan')
+    return render(request, 'anasayfa.html', {'haberler': haberler, 'ilanlar': ilanlar, 'favori_idler': favori_idler, 'favoriler': favoriler})
 
 def muftulukler(request):
     iller = sorted(MUFTULUK_VERISI.keys())
@@ -127,3 +129,9 @@ def haber_sil(request, haber_id):
 
 def akademi(request):
     return render(request, 'akademi.html')
+
+def favorilerim(request):
+    if not request.user.is_authenticated:
+        return redirect('giris')
+    favoriler = Favori.objects.filter(kullanici=request.user).select_related('ilan')
+    return render(request, 'favorilerim.html', {'favoriler': favoriler})
