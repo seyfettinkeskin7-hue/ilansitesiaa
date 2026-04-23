@@ -14,6 +14,8 @@ def animasyon(request):
     return render(request, 'animasyon.html')
 
 def anasayfa(request):
+    if not request.user.is_authenticated:
+        return redirect('giris')
     haberler = Haber.objects.filter(aktif=True).order_by('-tarih')
     ilanlar = Ilan.objects.all().order_by('-tarih')
     return render(request, 'anasayfa.html', {'haberler': haberler, 'ilanlar': ilanlar})
@@ -63,7 +65,7 @@ def giris(request):
 
 def cikis(request):
     logout(request)
-    return redirect('anasayfa')
+    return redirect('giris')
 
 def ilan_ekle(request):
     if not request.user.is_authenticated:
