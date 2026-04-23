@@ -269,6 +269,24 @@
 
         @keyframes bnavSlideR { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
         @keyframes bnavSlideL { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
+    
+        /* Mobil Fixleri */
+        @media (max-width: 768px) {
+            .sol-menu { 
+                left: -300px !important; 
+                display: block !important;
+            }
+            .sol-menu.acik { 
+                left: 0 !important; 
+            }
+            .header { 
+                padding-left: 60px !important; 
+            }
+            .grid { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 8px !important; 
+            }
+        }
     </style>
 </head>
 <body>
