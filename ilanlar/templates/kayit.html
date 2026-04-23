@@ -27,9 +27,8 @@
         {% endif %}
         <form method="post">
             {% csrf_token %}
-            <input type="text" name="kullanici_adi" placeholder="Kullanıcı Adı" required>
-            <input type="email" name="email" placeholder="E-posta" required>
-            <input type="password" name="sifre" placeholder="Şifre" required>
+            <input type="text" name="username" placeholder="Kullanıcı Adı" required>
+            <input type="password" name="password" placeholder="Şifre" required>
             <input type="password" name="sifre2" placeholder="Şifre Tekrar" required>
             <button type="submit">Kayıt Ol</button>
         </form>
