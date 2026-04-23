@@ -145,18 +145,3 @@ def hutbeler(request):
     from .models import Hutbe
     hutbeler = Hutbe.objects.filter(aktif=True)
     return render(request, 'hutbeler.html', {'hutbeler': hutbeler})
-
-def hutbe_pdf(request, hutbe_id, tip):
-    from .models import Hutbe
-    import requests as req
-    hutbe = get_object_or_404(Hutbe, id=hutbe_id)
-    if tip == 'normal':
-        url = hutbe.normal_pdf.url
-    else:
-        url = hutbe.telefon_pdf.url
-    r = req.get(url)
-    from django.http import HttpResponse
-    response = HttpResponse(r.content, content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; filename="hutbe.pdf"'
-    response['X-Frame-Options'] = 'SAMEORIGIN'
-    return response
