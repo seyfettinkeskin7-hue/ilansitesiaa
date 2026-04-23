@@ -141,6 +141,19 @@
 
         /* KATEGORİLER */
         .kategoriler { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 1200px; margin: 0 auto 20px; padding: 0 16px; }
+        @media (max-width: 768px) {
+            .kategoriler { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+            .ilan-kart img { height: 110px; }
+            .ilan-kart h3 { font-size: 12px; }
+            .header { padding: 10px 14px; }
+            .main { padding: 10px 12px; }
+            .sidebar { width: 90vw; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid { grid-template-columns: repeat(3, 1fr) !important; }
+            .kategoriler { grid-template-columns: repeat(4, 1fr); }
+        }
         .kategori-kart {
             background: rgba(255,255,255,0.55);
             backdrop-filter: blur(20px) saturate(180%);
