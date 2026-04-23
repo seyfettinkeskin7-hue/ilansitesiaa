@@ -110,7 +110,8 @@ def favori_ekle(request, ilan_id):
     favori, created = Favori.objects.get_or_create(kullanici=request.user, ilan=ilan)
     if not created:
         favori.delete()
-    return redirect('anasayfa')
+    next_url = request.META.get('HTTP_REFERER', '/')
+    return redirect(next_url)
 
 def panel(request):
     if not request.user.is_authenticated:
