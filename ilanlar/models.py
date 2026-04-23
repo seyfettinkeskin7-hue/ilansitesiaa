@@ -1,3 +1,15 @@
+from storages.backends.gcloud import GoogleCloudStorage
+
+class InlinePDFStorage(GoogleCloudStorage):
+    def url(self, name):
+        url = super().url(name)
+        return url
+
+    def _save(self, name, content):
+        from google.cloud.storage import Blob
+        self.object_parameters = {'content_disposition': 'inline'}
+        return super()._save(name, content)
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -82,8 +94,8 @@ class Favori(models.Model):
 class Hutbe(models.Model):
     baslik = models.CharField(max_length=200)
     tarih = models.DateField()
-    normal_pdf = models.FileField(upload_to='hutbeler/')
-    telefon_pdf = models.FileField(upload_to='hutbeler/')
+    normal_pdf = models.FileField(upload_to='hutbeler/', storage=InlinePDFStorage())
+    telefon_pdf = models.FileField(upload_to='hutbeler/', storage=InlinePDFStorage())
     aktif = models.BooleanField(default=True)
 
     def __str__(self):
@@ -95,8 +107,8 @@ class Hutbe(models.Model):
 class Hutbe(models.Model):
     baslik = models.CharField(max_length=200)
     tarih = models.DateField()
-    normal_pdf = models.FileField(upload_to='hutbeler/')
-    telefon_pdf = models.FileField(upload_to='hutbeler/')
+    normal_pdf = models.FileField(upload_to='hutbeler/', storage=InlinePDFStorage())
+    telefon_pdf = models.FileField(upload_to='hutbeler/', storage=InlinePDFStorage())
     aktif = models.BooleanField(default=True)
 
     def __str__(self):
