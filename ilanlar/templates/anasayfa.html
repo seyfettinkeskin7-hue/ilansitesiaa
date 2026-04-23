@@ -288,6 +288,16 @@
             }
         }
     </style>
+
+    <style>
+        @media (max-width: 768px) {
+            .sol-menu { left: -300px !important; transform: none !important; visibility: hidden; }
+            .sol-menu.acik { left: 0 !important; visibility: visible; }
+            .sol-menu-overlay { display: none !important; }
+            .sol-menu-overlay.acik { display: block !important; }
+            body { overflow-x: hidden !important; width: 100vw; position: relative; }
+        }
+    </style>
 </head>
 <body>
 
@@ -300,7 +310,7 @@
 <div class="sol-menu-overlay" id="solMenuOverlay" onclick="solMenuKapat()"></div>
 
 <!-- SOL MENÜ -->
-<div class="sol-menu" id="solMenu">
+<div class="sol-menu" id="solMenu" style="left: -300px;">
     <button class="sol-menu-kapat" onclick="solMenuKapat()">✕</button>
     <div class="sol-menu-profil">
         <div class="sol-menu-avatar">{{ user.username|first|upper }}</div>
