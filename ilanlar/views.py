@@ -47,7 +47,7 @@ def kayit(request):
             messages.error(request, 'Bu kullanıcı adı zaten alınmış!')
             return render(request, 'kayit.html')
         user = User.objects.create_user(username=kullanici_adi, email=email, password=sifre)
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         return redirect('anasayfa')
     return render(request, 'kayit.html')
 
