@@ -1,135 +1,987 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>İlan Sitem</title>
+    <title>Dingönüllüleri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial; background: #f5f5f5; }
-        .header { background: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .logo { display: flex; align-items: center; gap: 8px; }
-        .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
-        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
-        .logo-text span { color: #FF6000; }
-        .nav a { color: #555; text-decoration: none; margin: 0 12px; font-size: 14px; }
-        .header-sag { display: flex; align-items: center; gap: 15px; }
-        .header-sag a { color: #555; text-decoration: none; font-size: 13px; }
-        .btn-ilan { background: #FF6000; color: white !important; padding: 8px 16px; border-radius: 6px; font-size: 13px; }
-        .btn-cikis { background: none; border: none; color: #555; cursor: pointer; font-size: 13px; }
-        .hero { background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1400') center/cover; padding: 80px 30px; text-align: center; color: white; }
-        .hero h1 { font-size: 36px; margin-bottom: 30px; }
-        .arama-kutu { background: white; border-radius: 8px; padding: 20px; max-width: 900px; margin: 0 auto; display: flex; gap: 10px; flex-wrap: wrap; }
-        .arama-kutu input { flex: 2; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
-        .arama-kutu select { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; color: #555; }
-        .arama-kutu button { background: #FF6000; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-size: 15px; cursor: pointer; font-weight: bold; }
-        .bolum { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        .bolum h2 { font-size: 22px; color: #333; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; }
-        .ilan-kart { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; position: relative; }
-        .ilan-kart:hover { transform: translateY(-3px); }
-        .ilan-kart img { width: 100%; height: 150px; object-fit: cover; }
-        .ilan-kart-icerik { padding: 10px; }
-        .ilan-kart h3 { font-size: 13px; color: #333; margin-bottom: 5px; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+            background: linear-gradient(145deg, #e8edf2 0%, #f0f4f8 40%, #e6ecf2 100%);
+            min-height: 100vh;
+            padding-bottom: 110px;
+        }
+
+        /* GLASS KARTI */
+        .glass {
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.75);
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+
+        /* HAMBURGER */
+        .hamburger {
+            position: fixed; left: 15px; top: 15px; z-index: 1998;
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 12px; width: 40px; height: 40px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; cursor: pointer;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        }
+        .hamburger span { display: block; width: 18px; height: 2px; background: #333; border-radius: 2px; }
+
+        /* SOL MENÜ */
+        .sol-menu { position: fixed; top: 0; left: -285px; width: 260px; height: 100%; background: rgba(255,255,255,0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: 4px 0 30px rgba(0,0,0,0.1); z-index: 2000; transition: left 0.3s; display: flex; flex-direction: column; }
+        .sol-menu.acik { left: 0; }
+        .sol-menu-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 1999; display: none; }
+        .sol-menu-overlay.acik { display: block; }
+        .sol-menu-profil { padding: 20px 16px; border-bottom: 1px solid rgba(0,0,0,0.06); display: flex; align-items: center; gap: 12px; }
+        .sol-menu-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#FF6000,#ff8c42); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold; flex-shrink: 0; }
+        .sol-menu-isim { font-size: 14px; font-weight: 600; color: #222; }
+        .sol-menu-rol { font-size: 11px; color: #999; }
+        .sol-menu-kapat { position: absolute; top: 14px; right: 14px; background: none; border: none; font-size: 20px; color: #999; cursor: pointer; }
+        .sol-menu-nav { flex: 1; padding: 12px 8px; overflow-y: auto; }
+        .sol-menu-baslik { font-size: 10px; color: #bbb; padding: 10px 10px 4px; letter-spacing: 0.1em; font-weight: 600; }
+        .sol-menu-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; color: #444; font-size: 14px; text-decoration: none; margin-bottom: 2px; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.2s; }
+        .sol-menu-link:hover { background: rgba(255,96,0,0.06); }
+        .sol-menu-link.aktif { background: rgba(255,96,0,0.1); color: #FF6000; font-weight: 600; }
+        .sol-menu-link .badge { margin-left: auto; background: #FF6000; color: white; font-size: 11px; padding: 1px 7px; border-radius: 999px; }
+        .sol-menu-alt { padding: 12px 8px; border-top: 1px solid rgba(0,0,0,0.06); }
+
+        /* SIDEBAR */
+        .sidebar { position: fixed; top: 0; left: -300px; width: 300px; height: 100%; background: rgba(255,255,255,0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); box-shadow: 4px 0 20px rgba(0,0,0,0.1); z-index: 1000; transition: left 0.3s; overflow-y: auto; }
+        .sidebar.acik { left: 0; }
+        .sidebar-header { background: linear-gradient(135deg,#FF6000,#ff8c42); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 0 0 0; }
+        .sidebar-header h3 { font-size: 18px; }
+        .sidebar-kapat { background: none; border: none; color: white; font-size: 24px; cursor: pointer; }
+        .sidebar-icerik { padding: 15px; }
+        .sidebar-ilan { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(0,0,0,0.06); text-decoration: none; color: #333; }
+        .sidebar-ilan img { width: 60px; height: 50px; object-fit: cover; border-radius: 8px; }
+        .sidebar-ilan-bilgi h4 { font-size: 13px; margin-bottom: 3px; font-weight: 600; }
+        .sidebar-ilan-bilgi p { font-size: 11px; color: #888; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.2); backdrop-filter: blur(2px); z-index: 999; display: none; }
+        .overlay.acik { display: block; }
+
+        /* HEADER */
+        .header {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-bottom: 1px solid rgba(255,255,255,0.8);
+            padding: 12px 20px 12px 65px;
+            display: flex; align-items: center; gap: 16px;
+            position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+        }
+        .logo { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { background: linear-gradient(135deg,#FF6000,#ff8c42); color: white; padding: 8px; border-radius: 10px; font-size: 20px; box-shadow: 0 2px 8px rgba(255,96,0,0.3); }
+        .logo-text { font-size: 18px; font-weight: 700; color: #222; }
+        .header-sag { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+        .btn-ilan { background: linear-gradient(135deg,#FF6000,#ff8c42); color: white !important; padding: 8px 18px; border-radius: 10px; font-size: 13px; text-decoration: none; font-weight: 600; box-shadow: 0 2px 10px rgba(255,96,0,0.3); }
+        .btn-cikis { background: none; border: none; color: #666; cursor: pointer; font-size: 13px; }
+        .btn-favori { background: none; border: none; color: #FF6000; cursor: pointer; font-size: 13px; font-weight: 500; }
+
+        /* HABER SLAYT */
+        .haber-wrapper {
+            margin: 16px;
+            border-radius: 20px;
+            overflow: hidden;
+            height: 260px;
+            background: rgba(255,255,255,0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.75);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            position: relative;
+        }
+        .haber-slider { display: flex; transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94); height: 100%; }
+        .haber-slide { min-width: 100%; height: 100%; display: flex; align-items: center; padding: 40px 50px; position: relative; }
+        .haber-slide-resim { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.85; border-radius: 20px; }
+        .haber-slide-icerik { position: relative; z-index: 1; }
+        .haber-etiket { display: inline-block; padding: 5px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; color: white; margin-bottom: 14px; letter-spacing: 0.05em; }
+        .haber-baslik { color: white; font-size: 24px; font-weight: 700; line-height: 1.3; max-width: 600px; margin-bottom: 8px; text-shadow: 0 1px 8px rgba(0,0,0,0.3); }
+        .haber-aciklama { color: rgba(255,255,255,0.85); font-size: 14px; }
+        .haber-ok { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4); color: white; width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; z-index: 2; }
+        .haber-ok.sol { left: 12px; }
+        .haber-ok.sag { right: 12px; }
+        .haber-noktalar { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 2; }
+        .haber-nokta { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; border: none; transition: all 0.2s; }
+        .haber-nokta.aktif { background: white; width: 20px; border-radius: 4px; }
+
+        /* ARAMA */
+        .arama-bolum { padding: 0 16px 16px; }
+        .arama-ic { display: flex; gap: 10px; }
+        .arama-ic input {
+            flex: 1; padding: 13px 18px;
+            background: rgba(255,255,255,0.65);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.85);
+            border-radius: 14px; font-size: 15px; outline: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            color: #333;
+        }
+        .arama-ic input::placeholder { color: #aaa; }
+        .arama-ic button {
+            background: linear-gradient(135deg,#FF6000,#ff8c42);
+            color: white; border: none; padding: 13px 24px;
+            border-radius: 14px; font-size: 14px; cursor: pointer;
+            font-weight: 700; box-shadow: 0 2px 10px rgba(255,96,0,0.3);
+        }
+
+        /* KATEGORİLER */
+        .kategoriler { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; max-width: 1200px; margin: 0 auto 20px; padding: 0 16px; }
+        
+        
+        @media (max-width: 768px) {
+            /* Menüyü tekrar gizle */
+            .sol-menu { left: -300px !important; visibility: hidden !important; width: 280px !important; }
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; }
+            
+            /* Header'ı orijinal rengine döndür */
+            .header { background: white !important; color: #333 !important; padding: 10px 15px 10px 60px !important; }
+            .logo-text { color: #333 !important; font-size: 15px !important; }
+            
+            /* Kutu (Grid) düzenini geri getir */
+            .grid { 
+                display: grid !important; 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px !important; 
+                padding: 10px !important;
+                background: transparent !important;
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                height: auto !important;
+                background: white !important;
+                border-radius: 10px !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            }
+            .ilan-kart img { width: 100% !important; height: 110px !important; object-fit: cover !important; }
+            .ilan-kart-icerik { padding: 8px !important; }
+            
+            html, body { overflow-x: hidden !important; }
+        }
+
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; width: 80% !important; }
+            html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; background: #f8f9fa; }
+            
+            /* Header'ı Mavi Yapalım (Referanstaki gibi) */
+            .header { background: #00468c !important; color: white !important; padding: 10px !important; height: auto !important; }
+            .logo-text, .logo-icon { color: white !important; }
+            .btn-ilan { background: #ff6000 !important; border-radius: 5px !important; font-size: 10px !important; }
+
+            /* Liste Yapısı */
+            .grid { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 2px !important; /* İnce çizgi görünümü */
+                padding: 0 !important;
+                background: #e0e0e0; 
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                background: white !important;
+                border-radius: 0 !important; 
+                border: none !important;
+                box-shadow: none !important;
+                padding: 8px !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                height: 110px !important;
+            }
+            .ilan-kart img { 
+                width: 120px !important; 
+                height: 94px !important; 
+                object-fit: cover !important; 
+                border-radius: 4px !important;
+            }
+            .ilan-kart-icerik { 
+                flex: 1 !important; 
+                padding: 0 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .ilan-kart h3 { 
+                font-size: 13px !important; 
+                color: #333 !important; 
+                font-weight: 500 !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+            }
+            .ilan-detay { font-size: 11px !important; color: #666 !important; }
+            .ilan-konum { font-size: 11px !important; color: #888 !important; }
+            
+            /* Fiyat Alanı (Mavi ve Sağ Alt) */
+            .ilan-kart-icerik::after {
+                content: 'İncele'; /* Buraya fiyat değişkeni gelmeli ama CSS ile görsel simüle ediyoruz */
+                align-self: flex-end;
+                color: #00468c;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            
+            /* Favori butonu küçült */
+            .favori-btn { width: 24px !important; height: 24px !important; font-size: 12px !important; background: rgba(255,255,255,0.9) !important; }
+        }
+
+            .logo-text { font-size: 14px; }
+            .logo-icon { font-size: 15px; padding: 6px; border-radius: 8px; }
+            .btn-ilan { padding: 6px 10px; font-size: 11px; border-radius: 8px; }
+            .btn-favori { display: none; }
+            .header > a { display: none; }
+            .header-sag > span { display: none; }
+            .btn-cikis { display: none; }
+            .haber-wrapper { margin: 8px; height: 155px; border-radius: 14px; }
+            .haber-slide { padding: 20px 16px; }
+            .haber-baslik { font-size: 15px; }
+            .haber-aciklama { font-size: 12px; }
+            .haber-etiket { font-size: 10px; padding: 3px 10px; margin-bottom: 8px; }
+            .haber-ok { width: 28px; height: 28px; font-size: 14px; }
+            .arama-bolum { padding: 6px 10px 10px; }
+            .arama-ic input { padding: 10px 12px; font-size: 13px; border-radius: 10px; }
+            .arama-ic button { padding: 10px 14px; font-size: 12px; border-radius: 10px; }
+            .kategoriler { grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 0 10px 10px; }
+            .kategori-kart { padding: 10px 4px; border-radius: 12px; }
+            .kategori-ikon { font-size: 20px; margin-bottom: 6px; }
+            .kategori-isim { font-size: 9px; }
+            .kategori-aciklama { display: none; }
+            .bolum { padding: 0 10px 12px; }
+            .bolum h2 { font-size: 15px; margin-bottom: 10px; }
+            .grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+            .ilan-kart { border-radius: 12px; }
+            .ilan-kart img { height: 95px; }
+            .resim-yok { height: 95px; font-size: 11px; }
+            .ilan-kart-icerik { padding: 8px 8px 10px; }
+            .ilan-kart h3 { font-size: 11px; margin-bottom: 3px; line-height: 1.3; }
+            .ilan-detay { font-size: 9.5px; }
+            .ilan-konum { font-size: 9.5px; }
+            .favori-btn { width: 26px; height: 26px; font-size: 13px; top: 6px; right: 6px; }
+            .harita-bolum { padding: 0 10px; }
+            .harita-bolum h2 { font-size: 15px; }
+            #harita { height: 220px; border-radius: 12px; }
+            .bnav-wrap { padding: 6px 8px 16px; }
+            .bnav-item { height: 48px; font-size: 9px; }
+            .bnav-item svg { width: 18px; height: 18px; }
+            .sidebar { width: 88vw; }
+        }
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .grid { grid-template-columns: repeat(3, 1fr) !important; }
+            .kategoriler { grid-template-columns: repeat(4, 1fr); }
+        }
+        .kategori-kart {
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.8);
+            border-radius: 18px; padding: 20px 12px; text-align: center;
+            cursor: pointer; text-decoration: none; display: block;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+        }
+        .kategori-kart:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+        .kategori-ikon { font-size: 32px; margin-bottom: 10px; }
+        .kategori-isim { font-weight: 700; font-size: 13px; color: #222; margin-bottom: 4px; }
+        .kategori-aciklama { font-size: 11px; color: #888; }
+
+        /* İLANLAR */
+        .bolum { max-width: 1200px; margin: 0 auto 24px; padding: 0 16px; }
+        .bolum h2 { font-size: 20px; color: #222; margin-bottom: 16px; font-weight: 700; }
+        .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .ilan-kart {
+            background: rgba(255,255,255,0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.85);
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: transform 0.2s, box-shadow 0.2s; position: relative;
+        }
+        .ilan-kart:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .ilan-kart img { width: 100%; height: 140px; object-fit: cover; }
+        .ilan-kart-icerik { padding: 10px 12px 12px; }
+        .ilan-kart h3 { font-size: 13px; color: #222; margin-bottom: 5px; font-weight: 600; }
         .ilan-detay { font-size: 11px; color: #888; margin: 3px 0; }
-        .ilan-konum { font-size: 11px; color: #888; }
-        .resim-yok { width: 100%; height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; color: #aaa; font-size: 13px; }
-        .favori-btn { position: absolute; top: 8px; right: 8px; background: white; border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 16px; cursor: pointer; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
-        .favori-btn.aktif { color: red; }
-        .sil-btn { display: block; text-align: center; background: #fee; color: #c00; border: none; width: 100%; padding: 5px; font-size: 12px; cursor: pointer; }
+        .ilan-konum { font-size: 11px; color: #999; }
+        .resim-yok { width: 100%; height: 140px; background: rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 13px; }
+        .favori-btn { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,0.75); backdrop-filter: blur(10px); border: none; border-radius: 50%; width: 30px; height: 30px; font-size: 15px; cursor: pointer; box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+        .favori-btn.aktif { color: #FF6000; }
+        .bos-sonuc { text-align: center; padding: 50px; color: #aaa; font-size: 16px; }
+
+        /* HARİTA */
+        .harita-bolum { max-width: 1200px; margin: 0 auto 24px; padding: 0 16px; }
+        .harita-bolum h2 { font-size: 20px; color: #222; margin-bottom: 14px; font-weight: 700; }
+        #harita { width: 100%; height: 380px; border-radius: 18px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,0.8); }
+
+        /* BOTTOM NAV */
+        body { padding-bottom: 110px; }
+        .bnav-wrap {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+            padding: 10px 12px 28px 12px;
+            background: rgba(240,243,247,0.7);
+            backdrop-filter: blur(40px) saturate(200%);
+            -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-top: 0.5px solid rgba(255,255,255,0.6);
+        }
+        .bnav-inner {
+            display: flex;
+            background: rgba(255,255,255,0.35);
+            border: 0.5px solid rgba(255,255,255,0.7);
+            border-radius: 20px; padding: 4px; position: relative;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+        }
+        .bnav-slider {
+            position: absolute; top: 4px; bottom: 4px; border-radius: 16px;
+            background: rgba(255,255,255,0.75);
+            border: 0.5px solid rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            transition: left 0.35s cubic-bezier(0.34,1.15,0.64,1), width 0.35s cubic-bezier(0.34,1.15,0.64,1);
+            pointer-events: none;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,1);
+        }
+        .bnav-item {
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 4px; height: 58px; font-size: 10px;
+            font-weight: 600; cursor: pointer; color: rgba(0,0,0,0.35);
+            position: relative; z-index: 1; border-radius: 16px;
+            transition: color 0.3s; text-decoration: none; user-select: none;
+        }
+        .bnav-item.active { color: #FF6000; }
+        .bnav-item svg { width: 22px; height: 22px; }
+
+        @keyframes bnavSlideR { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
+        @keyframes bnavSlideL { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
+    
+        /* Mobil Fixleri */
+        
+        
+        @media (max-width: 768px) {
+            /* Menüyü tekrar gizle */
+            .sol-menu { left: -300px !important; visibility: hidden !important; width: 280px !important; }
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; }
+            
+            /* Header'ı orijinal rengine döndür */
+            .header { background: white !important; color: #333 !important; padding: 10px 15px 10px 60px !important; }
+            .logo-text { color: #333 !important; font-size: 15px !important; }
+            
+            /* Kutu (Grid) düzenini geri getir */
+            .grid { 
+                display: grid !important; 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px !important; 
+                padding: 10px !important;
+                background: transparent !important;
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                height: auto !important;
+                background: white !important;
+                border-radius: 10px !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            }
+            .ilan-kart img { width: 100% !important; height: 110px !important; object-fit: cover !important; }
+            .ilan-kart-icerik { padding: 8px !important; }
+            
+            html, body { overflow-x: hidden !important; }
+        }
+
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; width: 80% !important; }
+            html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; background: #f8f9fa; }
+            
+            /* Header'ı Mavi Yapalım (Referanstaki gibi) */
+            .header { background: #00468c !important; color: white !important; padding: 10px !important; height: auto !important; }
+            .logo-text, .logo-icon { color: white !important; }
+            .btn-ilan { background: #ff6000 !important; border-radius: 5px !important; font-size: 10px !important; }
+
+            /* Liste Yapısı */
+            .grid { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 2px !important; /* İnce çizgi görünümü */
+                padding: 0 !important;
+                background: #e0e0e0; 
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                background: white !important;
+                border-radius: 0 !important; 
+                border: none !important;
+                box-shadow: none !important;
+                padding: 8px !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                height: 110px !important;
+            }
+            .ilan-kart img { 
+                width: 120px !important; 
+                height: 94px !important; 
+                object-fit: cover !important; 
+                border-radius: 4px !important;
+            }
+            .ilan-kart-icerik { 
+                flex: 1 !important; 
+                padding: 0 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .ilan-kart h3 { 
+                font-size: 13px !important; 
+                color: #333 !important; 
+                font-weight: 500 !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+            }
+            .ilan-detay { font-size: 11px !important; color: #666 !important; }
+            .ilan-konum { font-size: 11px !important; color: #888 !important; }
+            
+            /* Fiyat Alanı (Mavi ve Sağ Alt) */
+            .ilan-kart-icerik::after {
+                content: 'İncele'; /* Buraya fiyat değişkeni gelmeli ama CSS ile görsel simüle ediyoruz */
+                align-self: flex-end;
+                color: #00468c;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            
+            /* Favori butonu küçült */
+            .favori-btn { width: 24px !important; height: 24px !important; font-size: 12px !important; background: rgba(255,255,255,0.9) !important; }
+        }
+
+            .sol-menu.acik { 
+                left: 0 !important; 
+            }
+            .header { 
+                padding-left: 60px !important; 
+            }
+            .grid { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 8px !important; 
+            }
+        }
+    </style>
+
+    <style>
+        
+        
+        @media (max-width: 768px) {
+            /* Menüyü tekrar gizle */
+            .sol-menu { left: -300px !important; visibility: hidden !important; width: 280px !important; }
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; }
+            
+            /* Header'ı orijinal rengine döndür */
+            .header { background: white !important; color: #333 !important; padding: 10px 15px 10px 60px !important; }
+            .logo-text { color: #333 !important; font-size: 15px !important; }
+            
+            /* Kutu (Grid) düzenini geri getir */
+            .grid { 
+                display: grid !important; 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px !important; 
+                padding: 10px !important;
+                background: transparent !important;
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                height: auto !important;
+                background: white !important;
+                border-radius: 10px !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            }
+            .ilan-kart img { width: 100% !important; height: 110px !important; object-fit: cover !important; }
+            .ilan-kart-icerik { padding: 8px !important; }
+            
+            html, body { overflow-x: hidden !important; }
+        }
+
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; width: 80% !important; }
+            html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; background: #f8f9fa; }
+            
+            /* Header'ı Mavi Yapalım (Referanstaki gibi) */
+            .header { background: #00468c !important; color: white !important; padding: 10px !important; height: auto !important; }
+            .logo-text, .logo-icon { color: white !important; }
+            .btn-ilan { background: #ff6000 !important; border-radius: 5px !important; font-size: 10px !important; }
+
+            /* Liste Yapısı */
+            .grid { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 2px !important; /* İnce çizgi görünümü */
+                padding: 0 !important;
+                background: #e0e0e0; 
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                background: white !important;
+                border-radius: 0 !important; 
+                border: none !important;
+                box-shadow: none !important;
+                padding: 8px !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                height: 110px !important;
+            }
+            .ilan-kart img { 
+                width: 120px !important; 
+                height: 94px !important; 
+                object-fit: cover !important; 
+                border-radius: 4px !important;
+            }
+            .ilan-kart-icerik { 
+                flex: 1 !important; 
+                padding: 0 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .ilan-kart h3 { 
+                font-size: 13px !important; 
+                color: #333 !important; 
+                font-weight: 500 !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+            }
+            .ilan-detay { font-size: 11px !important; color: #666 !important; }
+            .ilan-konum { font-size: 11px !important; color: #888 !important; }
+            
+            /* Fiyat Alanı (Mavi ve Sağ Alt) */
+            .ilan-kart-icerik::after {
+                content: 'İncele'; /* Buraya fiyat değişkeni gelmeli ama CSS ile görsel simüle ediyoruz */
+                align-self: flex-end;
+                color: #00468c;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            
+            /* Favori butonu küçült */
+            .favori-btn { width: 24px !important; height: 24px !important; font-size: 12px !important; background: rgba(255,255,255,0.9) !important; }
+        }
+
+            .sol-menu.acik { left: 0 !important; visibility: visible; }
+            .sol-menu-overlay { display: none !important; }
+            .sol-menu-overlay.acik { display: block !important; }
+            body { overflow-x: hidden !important; width: 100vw; position: relative; }
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            <div class="logo-icon">🏠</div>
-            <div class="logo-text">İlan <span>Sitem</span></div>
-        </div>
-        <div class="nav">
-            <a href="/">Anasayfa</a>
-        </div>
-        <div class="header-sag">
-            {% if user.is_authenticated %}
-                <span style="font-size:13px; color:#555;">Merhaba, {{ user.username }}!</span>
-                <form method="post" action="/cikis/" style="display:inline;">
-                    {% csrf_token %}
-                    <button class="btn-cikis" type="submit">Çıkış Yap</button>
-                </form>
-            {% else %}
-                <a href="/giris/">Giriş Yap / Üye Ol</a>
-            {% endif %}
-            <a href="/ilan-ekle/" class="btn-ilan">Ücretsiz İlan Ver</a>
+
+<!-- HAMBURGER -->
+<button class="hamburger" onclick="solMenuAc()">
+    <span></span><span></span><span></span>
+</button>
+
+<!-- SOL MENÜ OVERLAY -->
+<div class="sol-menu-overlay" id="solMenuOverlay" onclick="solMenuKapat()"></div>
+
+<!-- SOL MENÜ -->
+<div class="sol-menu" id="solMenu" style="left: -300px;">
+    <button class="sol-menu-kapat" onclick="solMenuKapat()">✕</button>
+    <div class="sol-menu-profil">
+        <div class="sol-menu-avatar">{{ user.username|first|upper }}</div>
+        <div>
+            <div class="sol-menu-isim">{{ user.username }}</div>
+            <div class="sol-menu-rol">{% if user.is_superuser %}Admin{% else %}Üye{% endif %}</div>
         </div>
     </div>
-
-    <div class="hero">
-        <h1>Hayalinizdeki Evi Bulun!</h1>
-        <div class="arama-kutu">
-            <input type="text" placeholder="Konum (İlçe/Mahalle)">
-            <select><option>Satılık</option><option>Kiralık</option></select>
-            <select><option>Daire</option><option>Villa</option><option>Arsa</option></select>
-            <button>ARA</button>
-        </div>
+    <div class="sol-menu-nav">
+        <div class="sol-menu-baslik">MENU</div>
+        <a href="/" class="sol-menu-link aktif">🏠 Anasayfa</a>
+        <div class="sol-menu-baslik">HESABIM</div>
+        <button class="sol-menu-link" onclick="solMenuKapat(); sidebarAc()">
+            ❤ Favorilerim
+            {% if favoriler %}<span class="badge">{{ favoriler|length }}</span>{% endif %}
+        </button>
+        <a href="/ilan-ekle/" class="sol-menu-link">➕ İlan Ver</a>
+        {% if user.is_superuser %}<div class="sol-menu-baslik">YÖNETİM</div>{% endif %}
     </div>
-
-    <div class="bolum">
-        <h2>Son İlanlar</h2>
-        <div class="grid">
-            {% for ilan in ilanlar %}
-            <div class="ilan-kart">
-                <a href="/favori/{{ ilan.id }}/">
-                    <button class="favori-btn {% if ilan.id in favori_idler %}aktif{% endif %}">
-                        {% if ilan.id in favori_idler %}❤{% else %}♡{% endif %}
-                    </button>
-                </a>
-                <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
-                    {% with ilk=ilan.medyalar.first %}
-                    {% if ilk %}
-                    <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
-                    {% else %}
-                    <div class="resim-yok">Resim Yok</div>
-                    {% endif %}
-                    {% endwith %}
-                    <div class="ilan-kart-icerik">
-                        <h3>{{ ilan.baslik }}</h3>
-                        <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
-                        <div class="ilan-konum">📍 {{ ilan.konum }}</div>
-                    </div>
-                </a>
-                {% if ilan.kullanici == user %}
-                <form method="post" action="/ilan-sil/{{ ilan.id }}/">
-                    {% csrf_token %}
-                    <button class="sil-btn" type="submit" onclick="return confirm('İlanı silmek istediğine emin misin?')">🗑 İlanı Sil</button>
-                </form>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
+    <div class="sol-menu-alt">
+        <form method="post" action="/cikis/">
+            {% csrf_token %}
+            <button type="submit" class="sol-menu-link" style="color:#e33;">🚪 Çıkış Yap</button>
+        </form>
     </div>
+</div>
 
-    {% if favoriler %}
-    <div class="bolum" style="margin-top: 40px;">
-        <h2>❤ Favorilerim</h2>
-        <div class="grid">
+<!-- FAVORİLER SIDEBAR -->
+<div class="overlay" id="overlay" onclick="sidebarKapat()"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h3>❤ Favorilerim</h3>
+        <button class="sidebar-kapat" onclick="sidebarKapat()">✕</button>
+    </div>
+    <div class="sidebar-icerik">
+        {% if favoriler %}
             {% for ilan in favoriler %}
-            <div class="ilan-kart">
-                <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
-                    {% with ilk=ilan.medyalar.first %}
-                    {% if ilk %}
-                    <img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
-                    {% else %}
-                    <div class="resim-yok">Resim Yok</div>
-                    {% endif %}
-                    {% endwith %}
-                    <div class="ilan-kart-icerik">
-                        <h3>{{ ilan.baslik }}</h3>
-                        <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
-                        <div class="ilan-konum">📍 {{ ilan.konum }}</div>
-                    </div>
-                </a>
+            <a href="/ilan/{{ ilan.ilan.id }}/" class="sidebar-ilan">
+                {% with ilk=ilan.ilan.medyalar.first %}
+                {% if ilk %}<img src="{{ ilk.dosya.url }}" alt="{{ ilan.ilan.baslik }}">
+                {% else %}<div style="width:60px;height:50px;background:rgba(0,0,0,0.05);border-radius:8px;"></div>{% endif %}
+                {% endwith %}
+                <div class="sidebar-ilan-bilgi">
+                    <h4>{{ ilan.ilan.baslik }}</h4>
+                    <p>{{ ilan.ilan.oda_sayisi }} · {{ ilan.ilan.metrekare }} m²</p>
+                    <p>📍 {{ ilan.ilan.konum }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        {% else %}
+            <p style="color:#bbb;margin-top:20px;text-align:center;">Henüz favori eklenmedi.</p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="logo">
+        <div class="logo-icon">🕌</div>
+        <div class="logo-text">Dingönüllüleri</div>
+    </div>
+    <a href="/" style="color:#888;text-decoration:none;font-size:13px;">Anasayfa</a>
+    <div class="header-sag">
+        {% if user.is_authenticated %}
+            <button class="btn-favori" onclick="sidebarAc()">❤ Favorilerim</button>
+            <span style="font-size:13px;color:#666;">Merhaba, {{ user.username }}!</span>
+            <form method="post" action="/cikis/" style="display:inline;">
+                {% csrf_token %}
+                <button class="btn-cikis" type="submit">Çıkış Yap</button>
+            </form>
+        {% else %}
+            <a href="/giris/" style="color:#666;text-decoration:none;font-size:13px;">Giriş Yap</a>
+        {% endif %}
+        <a href="/ilan-ekle/" class="btn-ilan">Ücretsiz İlan Ver</a>
+    </div>
+</div>
+
+<!-- HABER SLAYT -->
+<div class="haber-wrapper">
+    <div class="haber-slider" id="haberSlider">
+        {% if haberler %}
+            {% for haber in haberler %}
+            <div class="haber-slide" style="background: {{ haber.renk }};">
+                {% if haber.resim %}<img class="haber-slide-resim" src="{{ haber.resim.url }}" alt="{{ haber.baslik }}">{% endif %}
+                <div class="haber-slide-icerik">
+                    <div class="haber-etiket" style="background: #FF6000;">{{ haber.etiket }}</div>
+                    <div class="haber-baslik">{{ haber.baslik }}</div>
+                    <div class="haber-aciklama">{{ haber.aciklama }}</div>
+                </div>
             </div>
             {% endfor %}
+        {% else %}
+            <div class="haber-slide" style="background: linear-gradient(135deg,#1a1a2e,#2d2d5e);">
+                <div class="haber-slide-icerik">
+                    <div class="haber-etiket" style="background: #FF6000;">HOŞGELDİNİZ</div>
+                    <div class="haber-baslik">Dingönüllüleri'ne Hoş Geldiniz!</div>
+                    <div class="haber-aciklama">Admin panelinden haber ekleyebilirsiniz.</div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <button class="haber-ok sol" onclick="haberDegistir(-1)">‹</button>
+    <button class="haber-ok sag" onclick="haberDegistir(1)">›</button>
+    <div class="haber-noktalar" id="haberNoktalar"></div>
+</div>
+
+<!-- ARAMA -->
+<div class="arama-bolum">
+    <form method="get" action="/">
+        <div class="arama-ic">
+            <input type="text" name="arama" placeholder="İl, İlçe veya Mahalle ara..." value="{{ arama }}">
+            <button type="submit">ARA</button>
         </div>
+    </form>
+</div>
+
+<!-- KATEGORİLER -->
+<div class="kategoriler">
+    <a href="/?arama=" class="kategori-kart">
+        <div class="kategori-ikon">🏠</div>
+        <div class="kategori-isim">Lojmanlar</div>
+        <div class="kategori-aciklama">Tüm lojman ilanları</div>
+    </a>
+    <a href="/akademi/" class="kategori-kart">
+        <div class="kategori-ikon">🎓</div>
+        <div class="kategori-isim">Akademi Merkezleri</div>
+        <div class="kategori-aciklama">Eğitim ve kurslar</div>
+    </a>
+    <a href="/muftulukler/" class="kategori-kart">
+        <div class="kategori-ikon">🕌</div>
+        <div class="kategori-isim">Müftülükler</div>
+        <div class="kategori-aciklama">İl ve ilçe müftülükleri</div>
+    </a>
+    <div class="kategori-kart" style="opacity:0.5;cursor:default;">
+        <div class="kategori-ikon">➕</div>
+        <div class="kategori-isim">Yakında</div>
+        <div class="kategori-aciklama">Yeni kategori</div>
+    </div>
+</div>
+
+<!-- İLANLAR -->
+<div class="bolum">
+    {% if arama %}
+    <h2>🔍 "{{ arama }}" için sonuçlar</h2>
+    {% if not ilanlar %}
+    <div class="bos-sonuc">
+        <p>😕 "{{ arama }}" için ilan bulunamadı.</p>
+        <p style="margin-top:10px;font-size:14px;"><a href="/" style="color:#FF6000;">Tüm ilanları gör</a></p>
     </div>
     {% endif %}
+    {% else %}
+    <h2>Son İlanlar</h2>
+    {% endif %}
+    <div class="grid">
+        {% for ilan in ilanlar %}
+        <div class="ilan-kart">
+            <a href="/favori/{{ ilan.id }}/">
+                <button class="favori-btn {% if ilan.id in favori_idler %}aktif{% endif %}">
+                    {% if ilan.id in favori_idler %}❤{% else %}♡{% endif %}
+                </button>
+            </a>
+            <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
+                {% with ilk=ilan.medyalar.first %}
+                {% if ilk %}<img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+                {% else %}<div class="resim-yok">Resim Yok</div>{% endif %}
+                {% endwith %}
+                <div class="ilan-kart-icerik">
+                    <h3>{{ ilan.baslik }}</h3>
+                    <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
+                    <div class="ilan-konum">📍 {{ ilan.konum }}</div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
+<!-- HARİTA -->
+<div class="harita-bolum">
+    <h2>🗺 İlanları Haritada Gör</h2>
+    <div id="harita"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bnav-wrap">
+  <div class="bnav-inner" id="bnavInner">
+    <div class="bnav-slider" id="bnavSlider"></div>
+    <a href="/" class="bnav-item" id="bnav-0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Anasayfa
+    </a>
+    <a href="/ilanlar/" class="bnav-item" id="bnav-1">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      İlanlar
+    </a>
+    <a href="/favoriler/" class="bnav-item" id="bnav-2">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Favorilerim
+    </a>
+    <a href="/duyurular/" class="bnav-item" id="bnav-3">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Duyurular
+    </a>
+  </div>
+</div>
+
+<script>
+    function solMenuAc() { document.getElementById('solMenu').classList.add('acik'); document.getElementById('solMenuOverlay').classList.add('acik'); }
+    function solMenuKapat() { document.getElementById('solMenu').classList.remove('acik'); document.getElementById('solMenuOverlay').classList.remove('acik'); }
+    function sidebarAc() { document.getElementById('sidebar').classList.add('acik'); document.getElementById('overlay').classList.add('acik'); }
+    function sidebarKapat() { document.getElementById('sidebar').classList.remove('acik'); document.getElementById('overlay').classList.remove('acik'); }
+
+    // HABER SLAYT
+    let simdiki = 0;
+    const slider = document.getElementById('haberSlider');
+    const noktalarDiv = document.getElementById('haberNoktalar');
+    const toplam = slider.children.length;
+    for (let i = 0; i < toplam; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'haber-nokta' + (i === 0 ? ' aktif' : '');
+        btn.onclick = () => haberGit(i);
+        noktalarDiv.appendChild(btn);
+    }
+    function haberGit(index) {
+        simdiki = index;
+        slider.style.transform = 'translateX(-' + (simdiki * 100) + '%)';
+        document.querySelectorAll('.haber-nokta').forEach((n, i) => n.classList.toggle('aktif', i === simdiki));
+    }
+    function haberDegistir(yon) { haberGit((simdiki + yon + toplam) % toplam); }
+    if (toplam > 1) setInterval(() => haberDegistir(1), 5000);
+
+    // HARİTA
+    var harita = L.map('harita').setView([39.0, 35.0], 6);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(harita);
+    var ilanlar = [{% for ilan in ilanlar %}{ baslik: "{{ ilan.baslik }}", konum: "{{ ilan.konum }}", url: "/ilan/{{ ilan.id }}/" },{% endfor %}];
+    ilanlar.forEach(function(ilan) {
+        fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(ilan.konum) + '&format=json&limit=1')
+        .then(r => r.json()).then(data => {
+            if (data.length > 0) {
+                var marker = L.marker([data[0].lat, data[0].lon]).addTo(harita);
+                marker.bindPopup('<a href="' + ilan.url + '">' + ilan.baslik + '</a><br>📍 ' + ilan.konum);
+            }
+        });
+    });
+
+    // BOTTOM NAV
+    (function(){
+        var pages=['/','/ilanlar/','/favoriler/','/duyurular/'];
+        var path=window.location.pathname;
+        var cur=pages.indexOf(path); if(cur===-1)cur=0;
+        var slider=document.getElementById('bnavSlider');
+        var inner=document.getElementById('bnavInner');
+        var items=document.querySelectorAll('.bnav-item');
+        function moveSlider(i){ var w=inner.offsetWidth-8; var bw=w/4; slider.style.left=(4+i*bw)+'px'; slider.style.width=bw+'px'; }
+        items[cur].classList.add('active');
+        setTimeout(function(){ moveSlider(cur); }, 50);
+        window.addEventListener('resize', function(){ moveSlider(cur); });
+        items.forEach(function(item,i){
+            item.addEventListener('click', function(){ if(i!==cur) sessionStorage.setItem('navDir',i>cur?'right':'left'); });
+        });
+        var dir=sessionStorage.getItem('navDir');
+        if(dir){ document.body.style.animation=dir==='right'?'bnavSlideR 0.3s ease':'bnavSlideL 0.3s ease'; sessionStorage.removeItem('navDir'); }
+    })();
+</script>
+
+    <style>
+        
+        
+        @media (max-width: 768px) {
+            /* Menüyü tekrar gizle */
+            .sol-menu { left: -300px !important; visibility: hidden !important; width: 280px !important; }
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; }
+            
+            /* Header'ı orijinal rengine döndür */
+            .header { background: white !important; color: #333 !important; padding: 10px 15px 10px 60px !important; }
+            .logo-text { color: #333 !important; font-size: 15px !important; }
+            
+            /* Kutu (Grid) düzenini geri getir */
+            .grid { 
+                display: grid !important; 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px !important; 
+                padding: 10px !important;
+                background: transparent !important;
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                height: auto !important;
+                background: white !important;
+                border-radius: 10px !important;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+            }
+            .ilan-kart img { width: 100% !important; height: 110px !important; object-fit: cover !important; }
+            .ilan-kart-icerik { padding: 8px !important; }
+            
+            html, body { overflow-x: hidden !important; }
+        }
+
+            .sol-menu.acik { left: 0 !important; visibility: visible !important; width: 80% !important; }
+            html, body { overflow-x: hidden !important; width: 100% !important; position: relative !important; background: #f8f9fa; }
+            
+            /* Header'ı Mavi Yapalım (Referanstaki gibi) */
+            .header { background: #00468c !important; color: white !important; padding: 10px !important; height: auto !important; }
+            .logo-text, .logo-icon { color: white !important; }
+            .btn-ilan { background: #ff6000 !important; border-radius: 5px !important; font-size: 10px !important; }
+
+            /* Liste Yapısı */
+            .grid { 
+                display: flex !important; 
+                flex-direction: column !important; 
+                gap: 2px !important; /* İnce çizgi görünümü */
+                padding: 0 !important;
+                background: #e0e0e0; 
+            }
+            .ilan-kart { 
+                display: flex !important; 
+                flex-direction: row !important; 
+                background: white !important;
+                border-radius: 0 !important; 
+                border: none !important;
+                box-shadow: none !important;
+                padding: 8px !important;
+                gap: 12px !important;
+                margin: 0 !important;
+                height: 110px !important;
+            }
+            .ilan-kart img { 
+                width: 120px !important; 
+                height: 94px !important; 
+                object-fit: cover !important; 
+                border-radius: 4px !important;
+            }
+            .ilan-kart-icerik { 
+                flex: 1 !important; 
+                padding: 0 !important; 
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: space-between !important;
+            }
+            .ilan-kart h3 { 
+                font-size: 13px !important; 
+                color: #333 !important; 
+                font-weight: 500 !important;
+                line-height: 1.2 !important;
+                margin: 0 !important;
+            }
+            .ilan-detay { font-size: 11px !important; color: #666 !important; }
+            .ilan-konum { font-size: 11px !important; color: #888 !important; }
+            
+            /* Fiyat Alanı (Mavi ve Sağ Alt) */
+            .ilan-kart-icerik::after {
+                content: 'İncele'; /* Buraya fiyat değişkeni gelmeli ama CSS ile görsel simüle ediyoruz */
+                align-self: flex-end;
+                color: #00468c;
+                font-weight: 700;
+                font-size: 14px;
+            }
+            
+            /* Favori butonu küçült */
+            .favori-btn { width: 24px !important; height: 24px !important; font-size: 12px !important; background: rgba(255,255,255,0.9) !important; }
+        }
+
+            .sol-menu.acik, .sidebar.acik { 
+                display: block !important; 
+                left: 0 !important; 
+                visibility: visible !important;
+                z-index: 99999 !important;
+            }
+            .sol-menu-overlay, .overlay { display: none !important; }
+            .sol-menu-overlay.acik, .overlay.acik { display: block !important; }
+            
+            /* Sayfanın sağa kaymasını kökten engelle */
+            html, body { 
+                overflow-x: hidden !important; 
+                width: 100% !important; 
+                margin: 0 !important; 
+                padding: 0 !important;
+                position: relative !important;
+            }
+            .header { padding-left: 60px !important; }
+        }
+    </style>
+    <script>
+        // Sayfa yüklendiğinde her şeyi kapalıya zorla
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('solMenu').classList.remove('acik');
+            document.getElementById('solMenuOverlay').classList.remove('acik');
+        });
+    </script>
 </body>
 </html>
