@@ -146,3 +146,13 @@ def hutbeler(request):
     from .models import Hutbe
     hutbeler = Hutbe.objects.filter(aktif=True)
     return render(request, 'hutbeler.html', {'hutbeler': hutbeler})
+
+def tum_ilanlar(request):
+    if not request.user.is_authenticated:
+        return redirect('giris')
+    arama = request.GET.get('arama', '')
+    ilanlar = Ilan.objects.all().order_by('-tarih')
+    if arama:
+        ilanlar = ilanlar.filter(konum__icontains=arama) | ilanlar.filter(baslik__icontains=arama)
+    return render(request, 'ilanlar.html', {'ilanlar': ilanlar, 'arama': arama})
+
