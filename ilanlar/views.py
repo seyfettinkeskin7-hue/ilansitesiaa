@@ -18,9 +18,10 @@ def anasayfa(request):
         return redirect('giris')
     haberler = Haber.objects.filter(aktif=True).order_by('-tarih')
     ilanlar = Ilan.objects.all().order_by('-tarih')
+    ilanlar2 = Ilan.objects.all().order_by('?')
     favori_idler = list(Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True))
     favoriler = Favori.objects.filter(kullanici=request.user).select_related('ilan')
-    return render(request, 'anasayfa.html', {'haberler': haberler, 'ilanlar': ilanlar, 'favori_idler': favori_idler, 'favoriler': favoriler})
+    return render(request, 'anasayfa.html', {'haberler': haberler, 'ilanlar': ilanlar, 'ilanlar2': ilanlar2, 'favori_idler': favori_idler, 'favoriler': favoriler})
 
 def muftulukler(request):
     iller = sorted(MUFTULUK_VERISI.keys())

@@ -467,6 +467,33 @@
         {% endfor %}
     </div>
 </div>
+</div>
+
+<!-- İKİNCİ İLAN SATIRI -->
+<div class="bolum">
+    <h2>🔀 Keşfet</h2>
+    <div class="grid">
+        {% for ilan in ilanlar2 %}
+        <div class="ilan-kart">
+            <a href="/favori/{{ ilan.id }}/">
+                <button class="favori-btn {% if ilan.id in favori_idler %}aktif{% endif %}">
+                    {% if ilan.id in favori_idler %}❤{% else %}♡{% endif %}
+                </button>
+            </a>
+            <a href="/ilan/{{ ilan.id }}/" style="text-decoration:none;">
+                {% with ilk=ilan.medyalar.first %}
+                {% if ilk %}<img src="{{ ilk.dosya.url }}" alt="{{ ilan.baslik }}">
+                {% else %}<div class="resim-yok">Resim Yok</div>{% endif %}
+                {% endwith %}
+                <div class="ilan-kart-icerik">
+                    <h3>{{ ilan.baslik }}</h3>
+                    <div class="ilan-detay">{{ ilan.oda_sayisi }} · {{ ilan.metrekare }} m²</div>
+                    <div class="ilan-konum">📍 {{ ilan.konum }}</div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
 
 <!-- HARİTA -->
 <div class="harita-bolum">
