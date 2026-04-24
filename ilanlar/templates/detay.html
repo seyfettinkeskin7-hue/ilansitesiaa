@@ -250,14 +250,21 @@
         haritaYuklendi = true;
         var harita = L.map("harita").setView([39.0, 35.0], 6);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(harita);
-        fetch("https://nominatim.openstreetmap.org/search?q=" + encodeURIComponent("{{ ilan.konum }}") + "&format=json&limit=1")
-        .then(r => r.json()).then(data => {
-            if (data.length > 0) {
-                harita.setView([data[0].lat, data[0].lon], 14);
-                L.marker([data[0].lat, data[0].lon]).addTo(harita)
-                    .bindPopup("<b>{{ ilan.baslik }}</b><br>📍 {{ ilan.konum }}").openPopup();
-            }
-        });
+        var konumTam = "{{ ilan.konum }}";
+        var konumKisa = konumTam.split(" ").slice(0, 3).join(" ");
+        function konumAra(q) {
+            fetch("https://nominatim.openstreetmap.org/search?q=" + encodeURIComponent(q) + "&format=json&limit=1&countrycodes=tr")
+            .then(r => r.json()).then(data => {
+                if (data.length > 0) {
+                    harita.setView([data[0].lat, data[0].lon], 13);
+                    L.marker([data[0].lat, data[0].lon]).addTo(harita)
+                        .bindPopup("<b>{{ ilan.baslik }}</b><br>📍 {{ ilan.konum }}").openPopup();
+                } else if (q !== konumKisa) {
+                    konumAra(konumKisa);
+                }
+            });
+        }
+        konumAra(konumTam);
     }
 </script>
 </body>
