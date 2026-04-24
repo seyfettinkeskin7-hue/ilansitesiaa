@@ -45,7 +45,6 @@ class Ilan(models.Model):
     kullanici = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     baslik = models.CharField(max_length=200)
     aciklama = models.TextField(blank=True)  # kısa özet
-    icerik = models.TextField(blank=True)  # uzun yazı
     konum = models.CharField(max_length=200)
     oda_sayisi = models.CharField(max_length=10, default='1+1')
     kat = models.IntegerField(default=0)
