@@ -245,7 +245,12 @@
     .kategori-ikon { font-size: 26px; margin-bottom: 7px; }
     .kategori-isim { font-size: 12px; }
     .kategori-aciklama { font-size: 10px; }
-    .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .grid { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    .grid::-webkit-scrollbar { display: none; }
+    .ilan-kart { min-width: 75vw; max-width: 75vw; flex-shrink: 0; scroll-snap-align: start; }
+    .ilan-kart img { height: 160px; }
+    .ilan-kart h3 { font-size: 13px; }
+    .ilan-detay, .ilan-konum { font-size: 11px; }
     .ilan-kart img { height: 120px; }
     .ilan-kart-icerik { padding: 8px 10px 10px; }
     .ilan-kart h3 { font-size: 12px; }
@@ -262,7 +267,7 @@
     .bnav-item svg { width: 20px; height: 20px; }
 }
 @media (max-width: 380px) {
-    .grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .ilan-kart { min-width: 75vw; max-width: 75vw; }
     .haber-wrapper { height: 160px; }
     .haber-baslik { font-size: 14px; }
     .kategori-isim { font-size: 11px; }
