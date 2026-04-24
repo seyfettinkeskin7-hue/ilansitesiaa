@@ -223,6 +223,50 @@
 
         @keyframes bnavSlideR { from{opacity:0;transform:translateX(40px)} to{opacity:1;transform:translateX(0)} }
         @keyframes bnavSlideL { from{opacity:0;transform:translateX(-40px)} to{opacity:1;transform:translateX(0)} }
+
+/* ===== MOBİL UYUM ===== */
+@media (max-width: 768px) {
+    .header { padding: 10px 12px 10px 58px; gap: 8px; flex-wrap: wrap; }
+    .logo-text { font-size: 15px; }
+    .header-sag { gap: 6px; }
+    .header-sag span { display: none; }
+    .btn-ilan { padding: 7px 12px; font-size: 12px; }
+    .header > a[href="/"] { display: none; }
+    .haber-wrapper { height: 180px; margin: 12px; }
+    .haber-slide { padding: 20px 18px; }
+    .haber-baslik { font-size: 16px; }
+    .haber-aciklama { display: none; }
+    .haber-etiket { font-size: 11px; padding: 4px 10px; margin-bottom: 8px; }
+    .arama-bolum { padding: 0 12px 12px; }
+    .arama-ic input { padding: 11px 14px; font-size: 14px; }
+    .arama-ic button { padding: 11px 16px; font-size: 13px; }
+    .kategoriler { grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 12px; margin-bottom: 16px; }
+    .kategori-kart { padding: 16px 10px; border-radius: 14px; }
+    .kategori-ikon { font-size: 26px; margin-bottom: 7px; }
+    .kategori-isim { font-size: 12px; }
+    .kategori-aciklama { font-size: 10px; }
+    .grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .ilan-kart img { height: 120px; }
+    .ilan-kart-icerik { padding: 8px 10px 10px; }
+    .ilan-kart h3 { font-size: 12px; }
+    .ilan-detay, .ilan-konum { font-size: 10px; }
+    .resim-yok { height: 120px; }
+    .bolum { padding: 0 12px; margin-bottom: 20px; }
+    .bolum h2 { font-size: 17px; margin-bottom: 12px; }
+    .harita-bolum { padding: 0 12px; }
+    .harita-bolum h2 { font-size: 17px; }
+    #harita { height: 260px; border-radius: 14px; }
+    .sol-menu { width: 240px; }
+    .bnav-wrap { padding: 8px 10px 22px; }
+    .bnav-item { height: 52px; font-size: 9px; }
+    .bnav-item svg { width: 20px; height: 20px; }
+}
+@media (max-width: 380px) {
+    .grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .haber-wrapper { height: 160px; }
+    .haber-baslik { font-size: 14px; }
+    .kategori-isim { font-size: 11px; }
+}
     </style>
 </head>
 <body>
