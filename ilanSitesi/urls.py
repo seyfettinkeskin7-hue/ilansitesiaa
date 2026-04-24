@@ -15,6 +15,7 @@ urlpatterns = [
     path('ilan-ekle/', views.ilan_ekle),
     path('ilan-sil/<int:ilan_id>/', views.ilan_sil),
     path('favori/<int:ilan_id>/', views.favori_ekle, name='favori_ekle'),
+    path('haber/<int:haber_id>/', views.haber_detay, name='haber_detay'),
     path('favoriler/', views.favorilerim, name='favorilerim'),
     path('panel/', views.panel, name='panel'),
     path('panel/haber-ekle/', views.haber_ekle),

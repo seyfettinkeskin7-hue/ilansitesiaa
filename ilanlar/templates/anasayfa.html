@@ -370,11 +370,12 @@
             {% for haber in haberler %}
             <div class="haber-slide" style="background: {{ haber.renk }};">
                 {% if haber.resim %}<img class="haber-slide-resim" src="{{ haber.resim.url }}" alt="{{ haber.baslik }}">{% endif %}
+                <a href="/haber/{{ haber.id }}/" style="text-decoration:none;">
                 <div class="haber-slide-icerik">
                     <div class="haber-etiket" style="background: #FF6000;">{{ haber.etiket }}</div>
                     <div class="haber-baslik">{{ haber.baslik }}</div>
-                    <div class="haber-aciklama">{{ haber.aciklama }}</div>
                 </div>
+                </a>
             </div>
             {% endfor %}
         {% else %}

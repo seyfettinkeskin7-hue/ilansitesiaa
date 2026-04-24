@@ -156,3 +156,8 @@ def tum_ilanlar(request):
         ilanlar = ilanlar.filter(konum__icontains=arama) | ilanlar.filter(baslik__icontains=arama)
     return render(request, 'ilanlar.html', {'ilanlar': ilanlar, 'arama': arama})
 
+
+def haber_detay(request, haber_id):
+    from .models import Haber
+    haber = Haber.objects.get(id=haber_id, aktif=True)
+    return render(request, "haber_detay.html", {"haber": haber})
