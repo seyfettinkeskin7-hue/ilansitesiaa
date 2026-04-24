@@ -2,360 +2,256 @@
 <html>
 <head>
     <title>{{ ilan.baslik }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial; background: #f5f5f5; }
-        .header { background: white; padding: 12px 30px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
-        .logo-text span { color: #FF6000; }
-        .kart { max-width: 900px; margin: 30px auto; background: white; border-radius: 8px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .geri { display: inline-block; color: #FF6000; text-decoration: none; margin-bottom: 15px; font-size: 13px; }
-        .galeri-ana { position: relative; margin-bottom: 10px; }
-        .ana-resim { width: 100%; height: 420px; object-fit: cover; border-radius: 8px; display: block; }
-        .galeri-ok { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.9); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f4f6f9; padding-bottom: 100px; }
+
+        .header { background: white; padding: 14px 16px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
+        .header-geri { font-size: 26px; color: #333; text-decoration: none; line-height: 1; }
+        .header-baslik { flex: 1; font-size: 17px; font-weight: 600; color: #222; text-align: center; }
+        .header-favori { font-size: 22px; color: #ccc; text-decoration: none; }
+        .header-favori.aktif { color: #FF6000; }
+
+        .ilan-baslik-bolum { background: white; padding: 14px 16px 12px; border-bottom: 1px solid #eee; }
+        .ilan-baslik-bolum h1 { font-size: 15px; font-weight: 600; color: #222; line-height: 1.4; }
+        .ilan-konum { font-size: 13px; color: #888; margin-top: 5px; }
+
+        .galeri-ana { position: relative; background: #dde2e8; height: 240px; overflow: hidden; }
+        .ana-resim { width: 100%; height: 240px; object-fit: cover; display: block; }
+        .galeri-ok { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.85); border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .galeri-ok.sol { left: 10px; }
         .galeri-ok.sag { right: 10px; }
-        .galeri-sayac { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 20px; font-size: 13px; }
-        .galeri-kucuk { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; margin-bottom: 20px; }
-        .galeri-kucuk img { width: 110px; height: 80px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; }
+        .galeri-sayac { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.5); color: white; padding: 3px 12px; border-radius: 20px; font-size: 12px; }
+        .galeri-kucuk { display: flex; gap: 8px; overflow-x: auto; padding: 10px 16px; background: white; border-bottom: 1px solid #eee; }
+        .galeri-kucuk::-webkit-scrollbar { display: none; }
+        .galeri-kucuk img { width: 70px; height: 55px; object-fit: cover; border-radius: 8px; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; }
         .galeri-kucuk img.aktif { border-color: #FF6000; }
-        .galeri-kucuk video { width: 110px; height: 80px; border-radius: 6px; flex-shrink: 0; }
-        .ilan-baslik { font-size: 22px; color: #333; margin-bottom: 8px; }
-        .ilan-meta { display: flex; gap: 15px; color: #555; font-size: 14px; margin-bottom: 20px; align-items: center; }
-        .ilan-meta span { display: flex; align-items: center; gap: 4px; }
-        .butonlar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
-        .btn { border: 1px solid #ddd; border-radius: 10px; padding: 15px 10px; text-align: center; cursor: pointer; background: white; text-decoration: none; display: block; }
-        .btn:hover { border-color: #FF6000; }
-        .btn-ikon { font-size: 24px; margin-bottom: 5px; }
-        .btn-yazi { font-size: 13px; color: #555; }
-        .btn.favori-aktif .btn-ikon { color: red; }
-        .btn.favori-aktif .btn-yazi { color: red; }
-        .ozellikler { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
-        .ozellik { background: #f9f9f9; border-radius: 8px; padding: 12px 15px; }
-        .ozellik-baslik { font-size: 11px; color: #999; margin-bottom: 4px; }
-        .ozellik-deger { font-size: 15px; font-weight: bold; color: #333; }
-        .etiket { display: inline-block; background: #fff3ec; color: #FF6000; border: 1px solid #FF6000; border-radius: 4px; padding: 3px 8px; font-size: 12px; margin-right: 5px; margin-bottom: 10px; }
-        .aciklama { margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
-        .aciklama h3 { color: #333; margin-bottom: 10px; }
-        .aciklama p { color: #555; line-height: 1.6; }
-        .sil-btn { margin-top: 20px; background: #fee; color: #c00; border: 1px solid #c00; padding: 8px 16px; border-radius: 6px; cursor: pointer; }
 
-        /* HARİTA */
-        .harita-bolum { margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
-        .harita-bolum h3 { color: #333; margin-bottom: 12px; font-size: 16px; }
-        #harita { width: 100%; height: 300px; border-radius: 10px; border: 1px solid #eee; }
-        .google-maps-btn { display: block; text-align: center; margin-top: 10px; background: #4285F4; color: white; padding: 12px; border-radius: 8px; text-decoration: none; font-size: 14px; font-weight: bold; }
-        .google-maps-btn:hover { background: #3367D6; }
+        .tabs { background: white; display: flex; border-bottom: 1px solid #eee; margin-top: 8px; }
+        .tab { flex: 1; text-align: center; padding: 13px 0; font-size: 14px; color: #999; cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab.aktif { color: #FF6000; border-bottom-color: #FF6000; font-weight: 600; }
+
+        .tab-icerik { display: none; }
+        .tab-icerik.aktif { display: block; }
+
+        .bilgi-liste { background: white; }
+        .bilgi-satir { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid #f0f0f0; }
+        .bilgi-satir:last-child { border-bottom: none; }
+        .bilgi-label { font-size: 14px; color: #888; }
+        .bilgi-deger { font-size: 14px; font-weight: 600; color: #222; }
+        .etiketler { display: flex; flex-wrap: wrap; gap: 6px; }
+        .etiket { background: #fff3ec; color: #FF6000; border: 1px solid #FF6000; border-radius: 6px; padding: 3px 10px; font-size: 12px; }
+
+        .aciklama-bolum { background: white; padding: 16px; margin-top: 8px; }
+        .aciklama-bolum h3 { font-size: 15px; font-weight: 600; color: #222; margin-bottom: 10px; }
+        .aciklama-bolum p { font-size: 14px; color: #555; line-height: 1.7; }
+
+        .konum-bolum { background: white; padding: 16px; margin-top: 8px; }
+        .konum-bolum h3 { font-size: 15px; font-weight: 600; color: #222; margin-bottom: 12px; }
+        #harita { width: 100%; height: 240px; border-radius: 12px; border: 1px solid #eee; }
+        .maps-btn { display: block; text-align: center; margin-top: 10px; background: #4285F4; color: white; padding: 13px; border-radius: 10px; text-decoration: none; font-size: 14px; font-weight: 600; }
+
+        .alt-butonlar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 14px 16px; background: white; margin-top: 8px; }
+        .alt-btn { border: 1px solid #eee; border-radius: 12px; padding: 14px; text-align: center; cursor: pointer; text-decoration: none; display: block; background: white; }
+        .alt-btn-ikon { font-size: 22px; margin-bottom: 5px; }
+        .alt-btn-yazi { font-size: 13px; color: #666; }
+
+        {% if user.is_superuser %}
+        .sil-bolum { padding: 16px; }
+        .sil-btn { width: 100%; background: #fee; color: #c00; border: 1px solid #fcc; padding: 12px; border-radius: 10px; cursor: pointer; font-size: 14px; }
+        {% endif %}
+
+        .bnav-wrap { position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; padding: 8px 10px 22px; background: rgba(240,243,247,0.95); backdrop-filter: blur(40px); border-top: 0.5px solid rgba(255,255,255,0.6); }
+        .bnav-inner { display: flex; background: rgba(255,255,255,0.35); border: 0.5px solid rgba(255,255,255,0.7); border-radius: 20px; padding: 4px; }
+        .bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 52px; font-size: 9px; font-weight: 600; cursor: pointer; color: rgba(0,0,0,0.35); text-decoration: none; border-radius: 16px; }
+        .bnav-item.active { color: #FF6000; background: rgba(255,255,255,0.75); }
+        .bnav-item svg { width: 20px; height: 20px; }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo-text">Dingönüllüleri</div>
-        <a href="/" style="color:#555; text-decoration:none; font-size:13px;">Ana Sayfa</a>
-    </div>
-    <div class="kart">
-        <a class="geri" href="/">← Geri dön</a>
 
-        {% with medyalar=ilan.medyalar.all %}
-        {% if medyalar %}
-        <div class="galeri-ana">
-            <img id="anaResim" class="ana-resim" src="{{ medyalar.first.dosya.url }}" alt="{{ ilan.baslik }}">
-            <button class="galeri-ok sol" onclick="resimDegistir(-1)">&#8249;</button>
-            <button class="galeri-ok sag" onclick="resimDegistir(1)">&#8250;</button>
-            <div class="galeri-sayac"><span id="simdiki">1</span> / <span id="toplam">{{ medyalar.count }}</span></div>
+<div class="header">
+    <a href="/ilanlar/" class="header-geri">‹</a>
+    <div class="header-baslik">Lojman Detayı</div>
+    <a href="/favori/{{ ilan.id }}/" class="header-favori {% if favori %}aktif{% endif %}">
+        {% if favori %}❤{% else %}♡{% endif %}
+    </a>
+</div>
+
+{% with medyalar=ilan.medyalar.all %}
+{% if medyalar %}
+<div class="galeri-ana">
+    <img id="anaResim" class="ana-resim" src="{{ medyalar.first.dosya.url }}" alt="{{ ilan.baslik }}">
+    <button class="galeri-ok sol" onclick="resimDegistir(-1)">‹</button>
+    <button class="galeri-ok sag" onclick="resimDegistir(1)">›</button>
+    <div class="galeri-sayac"><span id="simdiki">1</span> / <span id="toplam">{{ medyalar.count }}</span></div>
+</div>
+<div class="galeri-kucuk" id="galeriKucuk">
+    {% for m in medyalar %}
+        {% if m.tip == "resim" %}
+        <img src="{{ m.dosya.url }}" onclick="resimSec({{ forloop.counter0 }}, this)" class="{% if forloop.first %}aktif{% endif %}" alt="">
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<div class="ilan-baslik-bolum">
+    <h1>{{ ilan.baslik }}</h1>
+    <div class="ilan-konum">📍 {{ ilan.konum }}</div>
+</div>
+
+<div class="tabs">
+    <div class="tab aktif" onclick="tabAc(0)">Lojman Bilgileri</div>
+    <div class="tab" onclick="tabAc(1)">Açıklama</div>
+    <div class="tab" onclick="tabAc(2)">Konum</div>
+</div>
+
+<div class="tab-icerik aktif" id="tab-0">
+    <div class="bilgi-liste">
+        <div class="bilgi-satir">
+            <span class="bilgi-label">Oda Sayısı</span>
+            <span class="bilgi-deger">{{ ilan.oda_sayisi }}</span>
         </div>
-        <div class="galeri-kucuk" id="galeriKucuk">
-            {% for m in medyalar %}
-                {% if m.tip == 'resim' %}
-                <img src="{{ m.dosya.url }}" onclick="resimSec({{ forloop.counter0 }}, this)" class="{% if forloop.first %}aktif{% endif %}" alt="">
-                {% else %}
-                <video controls>
-                    <source src="{{ m.dosya.url }}">
-                </video>
-                {% endif %}
-            {% endfor %}
+        <div class="bilgi-satir">
+            <span class="bilgi-label">Metrekare</span>
+            <span class="bilgi-deger">{{ ilan.metrekare }} m²</span>
+        </div>
+        <div class="bilgi-satir">
+            <span class="bilgi-label">Bulunduğu Kat</span>
+            <span class="bilgi-deger">{{ ilan.kat }}. Kat</span>
+        </div>
+        <div class="bilgi-satir">
+            <span class="bilgi-label">Bina Yaşı</span>
+            <span class="bilgi-deger">{{ ilan.bina_yasi }} yıl</span>
+        </div>
+        <div class="bilgi-satir">
+            <span class="bilgi-label">Banyo</span>
+            <span class="bilgi-deger">{{ ilan.banyo }} adet</span>
+        </div>
+        <div class="bilgi-satir">
+            <span class="bilgi-label">Isınma</span>
+            <span class="bilgi-deger">{{ ilan.get_isitma_display }}</span>
+        </div>
+        {% if ilan.site_icinde %}
+        <div class="bilgi-satir">
+            <span class="bilgi-label">Site Aidatı</span>
+            <span class="bilgi-deger">{{ ilan.site_aidati }} TL</span>
         </div>
         {% endif %}
-        {% endwith %}
-
-        <h2 class="ilan-baslik">{{ ilan.baslik }}</h2>
-        <div class="ilan-meta">
-            <span>🛏 {{ ilan.oda_sayisi }}</span>
-            <span>📐 {{ ilan.metrekare }} m²</span>
-            <span>🏢 {{ ilan.kat }}. Kat</span>
-            <span>📍 {{ ilan.konum }}</span>
+        {% if ilan.balkon or ilan.asansor or ilan.site_icinde %}
+        <div class="bilgi-satir">
+            <span class="bilgi-label">Özellikler</span>
+            <div class="etiketler">
+                {% if ilan.balkon %}<span class="etiket">Balkon</span>{% endif %}
+                {% if ilan.asansor %}<span class="etiket">Asansör</span>{% endif %}
+                {% if ilan.site_icinde %}<span class="etiket">Site İçi</span>{% endif %}
+            </div>
         </div>
+        {% endif %}
+    </div>
 
-        <div class="butonlar">
-            <a href="/favori/{{ ilan.id }}/" class="btn {% if favori %}favori-aktif{% endif %}">
-                <div class="btn-ikon">{% if favori %}❤{% else %}🤍{% endif %}</div>
-                <div class="btn-yazi">Favori</div>
-            </a>
-            <a href="https://maps.google.com/?q={{ ilan.konum }}" target="_blank" class="btn">
-                <div class="btn-ikon">📍</div>
-                <div class="btn-yazi">Konumu</div>
-            </a>
-            <a href="https://maps.google.com/maps/dir/?api=1&destination={{ ilan.konum }}" target="_blank" class="btn">
-                <div class="btn-ikon">🗺</div>
-                <div class="btn-yazi">Yol Tarifi</div>
-            </a>
-        </div>
+    <div class="alt-butonlar">
+        <a href="https://maps.google.com/?q={{ ilan.konum }}" target="_blank" class="alt-btn">
+            <div class="alt-btn-ikon">📍</div>
+            <div class="alt-btn-yazi">Konumu Gör</div>
+        </a>
+        <a href="https://maps.google.com/maps/dir/?api=1&destination={{ ilan.konum }}" target="_blank" class="alt-btn">
+            <div class="alt-btn-ikon">🗺</div>
+            <div class="alt-btn-yazi">Yol Tarifi</div>
+        </a>
+    </div>
 
-        <div>
-            {% if ilan.balkon %}<span class="etiket">✓ Balkon</span>{% endif %}
-            {% if ilan.asansor %}<span class="etiket">✓ Asansör</span>{% endif %}
-            {% if ilan.site_icinde %}<span class="etiket">✓ Site İçinde</span>{% endif %}
-        </div>
+    {% if ilan.kullanici == request.user or user.is_superuser %}
+    <div class="sil-bolum">
+        <form method="post" action="/ilan-sil/{{ ilan.id }}/" onsubmit="return confirm('Silmek istediğinize emin misiniz?')">
+            {% csrf_token %}
+            <button type="submit" class="sil-btn">🗑 İlanı Sil</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
 
-        <div class="ozellikler">
-            <div class="ozellik">
-                <div class="ozellik-baslik">Oda Sayısı</div>
-                <div class="ozellik-deger">{{ ilan.oda_sayisi }}</div>
-            </div>
-            <div class="ozellik">
-                <div class="ozellik-baslik">Metrekare</div>
-                <div class="ozellik-deger">{{ ilan.metrekare }} m²</div>
-            </div>
-            <div class="ozellik">
-                <div class="ozellik-baslik">Kat</div>
-                <div class="ozellik-deger">{{ ilan.kat }}. Kat</div>
-            </div>
-            <div class="ozellik">
-                <div class="ozellik-baslik">Bina Yaşı</div>
-                <div class="ozellik-deger">{{ ilan.bina_yasi }} Yıl</div>
-            </div>
-            <div class="ozellik">
-                <div class="ozellik-baslik">Banyo</div>
-                <div class="ozellik-deger">{{ ilan.banyo }} Adet</div>
-            </div>
-            <div class="ozellik">
-                <div class="ozellik-baslik">Isınma</div>
-                <div class="ozellik-deger">{{ ilan.get_isitma_display }}</div>
-            </div>
-            {% if ilan.site_icinde %}
-            <div class="ozellik">
-                <div class="ozellik-baslik">Site Aidatı</div>
-                <div class="ozellik-deger">{{ ilan.site_aidati }} TL</div>
-            </div>
-            {% endif %}
-        </div>
-
+<div class="tab-icerik" id="tab-1">
+    <div class="aciklama-bolum">
         {% if ilan.aciklama %}
-        <div class="aciklama">
-            <h3>Açıklama</h3>
-            <p>{{ ilan.aciklama }}</p>
-        </div>
-        {% endif %}
-
-        <!-- HARİTA -->
-        <div class="harita-bolum">
-            <h3>📍 Konum</h3>
-            <div id="harita"></div>
-            <a href="https://www.google.com/maps/search/?api=1&query={{ ilan.konum }}" target="_blank" class="google-maps-btn">
-                🗺 Google Maps'te Aç
-            </a>
-        </div>
-
-        {% if ilan.kullanici == request.user %}
-
+        <p>{{ ilan.aciklama }}</p>
+        {% else %}
+        <p style="color:#bbb;">Açıklama eklenmemiş.</p>
         {% endif %}
     </div>
+</div>
 
-    <script>
-        const resimler = Array.from(document.querySelectorAll('#galeriKucuk img')).map(img => img.src);
-        let simdikiIndex = 0;
+<div class="tab-icerik" id="tab-2">
+    <div class="konum-bolum">
+        <div id="harita"></div>
+        <a href="https://www.google.com/maps/search/?api=1&query={{ ilan.konum }}" target="_blank" class="maps-btn">
+            🗺 Google Maps'te Aç
+        </a>
+    </div>
+</div>
 
-        function resimSec(index, el) {
-            simdikiIndex = index;
-            document.getElementById('anaResim').src = resimler[index];
-            document.getElementById('simdiki').textContent = index + 1;
-            document.querySelectorAll('#galeriKucuk img').forEach(img => img.classList.remove('aktif'));
-            if (el) el.classList.add('aktif');
-        }
-
-        function resimDegistir(yon) {
-            if (resimler.length === 0) return;
-            simdikiIndex = (simdikiIndex + yon + resimler.length) % resimler.length;
-            const kucukResimler = document.querySelectorAll('#galeriKucuk img');
-            resimSec(simdikiIndex, kucukResimler[simdikiIndex]);
-        }
-
-        // HARİTA
-        var harita = L.map('harita').setView([39.0, 35.0], 6);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(harita);
-
-        var konum = "{{ ilan.konum }}";
-        fetch('https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(konum) + '&format=json&limit=1')
-        .then(r => r.json())
-        .then(data => {
-            if (data.length > 0) {
-                var lat = data[0].lat;
-                var lon = data[0].lon;
-                harita.setView([lat, lon], 14);
-                L.marker([lat, lon]).addTo(harita)
-                    .bindPopup('<b>{{ ilan.baslik }}</b><br>📍 {{ ilan.konum }}')
-                    .openPopup();
-            }
-        });
-    </script>
-
-
-
-
-<style>
-@keyframes slideInRight { from { opacity:0; transform: translateX(60px); } to { opacity:1; transform: translateX(0); } }
-@keyframes slideInLeft  { from { opacity:0; transform: translateX(-60px); } to { opacity:1; transform: translateX(0); } }
-@keyframes slideOutLeft  { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(-60px); } }
-@keyframes slideOutRight { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(60px); } }
-.page-slide-in-right { animation: slideInRight 0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-.page-slide-in-left  { animation: slideInLeft  0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-</style>
-<script>
-(function(){
-    var pages = ['/', '/ilanlar/', '/favoriler/', '/duyurular/'];
-    var path = window.location.pathname;
-    var currentIndex = pages.indexOf(path);
-    if(currentIndex === -1) currentIndex = 0;
-
-    // Aktif butonu işaretle
-    var ids = ['nav-home','nav-ilanlar','nav-favoriler','nav-duyurular'];
-    if(ids[currentIndex]) document.getElementById(ids[currentIndex]).classList.add('active');
-
-    // Sayfa girişinde animasyon
-    var dir = sessionStorage.getItem('navDir');
-    if(dir === 'right') document.body.classList.add('page-slide-in-right');
-    else if(dir === 'left') document.body.classList.add('page-slide-in-left');
-    sessionStorage.removeItem('navDir');
-
-    // Linklere tıklanınca yön belirle
-    document.querySelectorAll('.bottom-nav a').forEach(function(a){
-        a.addEventListener('click', function(e){
-            var href = a.getAttribute('href');
-            var targetIndex = pages.indexOf(href);
-            if(targetIndex === -1) return;
-            if(targetIndex === currentIndex) { e.preventDefault(); return; }
-            sessionStorage.setItem('navDir', targetIndex > currentIndex ? 'right' : 'left');
-        });
-    });
-})();
-</script>
-<!-- BOTTOM NAV -->
-<style>
-body { padding-bottom: 100px; }
-.bnav-wrap {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding: 8px 8px 26px 8px;
-    background: rgba(255,255,255,0.01);
-    backdrop-filter: blur(80px) saturate(300%) brightness(1.05);
-    -webkit-backdrop-filter: blur(80px) saturate(300%) brightness(1.05);
-    border-top: 0.5px solid rgba(255,255,255,0.08);
-}
-.bnav-inner {
-    display: flex;
-    background: rgba(255,255,255,0.03);
-    border: 0.5px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 3px;
-    position: relative;
-}
-.bnav-slider {
-    position: absolute;
-    top: 3px;
-    bottom: 3px;
-    border-radius: 15px;
-    background: rgba(255,255,255,0.1);
-    border: 0.5px solid rgba(255,255,255,0.2);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    transition: left 0.35s cubic-bezier(0.34,1.15,0.64,1), width 0.35s cubic-bezier(0.34,1.15,0.64,1);
-    pointer-events: none;
-    box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.3);
-}
-.bnav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    height: 58px;
-    font-size: 10px;
-    font-weight: 500;
-    cursor: pointer;
-    color: rgba(0,0,0,0.45);
-    position: relative;
-    z-index: 1;
-    border-radius: 15px;
-    transition: color 0.3s;
-    text-decoration: none;
-    user-select: none;
-}
-.bnav-item.active { color: #000000; }
-.bnav-item svg { width: 20px; height: 20px; }
-</style>
 <div class="bnav-wrap">
-  <div class="bnav-inner" id="bnavInner">
-    <div class="bnav-slider" id="bnavSlider"></div>
-    <a href="/" class="bnav-item" id="bnav-0">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+  <div class="bnav-inner">
+    <a href="/" class="bnav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
       Anasayfa
     </a>
-    <a href="/ilanlar/" class="bnav-item" id="bnav-1">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      İlanlar
+    <a href="/ilanlar/" class="bnav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Lojmanlar
     </a>
-    <a href="/favoriler/" class="bnav-item" id="bnav-2">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    <a href="/favoriler/" class="bnav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       Favorilerim
     </a>
-    <a href="/duyurular/" class="bnav-item" id="bnav-3">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <a href="/duyurular/" class="bnav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
       Duyurular
     </a>
   </div>
 </div>
+
 <script>
-(function(){
-  var pages=['/','/ilanlar/','/favoriler/','/duyurular/'];
-  var path=window.location.pathname;
-  var cur=pages.indexOf(path);
-  if(cur===-1)cur=0;
-  var slider=document.getElementById('bnavSlider');
-  var inner=document.getElementById('bnavInner');
-  var items=document.querySelectorAll('.bnav-item');
-  function moveSlider(i){
-    var w=inner.offsetWidth-6;
-    var bw=w/4;
-    slider.style.left=(3+i*bw)+'px';
-    slider.style.width=bw+'px';
-  }
-  items[cur].classList.add('active');
-  setTimeout(function(){moveSlider(cur);},50);
-  window.addEventListener('resize',function(){moveSlider(cur);});
-  items.forEach(function(item,i){
-    item.addEventListener('click',function(e){
-      if(i===cur)return;
-      sessionStorage.setItem('navDir',i>cur?'right':'left');
-    });
-  });
-  var dir=sessionStorage.getItem('navDir');
-  if(dir){
-    document.body.style.animation=dir==='right'?'bnavSlideR 0.32s ease':'bnavSlideL 0.32s ease';
-    sessionStorage.removeItem('navDir');
-  }
-})();
+    const resimler = Array.from(document.querySelectorAll("#galeriKucuk img")).map(img => img.src);
+    let simdikiIndex = 0;
+    function resimSec(index, el) {
+        simdikiIndex = index;
+        document.getElementById("anaResim").src = resimler[index];
+        document.getElementById("simdiki").textContent = index + 1;
+        document.querySelectorAll("#galeriKucuk img").forEach(img => img.classList.remove("aktif"));
+        if (el) el.classList.add("aktif");
+    }
+    function resimDegistir(yon) {
+        if (resimler.length === 0) return;
+        simdikiIndex = (simdikiIndex + yon + resimler.length) % resimler.length;
+        resimSec(simdikiIndex, document.querySelectorAll("#galeriKucuk img")[simdikiIndex]);
+    }
+
+    function tabAc(index) {
+        document.querySelectorAll(".tab").forEach((t,i) => t.classList.toggle("aktif", i===index));
+        document.querySelectorAll(".tab-icerik").forEach((t,i) => t.classList.toggle("aktif", i===index));
+        if (index === 2) setTimeout(haritaYukle, 100);
+    }
+
+    var haritaYuklendi = false;
+    function haritaYukle() {
+        if (haritaYuklendi) return;
+        haritaYuklendi = true;
+        var harita = L.map("harita").setView([39.0, 35.0], 6);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution: "© OpenStreetMap" }).addTo(harita);
+        fetch("https://nominatim.openstreetmap.org/search?q=" + encodeURIComponent("{{ ilan.konum }}") + "&format=json&limit=1")
+        .then(r => r.json()).then(data => {
+            if (data.length > 0) {
+                harita.setView([data[0].lat, data[0].lon], 14);
+                L.marker([data[0].lat, data[0].lon]).addTo(harita)
+                    .bindPopup("<b>{{ ilan.baslik }}</b><br>📍 {{ ilan.konum }}").openPopup();
+            }
+        });
+    }
 </script>
-<style>
-@keyframes bnavSlideR{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-@keyframes bnavSlideL{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
-</style>
 </body>
 </html>
