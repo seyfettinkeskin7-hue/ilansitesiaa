@@ -21,6 +21,13 @@
 
         .galeri-ana { position: relative; background: #dde2e8; height: 240px; overflow: hidden; }
         .ana-resim { width: 100%; height: 240px; object-fit: cover; display: block; }
+        @media (min-width: 768px) {
+            .galeri-ana { height: 520px; max-width: 900px; margin: 0 auto; border-radius: 16px; overflow: hidden; }
+            .ana-resim { height: 520px; }
+            .kart-wrap { max-width: 900px; margin: 0 auto; }
+            .ilan-baslik-bolum, .tabs, .tab-icerik, .alt-butonlar, .aciklama-bolum, .konum-bolum { max-width: 900px; margin-left: auto; margin-right: auto; }
+            .galeri-kucuk { max-width: 900px; margin: 0 auto; }
+        }
         .galeri-ok { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.85); border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .galeri-ok.sol { left: 10px; }
         .galeri-ok.sag { right: 10px; }
