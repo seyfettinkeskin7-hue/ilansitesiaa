@@ -10,6 +10,7 @@ MUFTULUK_VERISI = {
 
 def animasyon(request):
     if request.COOKIES.get("animasyon_goruldu"):
+        pass
     return render(request, 'animasyon.html')
 
 def anasayfa(request):
