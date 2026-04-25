@@ -18,8 +18,8 @@ def anasayfa(request):
         return redirect('giris')
     from .models import Bildirim
     haberler = Haber.objects.filter(aktif=True).order_by('-tarih')
-    ilanlar = Ilan.objects.all().order_by('-tarih')[:30]
-    ilanlar2 = Ilan.objects.all().order_by('?')[:30]
+    ilanlar = Ilan.objects.filter(onaylandi=True).order_by('-tarih')[:30]
+    ilanlar2 = Ilan.objects.filter(onaylandi=True).order_by('?')[:30]
     favori_idler = list(Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True))
     favoriler = Favori.objects.filter(kullanici=request.user).select_related('ilan')
     bildirim = Bildirim.objects.filter(aktif=True).first()
@@ -156,7 +156,7 @@ def tum_ilanlar(request):
     if not request.user.is_authenticated:
         return redirect('giris')
     arama = request.GET.get('arama', '')
-    ilanlar = Ilan.objects.all().order_by('-tarih')
+    ilanlar = Ilan.objects.filter(onaylandi=True).order_by('-tarih')
     if arama:
         ilanlar = ilanlar.filter(konum__icontains=arama) | ilanlar.filter(baslik__icontains=arama)
     return render(request, 'ilanlar.html', {'ilanlar': ilanlar, 'arama': arama})
