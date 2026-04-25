@@ -3,8 +3,11 @@ from django.urls import path, include
 from ilanlar import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import TemplateView
 
 urlpatterns = [
+    path('manifest.json', TemplateView.as_view(template_name='manifest.json', content_type='application/json')),
+    path('service-worker.js', TemplateView.as_view(template_name='service-worker.js', content_type='application/javascript')),
     path('admin/', admin.site.urls),
     path('', views.anasayfa),            # ← boş URL artık animasyona gidiyor
     path('anasayfa/', views.anasayfa, name='anasayfa'),    # ← asıl site buraya taşındı
