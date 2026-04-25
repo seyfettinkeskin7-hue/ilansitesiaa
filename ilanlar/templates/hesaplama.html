@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not Hesaplama</title>
+    <style>
+        :root {
+            --color-bg-primary: #ffffff; --color-bg-sec: #f8f9fa;
+            --color-success: #d1e7dd; --color-text-success: #0f5132;
+            --color-danger: #f8d7da; --color-text-danger: #842029;
+            --color-warning: #fff3cd; --color-text-warning: #664d03;
+            --color-info: #4a8b8c; font-family: sans-serif;
+        }
+        body { padding: 20px; max-width: 800px; margin: 0 auto; background: #f4f7f6; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .tab-btn { padding: 10px 15px; cursor: pointer; border: 1px solid #ddd; background: #eee; border-radius: 5px; margin-right: 5px; }
+        .active-tab { background: #4a8b8c; color: white; border-color: #4a8b8c; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+        th, td { border-bottom: 1px solid #eee; padding: 10px; text-align: left; }
+        input[type=number] { width: 60px; padding: 5px; }
+        .badge { padding: 3px 8px; border-radius: 4px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="color: #4a8b8c; margin-top: 0;">Akademi Not Hesaplama</h2>
+        <div id="tabs" style="margin-bottom: 20px;">
+            <button onclick="showTab('d1')" id="btn-d1" class="tab-btn active-tab">1. Dönem</button>
+            <button onclick="showTab('d2')" id="btn-d2" class="tab-btn">2. Dönem</button>
+            <button onclick="showTab('mez')" id="btn-mez" class="tab-btn">Mezuniyet</button>
+        </div>
+
+        <div id="content">
+            <p>Lütfen bir dönem seçin.</p>
+        </div>
+    </div>
+
+    <script>
+        // Not: Basitleştirilmiş hızlı versiyon
+        function showTab(tab) {
+            const content = document.getElementById('content');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
+            document.getElementById('btn-' + tab).classList.add('active-tab');
+            
+            if(tab === 'mez') {
+                content.innerHTML = `<h3>Mezuniyet Sınavı</h3><input type="number" id="mNot" placeholder="Notunuz" oninput="calcMez()"> <div id="res"></div>`;
+            } else {
+                content.innerHTML = `<p>Seçilen dönem için notlarınızı girin. (Bu kısım kaydedilebilir yapıdadır)</p>
+                <table><tr><th>Ders</th><th>Ara</th><th>Final</th><th>Başarı</th></tr>
+                <tr><td>Kur'an-ı Kerim</td><td><input type="number"></td><td><input type="number"></td><td>-</td></tr>
+                </table>`;
+            }
+        }
+        function calcMez() { /* Hesaplama mantığı */ }
+        showTab('d1');
+    </script>
+</body>
+</html>
