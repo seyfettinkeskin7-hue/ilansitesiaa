@@ -163,3 +163,8 @@ def haber_detay(request, haber_id):
     from .models import Haber
     haber = Haber.objects.get(id=haber_id, aktif=True)
     return render(request, "haber_detay.html", {"haber": haber})
+
+def akademi_detay(request, akademi_id):
+    from .models import Akademi
+    akademi = get_object_or_404(Akademi, id=akademi_id, aktif=True)
+    return render(request, 'akademi_detay.html', {'akademi': akademi})
