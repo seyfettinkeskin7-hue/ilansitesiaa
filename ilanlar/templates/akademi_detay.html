@@ -2,49 +2,52 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ akademi.ad }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: #f5f5f5; padding-bottom: 100px; }
-        .header { background: white; padding: 12px 30px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
-        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
+        .header { background: white; padding: 12px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-icon { background: #FF6000; color: white; padding: 7px; border-radius: 8px; font-size: 18px; }
+        .logo-text { font-size: 17px; font-weight: bold; color: #333; }
         .header-sag { margin-left: auto; }
-        .header-sag a { color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
-        .container { max-width: 800px; margin: 30px auto; padding: 0 20px; }
-        .geri { display: inline-block; margin-bottom: 20px; color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
-        .geri:hover { color: #FF6000; }
-        .baslik { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 6px; }
-        .kategori-etiket { display: inline-block; background: #fff3ee; color: #FF6000; border: 1px solid #FF6000; border-radius: 20px; padding: 4px 14px; font-size: 13px; margin-bottom: 20px; }
-
-        /* Resim galerisi */
-        .galeri { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 25px; }
-        .galeri img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
-        .galeri img:hover { opacity: 0.85; }
-
-        /* Lightbox */
-        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; align-items: center; justify-content: center; }
+        .header-sag a { color: #555; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .container { max-width: 680px; margin: 0 auto; padding: 16px; }
+        .geri { display: inline-block; margin-bottom: 14px; color: #555; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .baslik { font-size: 20px; font-weight: bold; color: #333; margin-bottom: 6px; line-height: 1.3; }
+        .kategori-etiket { display: inline-block; background: #fff3ee; color: #FF6000; border: 1px solid #FF6000; border-radius: 20px; padding: 3px 12px; font-size: 12px; margin-bottom: 16px; }
+        .galeri { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; margin-bottom: 20px; }
+        .galeri img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; align-items: center; justify-content: center; }
         .lightbox.aktif { display: flex; }
-        .lightbox img { max-width: 90%; max-height: 85vh; border-radius: 10px; }
-        .lightbox-kapat { position: fixed; top: 20px; right: 24px; color: white; font-size: 32px; cursor: pointer; }
-
-        /* Bilgi kartı */
-        .bilgi-kart { background: white; border-radius: 12px; padding: 25px; margin-bottom: 20px; border: 1px solid #eee; }
-        .bilgi-satir { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f0f0f0; font-size: 15px; color: #333; }
-        .bilgi-satir:last-child { border-bottom: none; }
-        .bilgi-satir .etiket { color: #888; min-width: 90px; font-size: 13px; }
-        .bilgi-satir .deger { flex: 1; line-height: 1.5; }
-
-        /* Butonlar */
-        .butonlar { display: flex; flex-direction: column; gap: 12px; }
-        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 20px; border-radius: 10px; font-size: 15px; font-weight: bold; text-decoration: none; text-align: center; transition: opacity 0.2s; }
-        .btn:hover { opacity: 0.85; }
+        .lightbox img { max-width: 95%; max-height: 88vh; border-radius: 10px; }
+        .lightbox-kapat { position: fixed; top: 16px; right: 18px; color: white; font-size: 28px; cursor: pointer; }
+        .bolum { background: white; border-radius: 12px; padding: 16px; margin-bottom: 14px; border: 1px solid #eee; }
+        .bolum-baslik { font-size: 10px; font-weight: 700; color: #aaa; letter-spacing: 1px; margin-bottom: 10px; }
+        .bolum p { font-size: 14px; color: #444; line-height: 1.7; }
+        .gorevli-kart { text-decoration: none; display: flex; align-items: center; gap: 12px; background: white; border-radius: 12px; padding: 12px 14px; border: 1px solid #eee; margin-bottom: 10px; }
+        .gorevli-avatar { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .gorevli-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .gorevli-avatar span { color: white; font-weight: 700; font-size: 17px; }
+        .av-mudur { background: linear-gradient(135deg,#b8860b,#ffd700); }
+        .av-mudur_yardimcisi { background: linear-gradient(135deg,#78909c,#cfd8dc); }
+        .av-egitim_gorevlisi { background: linear-gradient(135deg,#388e3c,#66bb6a); }
+        .rozet { display: inline-flex; align-items: center; gap: 3px; border-radius: 20px; padding: 2px 10px 2px 6px; position: relative; overflow: hidden; }
+        .rozet-mudur { background: linear-gradient(135deg,#b8860b,#ffd700,#b8860b); box-shadow: 0 0 8px rgba(255,215,0,0.5); }
+        .rozet-mudur_yardimcisi { background: linear-gradient(135deg,#8a9ba8,#cfd8dc,#8a9ba8); }
+        .rozet-egitim_gorevlisi { background: linear-gradient(135deg,#388e3c,#66bb6a,#388e3c); }
+        .rozet-mudur span { color: #3a2000; }
+        .rozet-mudur_yardimcisi span { color: #1c2b33; }
+        .rozet-egitim_gorevlisi span { color: #0a2e0c; }
+        .rozet span { font-size: 10px; font-weight: 700; position: relative; z-index: 1; }
+        @keyframes shine { 0% { left: -100%; } 30% { left: 140%; } 100% { left: 140%; } }
+        .rozet-shine { position: absolute; top: 0; bottom: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent); animation: shine 3s infinite; }
+        .butonlar { display: flex; flex-direction: column; gap: 10px; }
+        .btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 20px; border-radius: 12px; font-size: 15px; font-weight: bold; text-decoration: none; text-align: center; }
         .btn-harita { background: #4285F4; color: white; }
         .btn-instagram { background: #E1306C; color: white; }
         .btn-youtube { background: #FF0000; color: white; }
         .btn-resmi { background: #FF6000; color: white; }
-    @keyframes shine { 0% { left: -100%; } 30% { left: 140%; } 100% { left: 140%; } }
-        .rozet-shine { position: absolute; top: 0; bottom: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent); animation: shine 3s infinite; }
     </style>
 </head>
 <body>
@@ -68,65 +71,48 @@
         {% endif %}
 
         {% if akademi.aciklama %}
-        <div class="bilgi-kart" style="margin-bottom:20px;">
-            <div class="bolum-baslik" style="font-size:11px;font-weight:700;color:#aaa;letter-spacing:1px;margin-bottom:8px;">HAKKINDA</div>
-            <p style="font-size:14px;color:#444;line-height:1.7;margin:0;">{{ akademi.aciklama }}</p>
+        <div class="bolum">
+            <div class="bolum-baslik">HAKKINDA</div>
+            <p>{{ akademi.aciklama }}</p>
         </div>
         {% endif %}
 
         {% if akademi.gorevliler.all %}
-        <div style="margin-bottom:20px;">
-            <div style="font-size:11px;font-weight:700;color:#aaa;letter-spacing:1px;margin-bottom:12px;">EĞİTİM GÖREVLİLERİ</div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
+        <div class="bolum">
+            <div class="bolum-baslik">EĞİTİM GÖREVLİLERİ</div>
             {% for g in akademi.gorevliler.all %}
-            <a href="/gorevli/{{ g.id }}/" style="text-decoration:none;display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:12px 14px;border:1px solid #eee;">
-                <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;{% if g.unvan == 'mudur' %}background:linear-gradient(135deg,#b8860b,#ffd700);{% elif g.unvan == 'mudur_yardimcisi' %}background:linear-gradient(135deg,#78909c,#cfd8dc);{% else %}background:linear-gradient(135deg,#388e3c,#66bb6a);{% endif %}display:flex;align-items:center;justify-content:center;">
-                    {% if g.foto %}<img src="{{ g.foto.url }}" style="width:100%;height:100%;object-fit:cover;">{% else %}<span style="color:white;font-weight:700;font-size:16px;">{{ g.ad|slice:":1" }}</span>{% endif %}
+            <a href="/gorevli/{{ g.id }}/" class="gorevli-kart">
+                <div class="gorevli-avatar av-{{ g.unvan }}">
+                    {% if g.foto %}<img src="{{ g.foto.url }}">{% else %}<span>{{ g.ad|slice:":1" }}</span>{% endif %}
                 </div>
-                <div style="flex:1;">
-                    <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+                <div style="flex:1;min-width:0;">
+                    <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                         <span style="font-size:14px;font-weight:600;color:#222;">{{ g.ad }}</span>
-                        <span style="display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:2px 10px 2px 6px;position:relative;overflow:hidden;{% if g.unvan == 'mudur' %}background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);box-shadow:0 0 8px rgba(255,215,0,0.5);{% elif g.unvan == 'mudur_yardimcisi' %}background:linear-gradient(135deg,#8a9ba8,#cfd8dc,#8a9ba8);{% else %}background:linear-gradient(135deg,#388e3c,#66bb6a,#388e3c);{% endif %}"><div class="rozet-shine"></div>
-                            <span style="font-size:10px;font-weight:700;{% if g.unvan == 'mudur' %}color:#3a2000;{% elif g.unvan == 'mudur_yardimcisi' %}color:#1c2b33;{% else %}color:#0a2e0c;{% endif %}">{% if g.unvan == 'mudur' %}★{% elif g.unvan == 'mudur_yardimcisi' %}◆{% else %}●{% endif %} {{ g.get_unvan_display }}</span>
+                        <span class="rozet rozet-{{ g.unvan }}">
+                            <div class="rozet-shine"></div>
+                            <span>{% if g.unvan == 'mudur' %}★{% elif g.unvan == 'mudur_yardimcisi' %}◆{% else %}●{% endif %} {{ g.get_unvan_display }}</span>
                         </span>
                     </div>
-                    {% if g.uzmanlik %}<p style="font-size:11px;color:#888;margin:3px 0 0;">{{ g.uzmanlik }}</p>{% endif %}
+                    {% if g.uzmanlik %}<p style="font-size:11px;color:#888;margin:3px 0 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ g.uzmanlik }}</p>{% endif %}
                 </div>
-                <span style="color:#ccc;font-size:18px;">›</span>
+                <span style="color:#ccc;font-size:20px;flex-shrink:0;">›</span>
             </a>
             {% endfor %}
-            </div>
         </div>
         {% endif %}
 
-        <div class="bilgi-kart">
-            {% if akademi.sehir %}
-            <div class="bilgi-satir">
-                <span class="etiket">📍 Şehir</span>
-                <span class="deger">{{ akademi.sehir }}</span>
-            </div>
-            {% endif %}
-            {% if akademi.aciklama %}
-            <div class="bilgi-satir">
-                <span class="etiket">📝 Hakkında</span>
-                <span class="deger">{{ akademi.aciklama }}</span>
-            </div>
-            {% endif %}
+        {% if akademi.sehir %}
+        <div class="bolum">
+            <div class="bolum-baslik">KONUM</div>
+            <p>📍 {{ akademi.sehir }}</p>
         </div>
+        {% endif %}
 
         <div class="butonlar">
-            {% if akademi.konum_url %}
-            <a href="{{ akademi.konum_url }}" target="_blank" class="btn btn-harita">🗺️ Konumu Görüntüle</a>
-            {% endif %}
-            {% if akademi.instagram_url %}
-            <a href="{{ akademi.instagram_url }}" target="_blank" class="btn btn-instagram">📸 Instagram'da Takip Et</a>
-            {% endif %}
-            {% if akademi.youtube_url %}
-            <a href="{{ akademi.youtube_url }}" target="_blank" class="btn btn-youtube">▶️ Tanıtım Filmini İzle</a>
-            {% endif %}
-            {% if akademi.resmi_url %}
-            <a href="{{ akademi.resmi_url }}" target="_blank" class="btn btn-resmi">🌐 Resmi Sayfaya Git</a>
-            {% endif %}
+            {% if akademi.konum_url %}<a href="{{ akademi.konum_url }}" target="_blank" class="btn btn-harita">🗺️ Konumu Görüntüle</a>{% endif %}
+            {% if akademi.instagram_url %}<a href="{{ akademi.instagram_url }}" target="_blank" class="btn btn-instagram">📸 Instagram'da Takip Et</a>{% endif %}
+            {% if akademi.youtube_url %}<a href="{{ akademi.youtube_url }}" target="_blank" class="btn btn-youtube">▶️ Tanıtım Filmini İzle</a>{% endif %}
+            {% if akademi.resmi_url %}<a href="{{ akademi.resmi_url }}" target="_blank" class="btn btn-resmi">🌐 Resmi Sayfaya Git</a>{% endif %}
         </div>
     </div>
 
@@ -134,15 +120,9 @@
         <span class="lightbox-kapat">✕</span>
         <img id="lightbox-img" src="" alt="">
     </div>
-
     <script>
-        function resimAc(url) {
-            document.getElementById('lightbox-img').src = url;
-            document.getElementById('lightbox').classList.add('aktif');
-        }
-        function lightboxKapat() {
-            document.getElementById('lightbox').classList.remove('aktif');
-        }
+        function resimAc(url) { document.getElementById('lightbox-img').src = url; document.getElementById('lightbox').classList.add('aktif'); }
+        function lightboxKapat() { document.getElementById('lightbox').classList.remove('aktif'); }
     </script>
 </body>
 </html>
