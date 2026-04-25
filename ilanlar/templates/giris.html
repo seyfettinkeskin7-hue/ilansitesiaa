@@ -1,81 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giriş Yap</title>
     <style>
-        body { font-family: Arial; margin: 0; background: #f5f5f5; }
-        .header { background: #FF6000; padding: 15px; color: white; }
-        .header h1 { margin: 0; font-size: 24px; }
-        .form-kart { max-width: 400px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; }
-        .form-kart h2 { color: #FF6000; margin-top: 0; }
-        label { font-size: 13px; color: #555; font-weight: bold; }
-        input { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #FF6000; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; }
-        a { color: #FF6000; }
-        .hata { background: #fee; color: #c00; padding: 10px; border-radius: 6px; margin-bottom: 15px; font-size: 14px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; flex-direction: column; }
+        .header { background: #FF6000; padding: 16px 20px; display: flex; align-items: center; gap: 10px; }
+        .header-ikon { font-size: 24px; }
+        .header h1 { color: white; font-size: 20px; font-weight: bold; }
+        .icerik { flex: 1; display: flex; align-items: center; justify-content: center; padding: 24px 16px; }
+        .kart { background: white; border-radius: 16px; padding: 28px 24px; width: 100%; max-width: 420px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .kart-baslik { font-size: 22px; font-weight: 700; color: #222; margin-bottom: 6px; }
+        .kart-alt { font-size: 14px; color: #888; margin-bottom: 24px; }
+        .form-grup { margin-bottom: 16px; }
+        .form-grup label { display: block; font-size: 13px; font-weight: 600; color: #555; margin-bottom: 6px; }
+        .form-grup input { width: 100%; padding: 14px 16px; border: 1.5px solid #eee; border-radius: 10px; font-size: 16px; color: #333; outline: none; transition: border 0.2s; }
+        .form-grup input:focus { border-color: #FF6000; }
+        .btn { width: 100%; padding: 15px; background: #FF6000; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+        .btn:active { background: #e05500; }
+        .alt-link { text-align: center; margin-top: 18px; font-size: 14px; color: #888; }
+        .alt-link a { color: #FF6000; font-weight: 600; text-decoration: none; }
+        .hata { background: #fff0f0; color: #c00; padding: 12px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; border: 1px solid #fcc; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🕌 Dingönüllüleri</h1>
+        <span class="header-ikon">🕌</span>
+        <h1>Dingönüllüleri</h1>
     </div>
-    <div class="form-kart">
-        <h2>Giriş Yap</h2>
-        {% if hata %}
-        <div class="hata">{{ hata }}</div>
-        {% endif %}
-        <form method="post">
-            {% csrf_token %}
-            <label>Kullanıcı Adı</label>
-            <input type="text" name="username" placeholder="Kullanıcı adınız">
-            <label>Şifre</label>
-            <input type="password" name="password" placeholder="Şifreniz">
-            <button type="submit">Giriş Yap</button>
-        </form>
-        <p style="margin-top:15px;">Hesabın yok mu? <a href="/kayit/">Kayıt ol</a></p>
-        
-
+    <div class="icerik">
+        <div class="kart">
+            <div class="kart-baslik">Hoş Geldiniz</div>
+            <div class="kart-alt">Devam etmek için giriş yapın</div>
+            {% if messages %}
+            {% for message in messages %}
+            <div class="hata">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-grup">
+                    <label>Kullanıcı Adı</label>
+                    <input type="text" name="username" placeholder="Kullanıcı adınız" autocomplete="username">
+                </div>
+                <div class="form-grup">
+                    <label>Şifre</label>
+                    <input type="password" name="password" placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn">Giriş Yap</button>
+            </form>
+            <div class="alt-link">Hesabın yok mu? <a href="/kayit/">Kayıt ol</a></div>
+        </div>
     </div>
-
-
-
-
-<style>
-@keyframes slideInRight { from { opacity:0; transform: translateX(60px); } to { opacity:1; transform: translateX(0); } }
-@keyframes slideInLeft  { from { opacity:0; transform: translateX(-60px); } to { opacity:1; transform: translateX(0); } }
-@keyframes slideOutLeft  { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(-60px); } }
-@keyframes slideOutRight { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(60px); } }
-.page-slide-in-right { animation: slideInRight 0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-.page-slide-in-left  { animation: slideInLeft  0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-</style>
-<script>
-(function(){
-    var pages = ['/', '/ilanlar/', '/favoriler/', '/duyurular/'];
-    var path = window.location.pathname;
-    var currentIndex = pages.indexOf(path);
-    if(currentIndex === -1) currentIndex = 0;
-
-    // Aktif butonu işaretle
-    var ids = ['nav-home','nav-ilanlar','nav-favoriler','nav-duyurular'];
-    if(ids[currentIndex]) document.getElementById(ids[currentIndex]).classList.add('active');
-
-    // Sayfa girişinde animasyon
-    var dir = sessionStorage.getItem('navDir');
-    if(dir === 'right') document.body.classList.add('page-slide-in-right');
-    else if(dir === 'left') document.body.classList.add('page-slide-in-left');
-    sessionStorage.removeItem('navDir');
-
-    // Linklere tıklanınca yön belirle
-    document.querySelectorAll('.bottom-nav a').forEach(function(a){
-        a.addEventListener('click', function(e){
-            var href = a.getAttribute('href');
-            var targetIndex = pages.indexOf(href);
-            if(targetIndex === -1) return;
-            if(targetIndex === currentIndex) { e.preventDefault(); return; }
-            sessionStorage.setItem('navDir', targetIndex > currentIndex ? 'right' : 'left');
-        });
-    });
-})();
-</script>
 </body>
 </html>
