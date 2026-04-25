@@ -168,3 +168,8 @@ def akademi_detay(request, akademi_id):
     from .models import Akademi
     akademi = get_object_or_404(Akademi, id=akademi_id, aktif=True)
     return render(request, 'akademi_detay.html', {'akademi': akademi})
+
+def gorevli_detay(request, gorevli_id):
+    from .models import AkademiGorevli
+    gorevli = get_object_or_404(AkademiGorevli, id=gorevli_id)
+    return render(request, 'gorevli_detay.html', {'gorevli': gorevli})

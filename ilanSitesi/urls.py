@@ -24,6 +24,7 @@ urlpatterns = [
     path('muftulukler/<str:il>/', views.muftuluk_il),
     path('akademi/', views.akademi, name='akademi'),
     path('akademi/<int:akademi_id>/', views.akademi_detay, name='akademi_detay'),
+    path('gorevli/<int:gorevli_id>/', views.gorevli_detay, name='gorevli_detay'),
     path('ilanlar/', views.tum_ilanlar, name='ilanlar'),
     path('hutbeler/', views.hutbeler, name='hutbeler'),
     path('accounts/', include('allauth.urls')),

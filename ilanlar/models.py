@@ -164,3 +164,33 @@ class AkademiResim(models.Model):
         ordering = ['sira']
         verbose_name = 'Akademi Resmi'
         verbose_name_plural = 'Akademi Resimleri'
+
+class AkademiGorevli(models.Model):
+    UNVAN_SECENEKLERI = [
+        ('mudur', 'Merkez Müdürü'),
+        ('mudur_yardimcisi', 'Müdür Yardımcısı'),
+        ('egitim_gorevlisi', 'Eğitim Görevlisi'),
+    ]
+    akademi = models.ForeignKey(Akademi, on_delete=models.CASCADE, related_name='gorevliler')
+    ad = models.CharField(max_length=200)
+    unvan = models.CharField(max_length=30, choices=UNVAN_SECENEKLERI, default='egitim_gorevlisi')
+    foto = models.ImageField(upload_to='gorevliler/', blank=True, null=True)
+    biyografi = models.TextField(blank=True)
+    egitim = models.TextField(blank=True, help_text='Her satıra bir eğitim bilgisi yaz')
+    uzmanlik = models.CharField(max_length=300, blank=True, help_text='Virgülle ayır: Tecvid, Kıraat, Hadis')
+    deneyim_yil = models.IntegerField(default=0)
+    mezun_ogrenci = models.IntegerField(default=0)
+    sira = models.IntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.ad} - {self.get_unvan_display()}"
+
+    def delete(self, *args, **kwargs):
+        if self.foto:
+            self.foto.delete(save=False)
+        super().delete(*args, **kwargs)
+
+    class Meta:
+        ordering = ['sira']
+        verbose_name = 'Akademi Görevlisi'
+        verbose_name_plural = 'Akademi Görevlileri'

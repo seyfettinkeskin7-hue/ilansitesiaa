@@ -65,6 +65,38 @@
         </div>
         {% endif %}
 
+        {% if akademi.aciklama %}
+        <div class="bilgi-kart" style="margin-bottom:20px;">
+            <div class="bolum-baslik" style="font-size:11px;font-weight:700;color:#aaa;letter-spacing:1px;margin-bottom:8px;">HAKKINDA</div>
+            <p style="font-size:14px;color:#444;line-height:1.7;margin:0;">{{ akademi.aciklama }}</p>
+        </div>
+        {% endif %}
+
+        {% if akademi.gorevliler.all %}
+        <div style="margin-bottom:20px;">
+            <div style="font-size:11px;font-weight:700;color:#aaa;letter-spacing:1px;margin-bottom:12px;">EĞİTİM GÖREVLİLERİ</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+            {% for g in akademi.gorevliler.all %}
+            <a href="/gorevli/{{ g.id }}/" style="text-decoration:none;display:flex;align-items:center;gap:12px;background:white;border-radius:12px;padding:12px 14px;border:1px solid #eee;">
+                <div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;{% if g.unvan == 'mudur' %}background:linear-gradient(135deg,#b8860b,#ffd700);{% elif g.unvan == 'mudur_yardimcisi' %}background:linear-gradient(135deg,#78909c,#cfd8dc);{% else %}background:linear-gradient(135deg,#388e3c,#66bb6a);{% endif %}display:flex;align-items:center;justify-content:center;">
+                    {% if g.foto %}<img src="{{ g.foto.url }}" style="width:100%;height:100%;object-fit:cover;">{% else %}<span style="color:white;font-weight:700;font-size:16px;">{{ g.ad|slice:":1" }}</span>{% endif %}
+                </div>
+                <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
+                        <span style="font-size:14px;font-weight:600;color:#222;">{{ g.ad }}</span>
+                        <span style="display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:2px 10px 2px 6px;position:relative;overflow:hidden;{% if g.unvan == 'mudur' %}background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);box-shadow:0 0 8px rgba(255,215,0,0.5);{% elif g.unvan == 'mudur_yardimcisi' %}background:linear-gradient(135deg,#8a9ba8,#cfd8dc,#8a9ba8);{% else %}background:linear-gradient(135deg,#388e3c,#66bb6a,#388e3c);{% endif %}">
+                            <span style="font-size:10px;font-weight:700;{% if g.unvan == 'mudur' %}color:#3a2000;{% elif g.unvan == 'mudur_yardimcisi' %}color:#1c2b33;{% else %}color:#0a2e0c;{% endif %}">{% if g.unvan == 'mudur' %}★{% elif g.unvan == 'mudur_yardimcisi' %}◆{% else %}●{% endif %} {{ g.get_unvan_display }}</span>
+                        </span>
+                    </div>
+                    {% if g.uzmanlik %}<p style="font-size:11px;color:#888;margin:3px 0 0;">{{ g.uzmanlik }}</p>{% endif %}
+                </div>
+                <span style="color:#ccc;font-size:18px;">›</span>
+            </a>
+            {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <div class="bilgi-kart">
             {% if akademi.sehir %}
             <div class="bilgi-satir">
