@@ -43,6 +43,8 @@
         .btn-instagram { background: #E1306C; color: white; }
         .btn-youtube { background: #FF0000; color: white; }
         .btn-resmi { background: #FF6000; color: white; }
+    @keyframes shine { 0% { left: -100%; } 30% { left: 140%; } 100% { left: 140%; } }
+        .rozet-shine { position: absolute; top: 0; bottom: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent); animation: shine 3s infinite; }
     </style>
 </head>
 <body>
@@ -84,7 +86,7 @@
                 <div style="flex:1;">
                     <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;">
                         <span style="font-size:14px;font-weight:600;color:#222;">{{ g.ad }}</span>
-                        <span style="display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:2px 10px 2px 6px;position:relative;overflow:hidden;{% if g.unvan == 'mudur' %}background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);box-shadow:0 0 8px rgba(255,215,0,0.5);{% elif g.unvan == 'mudur_yardimcisi' %}background:linear-gradient(135deg,#8a9ba8,#cfd8dc,#8a9ba8);{% else %}background:linear-gradient(135deg,#388e3c,#66bb6a,#388e3c);{% endif %}">
+                        <span style="display:inline-flex;align-items:center;gap:3px;border-radius:20px;padding:2px 10px 2px 6px;position:relative;overflow:hidden;{% if g.unvan == 'mudur' %}background:linear-gradient(135deg,#b8860b,#ffd700,#b8860b);box-shadow:0 0 8px rgba(255,215,0,0.5);{% elif g.unvan == 'mudur_yardimcisi' %}background:linear-gradient(135deg,#8a9ba8,#cfd8dc,#8a9ba8);{% else %}background:linear-gradient(135deg,#388e3c,#66bb6a,#388e3c);{% endif %}"><div class="rozet-shine"></div>
                             <span style="font-size:10px;font-weight:700;{% if g.unvan == 'mudur' %}color:#3a2000;{% elif g.unvan == 'mudur_yardimcisi' %}color:#1c2b33;{% else %}color:#0a2e0c;{% endif %}">{% if g.unvan == 'mudur' %}★{% elif g.unvan == 'mudur_yardimcisi' %}◆{% else %}●{% endif %} {{ g.get_unvan_display }}</span>
                         </span>
                     </div>
