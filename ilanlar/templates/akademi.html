@@ -2,24 +2,27 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Akademi Merkezleri</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: #f5f5f5; padding-bottom: 100px; }
-        .header { background: white; padding: 12px 30px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
-        .logo-text { font-size: 20px; font-weight: bold; color: #333; }
+        body { font-family: Arial, sans-serif; background: #f0f0f0; padding-bottom: 100px; }
+        .header { background: white; padding: 12px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .logo-icon { background: #FF6000; color: white; padding: 7px; border-radius: 8px; font-size: 18px; }
+        .logo-text { font-size: 17px; font-weight: bold; color: #333; }
         .header-sag { margin-left: auto; }
-        .header-sag a { color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        h1 { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 25px; }
-        .kategori-baslik { font-size: 18px; font-weight: bold; color: #333; margin: 30px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #FF6000; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
-        .kart { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; text-decoration: none; color: #333; display: block; }
-        .kart:hover { border-color: #FF6000; transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .kart h3 { font-size: 15px; margin-bottom: 8px; line-height: 1.4; }
-        .kart .sehir { font-size: 13px; color: #888; }
-        .ikon { font-size: 36px; margin-bottom: 12px; }
+        .header-sag a { color: #555; text-decoration: none; font-size: 13px; font-weight: bold; }
+        .ust-bar { background: #1a8a8a; padding: 12px 16px; }
+        .ust-bar a { color: white; text-decoration: none; font-size: 14px; }
+        .container { max-width: 1000px; margin: 20px auto; padding: 0 16px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+        .kategori-blok { background: white; border-radius: 10px; overflow: hidden; border: 1px solid #ddd; }
+        .kategori-baslik { background: #1a8a8a; color: white; padding: 14px 18px; font-size: 15px; font-weight: bold; }
+        .merkez-liste { padding: 0; }
+        .merkez-item { display: block; padding: 13px 18px; border-bottom: 1px solid #eee; text-decoration: none; color: #333; font-size: 14px; transition: background 0.15s; }
+        .merkez-item:last-child { border-bottom: none; }
+        .merkez-item:hover { background: #f0fafa; color: #1a8a8a; }
+        .merkez-item.linkli { color: #1a8a8a; font-weight: 500; }
     </style>
 </head>
 <body>
@@ -28,22 +31,28 @@
         <div class="logo-text">Dingönüllüleri</div>
         <div class="header-sag"><a href="/">← Anasayfa</a></div>
     </div>
+
+    <div class="ust-bar">
+        <a href="/">Anasayfa</a>
+    </div>
+
     <div class="container">
-        <h1>🎓 Akademi Merkezleri</h1>
-        {% for kategori in kategoriler %}
-        <div class="kategori-baslik">🏛️ {{ kategori.ad }}</div>
         <div class="grid">
-            {% for akademi in kategori.akademiler.all %}
-            {% if akademi.aktif %}
-            <a href="/akademi/{{ akademi.id }}/" class="kart">
-                <div class="ikon">🎓</div>
-                <h3>{{ akademi.ad }}</h3>
-                {% if akademi.sehir %}<div class="sehir">📍 {{ akademi.sehir }}</div>{% endif %}
-            </a>
-            {% endif %}
+            {% for kategori in kategoriler %}
+            <div class="kategori-blok">
+                <div class="kategori-baslik">{{ kategori.ad }}</div>
+                <div class="merkez-liste">
+                    {% for akademi in kategori.akademiler.all %}
+                    {% if akademi.aktif %}
+                    <a href="/akademi/{{ akademi.id }}/" class="merkez-item {% if akademi.resmi_url or akademi.instagram_url %}linkli{% endif %}">
+                        {{ akademi.ad }}
+                    </a>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
             {% endfor %}
         </div>
-        {% endfor %}
     </div>
 </body>
 </html>
