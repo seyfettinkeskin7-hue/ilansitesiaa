@@ -10,7 +10,6 @@ MUFTULUK_VERISI = {
 
 def animasyon(request):
     if request.COOKIES.get("animasyon_goruldu"):
-        return redirect("anasayfa")
     return render(request, 'animasyon.html')
 
 def anasayfa(request):
@@ -53,9 +52,8 @@ def kayit(request):
             return render(request, 'kayit.html')
         user = User.objects.create_user(username=kullanici_adi, email=email, password=sifre)
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        from django.contrib import messages
-        messages.success(request, 'İlanınız alındı! Kontrol yapıldıktan sonra yayına alınacaktır.')
-        return redirect('anasayfa')
+        messages.success(request, "İlanınız alındı! Kontrol yapıldıktan sonra yayına alınacaktır.")
+        return redirect("anasayfa")
     return render(request, 'kayit.html')
 
 def giris(request):
@@ -65,9 +63,6 @@ def giris(request):
         user = authenticate(request, username=kullanici_adi, password=sifre)
         if user:
             login(request, user)
-            from django.contrib import messages
-        messages.success(request, 'İlanınız alındı! Kontrol yapıldıktan sonra yayına alınacaktır.')
-        return redirect('anasayfa')
         else:
             messages.error(request, 'Kullanıcı adı veya şifre hatalı!')
     return render(request, 'giris.html')
@@ -98,9 +93,8 @@ def ilan_ekle(request):
         )
         for dosya in request.FILES.getlist('resimler'):
             IlanMedya.objects.create(ilan=ilan, dosya=dosya, tip='resim')
-        from django.contrib import messages
-        messages.success(request, 'İlanınız alındı! Kontrol yapıldıktan sonra yayına alınacaktır.')
-        return redirect('anasayfa')
+        messages.success(request, "İlanınız alındı! Kontrol yapıldıktan sonra yayına alınacaktır.")
+        return redirect("anasayfa")
     return render(request, 'ilan_ekle.html')
 
 def ilan_sil(request, ilan_id):
