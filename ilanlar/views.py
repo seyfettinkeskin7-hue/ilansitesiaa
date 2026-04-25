@@ -16,12 +16,14 @@ def animasyon(request):
 def anasayfa(request):
     if not request.user.is_authenticated:
         return redirect('giris')
+    from .models import Bildirim
     haberler = Haber.objects.filter(aktif=True).order_by('-tarih')
     ilanlar = Ilan.objects.all().order_by('-tarih')[:30]
     ilanlar2 = Ilan.objects.all().order_by('?')[:30]
     favori_idler = list(Favori.objects.filter(kullanici=request.user).values_list('ilan_id', flat=True))
     favoriler = Favori.objects.filter(kullanici=request.user).select_related('ilan')
-    return render(request, 'anasayfa.html', {'haberler': haberler, 'ilanlar': ilanlar, 'ilanlar2': ilanlar2, 'favori_idler': favori_idler, 'favoriler': favoriler})
+    bildirim = Bildirim.objects.filter(aktif=True).first()
+    return render(request, 'anasayfa.html', {'haberler': haberler, 'ilanlar': ilanlar, 'ilanlar2': ilanlar2, 'favori_idler': favori_idler, 'favoriler': favoriler, 'bildirim': bildirim})
 
 def muftulukler(request):
     iller = sorted(MUFTULUK_VERISI.keys())

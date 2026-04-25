@@ -583,5 +583,40 @@
         if(dir){ document.body.style.animation=dir==='right'?'bnavSlideR 0.3s ease':'bnavSlideL 0.3s ease'; sessionStorage.removeItem('navDir'); }
     })();
 </script>
+
+{% if bildirim %}
+<style>
+.bildirim-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+.bildirim-kart { background: white; border-radius: 16px; padding: 24px; max-width: 380px; width: 100%; box-shadow: 0 10px 40px rgba(0,0,0,0.2); animation: bildirimAc 0.3s ease; }
+@keyframes bildirimAc { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+.bildirim-ust { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.bildirim-baslik { font-size: 16px; font-weight: 700; color: #333; }
+.bildirim-kapat { width: 28px; height: 28px; border-radius: 50%; background: #f0f0f0; border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #666; flex-shrink: 0; }
+.bildirim-mesaj { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 18px; }
+.bildirim-tamam { width: 100%; background: #FF6000; color: white; border: none; border-radius: 10px; padding: 13px; font-size: 15px; font-weight: bold; cursor: pointer; }
+</style>
+<div class="bildirim-overlay" id="bildirimOverlay">
+  <div class="bildirim-kart">
+    <div class="bildirim-ust">
+      <div class="bildirim-baslik">{% if bildirim.baslik %}{{ bildirim.baslik }}{% else %}Duyuru{% endif %}</div>
+      <button class="bildirim-kapat" onclick="bildirimKapat()">✕</button>
+    </div>
+    <div class="bildirim-mesaj">{{ bildirim.mesaj }}</div>
+    <button class="bildirim-tamam" onclick="bildirimKapat()">Tamam, Anladım</button>
+  </div>
+</div>
+<script>
+(function(){
+    var key = 'bildirim_{{ bildirim.id }}';
+    if(localStorage.getItem(key)) {
+        document.getElementById('bildirimOverlay').style.display = 'none';
+    }
+})();
+function bildirimKapat() {
+    localStorage.setItem('bildirim_{{ bildirim.id }}', '1');
+    document.getElementById('bildirimOverlay').style.display = 'none';
+}
+</script>
+{% endif %}
 </body>
 </html>

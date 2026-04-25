@@ -194,3 +194,17 @@ class AkademiGorevli(models.Model):
         ordering = ['sira']
         verbose_name = 'Akademi Görevlisi'
         verbose_name_plural = 'Akademi Görevlileri'
+
+class Bildirim(models.Model):
+    baslik = models.CharField(max_length=200, blank=True)
+    mesaj = models.TextField()
+    aktif = models.BooleanField(default=True)
+    tarih = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.baslik or self.mesaj[:50]
+
+    class Meta:
+        ordering = ['-tarih']
+        verbose_name = 'Bildirim'
+        verbose_name_plural = 'Bildirimler'

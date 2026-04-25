@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Ilan, IlanMedya, Favori, Haber, Hutbe, Akademi, AkademiKategori, AkademiResim, AkademiGorevli
+from .models import Ilan, IlanMedya, Favori, Haber, Hutbe, Akademi, AkademiKategori, AkademiResim, AkademiGorevli, Bildirim
 
 class IlanMedyaInline(admin.TabularInline):
     model = IlanMedya
@@ -28,4 +28,5 @@ admin.site.register(Favori)
 admin.site.register(Hutbe)
 admin.site.register(AkademiKategori, AkademiKategoriAdmin)
 admin.site.register(AkademiGorevli)
+admin.site.register(Bildirim)
 admin.site.register(Akademi, AkademiAdmin)
