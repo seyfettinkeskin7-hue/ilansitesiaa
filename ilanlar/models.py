@@ -117,3 +117,50 @@ class Hutbe(models.Model):
 
     class Meta:
         ordering = ['-tarih']
+
+class AkademiKategori(models.Model):
+    ad = models.CharField(max_length=200)
+    sira = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.ad
+
+    class Meta:
+        ordering = ['sira']
+        verbose_name = 'Akademi Kategorisi'
+        verbose_name_plural = 'Akademi Kategorileri'
+
+class Akademi(models.Model):
+    kategori = models.ForeignKey(AkademiKategori, on_delete=models.CASCADE, related_name='akademiler')
+    ad = models.CharField(max_length=200)
+    sehir = models.CharField(max_length=100, blank=True)
+    aciklama = models.TextField(blank=True)
+    resmi_url = models.URLField(blank=True)
+    instagram_url = models.URLField(blank=True)
+    youtube_url = models.URLField(blank=True)
+    konum_url = models.URLField(blank=True, help_text='Google Maps adres linki')
+    sira = models.IntegerField(default=0)
+    aktif = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.ad
+
+    class Meta:
+        ordering = ['sira']
+        verbose_name = 'Akademi'
+        verbose_name_plural = 'Akademiler'
+
+class AkademiResim(models.Model):
+    akademi = models.ForeignKey(Akademi, on_delete=models.CASCADE, related_name='resimler')
+    resim = models.ImageField(upload_to='akademi/')
+    sira = models.IntegerField(default=0)
+
+    def delete(self, *args, **kwargs):
+        if self.resim:
+            self.resim.delete(save=False)
+        super().delete(*args, **kwargs)
+
+    class Meta:
+        ordering = ['sira']
+        verbose_name = 'Akademi Resmi'
+        verbose_name_plural = 'Akademi Resimleri'

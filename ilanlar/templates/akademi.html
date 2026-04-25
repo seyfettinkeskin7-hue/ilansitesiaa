@@ -2,285 +2,48 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Akademi Merkezleri - Dingönüllüleri</title>
+    <title>Akademi Merkezleri</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background-color: #f5f5f5; }
-        
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding-bottom: 100px; }
         .header { background: white; padding: 12px 30px; display: flex; align-items: center; gap: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         .logo-icon { background: #FF6000; color: white; padding: 8px; border-radius: 8px; font-size: 20px; }
         .logo-text { font-size: 20px; font-weight: bold; color: #333; }
         .header-sag { margin-left: auto; }
         .header-sag a { color: #555; text-decoration: none; font-size: 14px; font-weight: bold; }
-        
         .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        
-        .ust-kontrol { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; }
-        .sayfa-baslik { font-size: 26px; font-weight: bold; color: #333; }
-        
-        #geri-btn { 
-            display: none; background: #333; color: white; border: none; padding: 10px 20px; 
-            border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold;
-        }
-        #geri-btn:hover { background: #FF6000; }
-
-        /* Ana kategoriler için yan yana iki büyük kart tasarımı */
-        .grid-kategori { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }
-        /* İçeri girildiğinde merkezleri listelemek için daha küçük kartlar */
-        .grid-merkez { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; }
-        
-        .kart { 
-            background: white; border: 1px solid #ddd; border-radius: 10px; padding: 30px 20px; 
-            text-align: center; cursor: pointer; transition: all 0.2s ease; text-decoration: none; color: #333;
-        }
+        h1 { font-size: 24px; font-weight: bold; color: #333; margin-bottom: 25px; }
+        .kategori-baslik { font-size: 18px; font-weight: bold; color: #333; margin: 30px 0 15px; padding-bottom: 8px; border-bottom: 2px solid #FF6000; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 15px; }
+        .kart { background: white; border: 1px solid #ddd; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; text-decoration: none; color: #333; display: block; }
         .kart:hover { border-color: #FF6000; transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        
-        .kategori-isim { font-size: 22px; font-weight: bold; margin-bottom: 10px; color: #333; }
-        .ikon { font-size: 45px; margin-bottom: 15px; }
-        
-        .akademi-kart { padding: 25px 15px; }
-        .akademi-kart h3 { font-size: 16px; margin-bottom: 15px; line-height: 1.4; color: #333; }
-        .resmi-link-yazi { display: inline-block; background: #FF6000; color: white; padding: 8px 16px; border-radius: 5px; font-size: 13px; font-weight: bold; }
+        .kart h3 { font-size: 15px; margin-bottom: 8px; line-height: 1.4; }
+        .kart .sehir { font-size: 13px; color: #888; }
+        .ikon { font-size: 36px; margin-bottom: 12px; }
     </style>
 </head>
 <body>
-
     <div class="header">
         <div class="logo-icon">🕌</div>
         <div class="logo-text">Dingönüllüleri</div>
         <div class="header-sag"><a href="/">← Anasayfa</a></div>
     </div>
-
     <div class="container">
-        <div class="ust-kontrol">
-            <h1 class="sayfa-baslik" id="sayfa-baslik">🎓 Akademi Merkezleri</h1>
-            <button id="geri-btn" onclick="kategorileriGoster()">← Kategorilere Dön</button>
+        <h1>🎓 Akademi Merkezleri</h1>
+        {% for kategori in kategoriler %}
+        <div class="kategori-baslik">🏛️ {{ kategori.ad }}</div>
+        <div class="grid">
+            {% for akademi in kategori.akademiler.all %}
+            {% if akademi.aktif %}
+            <a href="/akademi/{{ akademi.id }}/" class="kart">
+                <div class="ikon">🎓</div>
+                <h3>{{ akademi.ad }}</h3>
+                {% if akademi.sehir %}<div class="sehir">📍 {{ akademi.sehir }}</div>{% endif %}
+            </a>
+            {% endif %}
+            {% endfor %}
         </div>
-
-        <div id="liste-alani"></div>
+        {% endfor %}
     </div>
-
-    <script>
-        // İki ana kategori ve içindeki merkezler (Resimdekileri örnek olarak ekledim, linkleri sonra düzeltiriz)
-        const AKADEMI_VERISI = {
-            "Dini İhtisas Merkezleri": [
-                {"ad": "Ankara Rıfat Börekçi Dini İhtisas Merkezi", "url": "https://rifatborekci.diyanet.gov.tr/"},
-                {"ad": "Antalya H. Mehmet Gebizli Dini İhtisas Merkezi", "url": "#"}
-            ],
-            "Dini Yüksek İhtisas Merkezleri": [
-                {"ad": "Uluslararası İstanbul Haseki Dini Yüksek İhtisas Merkezi", "url": "https://haseki.diyanet.gov.tr/"}
-            ]
-        };
-
-        const listeAlani = document.getElementById('liste-alani');
-        const baslik = document.getElementById('sayfa-baslik');
-        const geriBtn = document.getElementById('geri-btn');
-
-        function kategorileriGoster() {
-            listeAlani.innerHTML = ''; 
-            listeAlani.className = 'grid-kategori'; // İki büyük kart görünümü
-            baslik.innerText = '🎓 Akademi Merkezleri';
-            geriBtn.style.display = 'none'; 
-
-            for (const kategoriAdi in AKADEMI_VERISI) {
-                const div = document.createElement('div');
-                div.className = 'kart';
-                div.innerHTML = `
-                    <div class="ikon">🏛️</div>
-                    <div class="kategori-isim">${kategoriAdi}</div>
-                    <div style="font-size:15px; color:#888;">${AKADEMI_VERISI[kategoriAdi].length} Merkez Bulunuyor</div>
-                `;
-                
-                div.onclick = function() {
-                    merkezleriGoster(kategoriAdi);
-                };
-                
-                listeAlani.appendChild(div);
-            }
-        }
-
-        function merkezleriGoster(secilenKategori) {
-            listeAlani.innerHTML = ''; 
-            listeAlani.className = 'grid-merkez'; // Çoklu küçük kart görünümü
-            baslik.innerText = `🏛️ ${secilenKategori}`;
-            geriBtn.style.display = 'block'; 
-
-            const merkezler = AKADEMI_VERISI[secilenKategori];
-
-            merkezler.forEach(function(merkez) {
-                const a = document.createElement('a');
-                a.className = 'kart akademi-kart';
-                a.href = merkez.url;
-                a.target = '_blank'; 
-                
-                a.innerHTML = `
-                    <div class="ikon">🎓</div>
-                    <h3>${merkez.ad}</h3>
-                    <span class="resmi-link-yazi">Resmi Sayfaya Git →</span>
-                `;
-                
-                listeAlani.appendChild(a);
-            });
-        }
-
-        // Sayfa yüklendiğinde ana kategorileri göster
-        window.onload = kategorileriGoster;
-
-    </script>
-
-
-
-
-<style>
-@keyframes slideInRight { from { opacity:0; transform: translateX(60px); } to { opacity:1; transform: translateX(0); } }
-@keyframes slideInLeft  { from { opacity:0; transform: translateX(-60px); } to { opacity:1; transform: translateX(0); } }
-@keyframes slideOutLeft  { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(-60px); } }
-@keyframes slideOutRight { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(60px); } }
-.page-slide-in-right { animation: slideInRight 0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-.page-slide-in-left  { animation: slideInLeft  0.32s cubic-bezier(0.25,0.46,0.45,0.94) both; }
-</style>
-<script>
-(function(){
-    var pages = ['/', '/ilanlar/', '/favoriler/', '/duyurular/'];
-    var path = window.location.pathname;
-    var currentIndex = pages.indexOf(path);
-    if(currentIndex === -1) currentIndex = 0;
-
-    // Aktif butonu işaretle
-    var ids = ['nav-home','nav-ilanlar','nav-favoriler','nav-duyurular'];
-    if(ids[currentIndex]) document.getElementById(ids[currentIndex]).classList.add('active');
-
-    // Sayfa girişinde animasyon
-    var dir = sessionStorage.getItem('navDir');
-    if(dir === 'right') document.body.classList.add('page-slide-in-right');
-    else if(dir === 'left') document.body.classList.add('page-slide-in-left');
-    sessionStorage.removeItem('navDir');
-
-    // Linklere tıklanınca yön belirle
-    document.querySelectorAll('.bottom-nav a').forEach(function(a){
-        a.addEventListener('click', function(e){
-            var href = a.getAttribute('href');
-            var targetIndex = pages.indexOf(href);
-            if(targetIndex === -1) return;
-            if(targetIndex === currentIndex) { e.preventDefault(); return; }
-            sessionStorage.setItem('navDir', targetIndex > currentIndex ? 'right' : 'left');
-        });
-    });
-})();
-</script>
-<!-- BOTTOM NAV -->
-<style>
-body { padding-bottom: 100px; }
-.bnav-wrap {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 9999;
-    padding: 8px 8px 26px 8px;
-    background: rgba(255,255,255,0.01);
-    backdrop-filter: blur(80px) saturate(300%) brightness(1.05);
-    -webkit-backdrop-filter: blur(80px) saturate(300%) brightness(1.05);
-    border-top: 0.5px solid rgba(255,255,255,0.08);
-}
-.bnav-inner {
-    display: flex;
-    background: rgba(255,255,255,0.03);
-    border: 0.5px solid rgba(255,255,255,0.08);
-    border-radius: 18px;
-    padding: 3px;
-    position: relative;
-}
-.bnav-slider {
-    position: absolute;
-    top: 3px;
-    bottom: 3px;
-    border-radius: 15px;
-    background: rgba(255,255,255,0.1);
-    border: 0.5px solid rgba(255,255,255,0.2);
-    backdrop-filter: blur(40px);
-    -webkit-backdrop-filter: blur(40px);
-    transition: left 0.35s cubic-bezier(0.34,1.15,0.64,1), width 0.35s cubic-bezier(0.34,1.15,0.64,1);
-    pointer-events: none;
-    box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.3);
-}
-.bnav-item {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    height: 58px;
-    font-size: 10px;
-    font-weight: 500;
-    cursor: pointer;
-    color: rgba(0,0,0,0.45);
-    position: relative;
-    z-index: 1;
-    border-radius: 15px;
-    transition: color 0.3s;
-    text-decoration: none;
-    user-select: none;
-}
-.bnav-item.active { color: #000000; }
-.bnav-item svg { width: 20px; height: 20px; }
-</style>
-<div class="bnav-wrap">
-  <div class="bnav-inner" id="bnavInner">
-    <div class="bnav-slider" id="bnavSlider"></div>
-    <a href="/" class="bnav-item" id="bnav-0">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Anasayfa
-    </a>
-    <a href="/ilanlar/" class="bnav-item" id="bnav-1">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      İlanlar
-    </a>
-    <a href="/favoriler/" class="bnav-item" id="bnav-2">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-      Favorilerim
-    </a>
-    <a href="/duyurular/" class="bnav-item" id="bnav-3">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-      Duyurular
-    </a>
-  </div>
-</div>
-<script>
-(function(){
-  var pages=['/','/ilanlar/','/favoriler/','/duyurular/'];
-  var path=window.location.pathname;
-  var cur=pages.indexOf(path);
-  if(cur===-1)cur=0;
-  var slider=document.getElementById('bnavSlider');
-  var inner=document.getElementById('bnavInner');
-  var items=document.querySelectorAll('.bnav-item');
-  function moveSlider(i){
-    var w=inner.offsetWidth-6;
-    var bw=w/4;
-    slider.style.left=(3+i*bw)+'px';
-    slider.style.width=bw+'px';
-  }
-  items[cur].classList.add('active');
-  setTimeout(function(){moveSlider(cur);},50);
-  window.addEventListener('resize',function(){moveSlider(cur);});
-  items.forEach(function(item,i){
-    item.addEventListener('click',function(e){
-      if(i===cur)return;
-      sessionStorage.setItem('navDir',i>cur?'right':'left');
-    });
-  });
-  var dir=sessionStorage.getItem('navDir');
-  if(dir){
-    document.body.style.animation=dir==='right'?'bnavSlideR 0.32s ease':'bnavSlideL 0.32s ease';
-    sessionStorage.removeItem('navDir');
-  }
-})();
-</script>
-<style>
-@keyframes bnavSlideR{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-@keyframes bnavSlideL{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:translateX(0)}}
-</style>
 </body>
 </html>

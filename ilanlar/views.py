@@ -132,7 +132,9 @@ def haber_sil(request, haber_id):
     return redirect('panel')
 
 def akademi(request):
-    return render(request, 'akademi.html')
+    from .models import AkademiKategori
+    kategoriler = AkademiKategori.objects.prefetch_related('akademiler').all()
+    return render(request, 'akademi.html', {'kategoriler': kategoriler})
 
 def favorilerim(request):
     if not request.user.is_authenticated:
