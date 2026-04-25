@@ -21,6 +21,7 @@ class Haber(models.Model):
     renk = models.CharField(max_length=20, default='#1a3a5c')
     etiket = models.CharField(max_length=50, default='DUYURU')
     tarih = models.DateTimeField(auto_now_add=True)
+    onaylandi = models.BooleanField(default=False)
     aktif = models.BooleanField(default=True)
 
     def __str__(self):
@@ -57,6 +58,7 @@ class Ilan(models.Model):
     site_aidati = models.IntegerField(default=0)
     isitma = models.CharField(max_length=20, choices=ISITMA_SECENEKLERI, default='dogalgaz')
     tarih = models.DateTimeField(auto_now_add=True)
+    onaylandi = models.BooleanField(default=False)
 
     def __str__(self):
         return self.baslik
@@ -200,6 +202,7 @@ class Bildirim(models.Model):
     mesaj = models.TextField()
     aktif = models.BooleanField(default=True)
     tarih = models.DateTimeField(auto_now_add=True)
+    onaylandi = models.BooleanField(default=False)
 
     def __str__(self):
         return self.baslik or self.mesaj[:50]

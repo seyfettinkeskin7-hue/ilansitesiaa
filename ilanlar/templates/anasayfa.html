@@ -282,6 +282,10 @@
     </style>
 </head>
 <body>
+{% if messages %}
+<div style="position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:9999;background:#F97316;color:white;padding:14px 24px;border-radius:12px;font-family:sans-serif;font-weight:bold;box-shadow:0 4px 20px rgba(0,0,0,0.2);">{% for message in messages %}{{ message }}{% endfor %}</div>
+<script>setTimeout(()=>document.querySelector(".mesaj-div") && document.querySelector(".mesaj-div").remove(), 4000)</script>
+{% endif %}
 
 <!-- HAMBURGER -->
 <button class="hamburger" onclick="solMenuAc()">
