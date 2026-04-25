@@ -77,6 +77,7 @@ def ilan_ekle(request):
         return redirect('giris')
     if request.method == 'POST':
         ilan = Ilan.objects.create(
+            onaylandi=False,
             kullanici=request.user,
             baslik=request.POST.get('baslik'),
             aciklama=request.POST.get('aciklama'),
