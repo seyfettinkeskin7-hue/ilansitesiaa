@@ -227,14 +227,13 @@ function refreshSatir(dk,k){
   const rEl=document.getElementById('r-'+dk+'-'+k);
   if(bEl){bEl.style.color=renk;bEl.innerHTML=goruntuB!==null?(sadeceAra?'<span style="font-size:9px;display:block;opacity:0.65;">ara</span>'+goruntuB:goruntuB):'—';}
   if(dEl){dEl.innerHTML=goruntuB!==null?badge(goruntuB,sadeceAra):'—';}
-  if(rEl){const d=goruntuB===null?'':goruntuB>=60?' gecti-satir':goruntuB>=50?' kritik-satir':' kaldi-satir';rEl.className='ders-row'+d;}
+  if(rEl){const d=goruntuB===null?'':goruntuB>=60?' gecti-satir':' kaldi-satir';rEl.className='ders-row'+d;}
   updateFooter(dk);
 }
 
 function badge(b,sadeceAra){
   const pre=sadeceAra?'<span style="font-size:9px;display:block;opacity:0.65;margin-bottom:1px;">ara sınav</span>':'';
   if(b>=60) return pre+'<span class="badge" style="background:rgba(34,197,94,0.12);color:#16a34a;">✓ Geçti</span>';
-  if(b>=50) return pre+'<span class="badge" style="background:rgba(234,179,8,0.12);color:#b45309;">⚠ Kritik</span>';
   return pre+'<span class="badge" style="background:rgba(239,68,68,0.12);color:#dc2626;">✕ Kaldı</span>';
 }
 
@@ -269,7 +268,7 @@ function renderDonem(dk){
     const sadeceAra=ara!==''&&(fin===''||fin==null);
     const goruntuB=b!==null?b:(sadeceAra&&ara!==''?Number(ara):null);
     const renk=goruntuB===null?'var(--color-text-secondary)':goruntuB>=60?'#16a34a':goruntuB>=50?'#b45309':'#dc2626';
-    const satirClass='ders-row'+(sec&&goruntuB!==null?(goruntuB>=60?' gecti-satir':goruntuB>=50?' kritik-satir':' kaldi-satir'):'');
+    const satirClass='ders-row'+(sec&&goruntuB!==null?(goruntuB>=60?' gecti-satir':' kaldi-satir'):'');
     const r=ALAN_RENKLER[d.alan]||ALAN_RENKLER['Ekstra'];
     const silBtn=(!ro&&d._ekstra)?'<button onclick="ekstraSil(\''+dk+'\','+d._ei+')" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:14px;padding:0 4px;">✕</button>':'';
     rows+=`<tr class="${satirClass}" id="r-${dk}-${k}" style="opacity:${sec?1:0.45};">
