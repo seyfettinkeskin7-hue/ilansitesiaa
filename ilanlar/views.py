@@ -180,3 +180,7 @@ def gorevli_detay(request, gorevli_id):
 
 def hesaplama(request):
     return render(request, 'hesaplama.html')
+
+def hesaplama(request):
+    from django.shortcuts import render
+    return render(request, 'hesaplama.html')
