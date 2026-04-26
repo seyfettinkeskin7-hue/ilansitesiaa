@@ -3,32 +3,25 @@
 <style>
 *{box-sizing:border-box;}
 input[type=number]{-moz-appearance:textfield;}
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .tab-btn{transition:all .2s;border:none;cursor:pointer;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;}
-.badge{font-size:10px;padding:3px 7px;border-radius:4px;white-space:nowrap;display:inline-block;font-weight:600;}
-.gecti-kart{border-left:3px solid #16a34a;background:rgba(34,197,94,0.05);}
-.kaldi-kart{border-left:3px solid #dc2626;background:rgba(239,68,68,0.05);}
-.butunleme-kart{border-left:3px solid #b45309;background:rgba(234,179,8,0.05);}
-.hizli-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 10px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;border:none;flex:1;color:white;transition:opacity .15s;}
-.hizli-btn:active{opacity:0.75;}
-.inp{width:100%;font-size:16px;padding:9px 10px;border-radius:8px;border:1px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);-webkit-appearance:none;appearance:none;}
-.inp:focus{outline:2px solid #FF6000;outline-offset:1px;border-color:transparent;}
-.tablo-wrap{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.kart-wrap{display:none;}
-@media(max-width:640px){
-  .tablo-wrap{display:none;}
-  .kart-wrap{display:block;}
-  .tab-btn{font-size:12px;padding:8px 10px;}
-  .hizli-btn{font-size:13px;padding:12px 8px;}
-}
-.ders-kart{border-radius:10px;border:1px solid var(--color-border-tertiary);padding:11px 12px;margin-bottom:8px;background:var(--color-background-primary);}
-.ders-kart.kapali{opacity:0.45;}
 .ders-row td{padding:8px 6px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:13px;vertical-align:middle;}
-.not-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px;align-items:end;}
-.not-label{font-size:10px;font-weight:600;color:var(--color-text-secondary);margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em;}
-.not-val{font-size:22px;font-weight:700;text-align:center;}
+.badge{font-size:10px;padding:3px 7px;border-radius:4px;white-space:nowrap;display:inline-block;font-weight:600;}
+.gecti-satir{background:rgba(34,197,94,0.07);}
+.kaldi-satir{background:rgba(239,68,68,0.07);}
+.hizli-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 16px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;border:none;flex:1;color:white;transition:opacity .15s;}
+.hizli-btn:active{opacity:0.75;}
+.inp{width:100%;font-size:14px;padding:8px 6px;border-radius:8px;border:1px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary);-webkit-appearance:none;appearance:none;}
+.inp:focus{outline:2px solid #FF6000;outline-offset:1px;border-color:transparent;}
+.tablo-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+@media(max-width:580px){
+  .ders-row td{font-size:12px;padding:8px 4px;}
+  .inp{font-size:16px;padding:10px 8px;}
+  .hizli-btn{font-size:13px;padding:12px 8px;}
+  .tab-btn{font-size:12px;padding:8px 12px;}
+}
 </style>
+
 <div style="background:linear-gradient(135deg,#FF6000,#ff8c42);border-radius:16px;padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
   <div>
     <div style="color:rgba(255,255,255,0.8);font-size:11px;font-weight:600;letter-spacing:0.06em;margin-bottom:3px;">DİYANET AKADEMİSİ</div>
@@ -36,182 +29,368 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
   </div>
   <div style="font-size:30px;">🎓</div>
 </div>
+
 <div style="margin-bottom:12px;padding:10px 14px;background:rgba(255,96,0,0.06);border:1px solid rgba(255,96,0,0.15);border-radius:10px;">
   <p style="font-size:12px;color:var(--color-text-secondary);margin:0;line-height:1.7;">
-    Ara notunu gir → butona bas → final hesaplanır.<br>
-    <strong style="color:#FF6000;">Başarı = Ara×%30 + Final×%70 | Geçme: 60</strong>
+    Ara notunu gir → butona bas → <strong style="color:#FF6000;">sadece ara notu girilen derslere</strong> final hesaplanır.<br>
+    Başarı = Ara×%30 + Final×%70 &nbsp;|&nbsp; Geçme puanı: <strong style="color:#FF6000;">60</strong>
   </p>
 </div>
+
 <div style="display:flex;gap:8px;margin-bottom:14px;">
-  <button onclick="tumFinalleriDoldurGlobal('gec')" class="hizli-btn" style="background:#16a34a;">✅ Kaç alırsam <strong>GEÇERİM</strong></button>
-  <button onclick="tumFinalleriDoldurGlobal('kal')" class="hizli-btn" style="background:#dc2626;">❌ Kaç alırsam <strong>KALIRIM</strong></button>
+  <button onclick="tumFinalleriDoldurGlobal('gec')" class="hizli-btn" style="background:#16a34a;flex:1;">✅ Kaç alırsam <strong>GEÇERİM</strong></button>
+  <button onclick="tumFinalleriDoldurGlobal('kal')" class="hizli-btn" style="background:#dc2626;flex:1;">❌ Kaç alırsam <strong>KALIRIM</strong></button>
 </div>
+
 <div style="display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;">
   <button class="tab-btn" id="tab-d1" onclick="gotoTab('d1')" style="background:#FF6000;color:white;">1. Dönem</button>
   <button class="tab-btn" id="tab-d2" onclick="gotoTab('d2')" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">2. Dönem</button>
   <button class="tab-btn" id="tab-mez" onclick="gotoTab('mez')" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">Mezuniyet</button>
   <button class="tab-btn" id="tab-ozet" onclick="gotoTab('ozet')" style="background:var(--color-background-secondary);color:var(--color-text-secondary);">📊 Atama Puanı</button>
 </div>
+
 <div id="panel-d1"></div>
 <div id="panel-d2" style="display:none;"></div>
 <div id="panel-mez" style="display:none;"></div>
 <div id="panel-ozet" style="display:none;"></div>
 </div>
+
 <script>
-const DERSLER=[
-  {ad:"Tecvid Bilgisi",alan:"Kur'an-ı Kerim",donem:1,kredi:28},
-  {ad:"Talim Uygulamaları",alan:"Kur'an-ı Kerim",donem:1,kredi:28},
-  {ad:"Yüzüne Okuma I",alan:"Kur'an-ı Kerim",donem:1,kredi:112},
-  {ad:"Ezbere Okuma I",alan:"Kur'an-ı Kerim",donem:1,kredi:56},
-  {ad:"Kur'an-ı Kerim Meali I",alan:"Temel İslami İlimler",donem:1,kredi:28},
-  {ad:"Akaid-Kelam I",alan:"Temel İslami İlimler",donem:1,kredi:28},
-  {ad:"İslam İbadet ve Sosyal Hayat Fıkhı I",alan:"Temel İslami İlimler",donem:1,kredi:56},
-  {ad:"Hadis I",alan:"Temel İslami İlimler",donem:1,kredi:28},
-  {ad:"İmamlık-Müezzinlik Bilgi ve Becerisi I",alan:"Mesleki Bilgi ve Beceri",donem:1,kredi:28},
-  {ad:"Dini Musiki I",alan:"Mesleki Bilgi ve Beceri",donem:1,kredi:28},
-  {ad:"Uygulama/Staj I",alan:"Mesleki Bilgi ve Beceri",donem:1,kredi:28},
-  {ad:"Devlet Teşkilatı ve Kamu Mevzuatı",alan:"Mevzuat",donem:1,kredi:28},
-  {ad:"Kültürel Etkinlikler I",alan:"Kültürel Etkinlikler",donem:1,kredi:28},
-  {ad:"Yüzüne Okuma II",alan:"Kur'an-ı Kerim",donem:2,kredi:84},
-  {ad:"Ezbere Okuma II",alan:"Kur'an-ı Kerim",donem:2,kredi:56},
-  {ad:"Kur'an-ı Kerim Meali II",alan:"Temel İslami İlimler",donem:2,kredi:28},
-  {ad:"Akaid-Kelam II",alan:"Temel İslami İlimler",donem:2,kredi:28},
-  {ad:"İslam İbadet ve Sosyal Hayat Fıkhı II",alan:"Temel İslami İlimler",donem:2,kredi:56},
-  {ad:"Hadis II",alan:"Temel İslami İlimler",donem:2,kredi:28},
-  {ad:"Davet ve Nebevi Metot",alan:"Din Hizmetleri",donem:2,kredi:28},
-  {ad:"Manevi Danışmanlık ve Rehberlik",alan:"Din Hizmetleri",donem:2,kredi:28},
-  {ad:"İmamlık-Müezzinlik Bilgi ve Becerisi II",alan:"Mesleki Bilgi ve Beceri",donem:2,kredi:56},
-  {ad:"Dini Musiki II",alan:"Mesleki Bilgi ve Beceri",donem:2,kredi:56},
-  {ad:"Uygulama/Staj II",alan:"Mesleki Bilgi ve Beceri",donem:2,kredi:28},
-  {ad:"Kültürel Etkinlikler II",alan:"Kültürel Etkinlikler",donem:2,kredi:28},
+const DERSLER = [
+  {ad:"Tecvid Bilgisi", alan:"Kur'an-ı Kerim", donem:1, kredi:28},
+  {ad:"Talim Uygulamaları", alan:"Kur'an-ı Kerim", donem:1, kredi:28},
+  {ad:"Yüzüne Okuma I", alan:"Kur'an-ı Kerim", donem:1, kredi:112},
+  {ad:"Ezbere Okuma I", alan:"Kur'an-ı Kerim", donem:1, kredi:56},
+  {ad:"Kur'an-ı Kerim Meali I", alan:"Temel İslami İlimler", donem:1, kredi:28},
+  {ad:"Akaid-Kelam I", alan:"Temel İslami İlimler", donem:1, kredi:28},
+  {ad:"İslam İbadet ve Sosyal Hayat Fıkhı I", alan:"Temel İslami İlimler", donem:1, kredi:56},
+  {ad:"Hadis I", alan:"Temel İslami İlimler", donem:1, kredi:28},
+  {ad:"İmamlık-Müezzinlik Bilgi ve Becerisi I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},
+  {ad:"Dini Musiki I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},
+  {ad:"Uygulama/Staj I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},
+  {ad:"Devlet Teşkilatı ve Kamu Mevzuatı", alan:"Mevzuat", donem:1, kredi:28},
+  {ad:"Kültürel Etkinlikler I", alan:"Kültürel Etkinlikler", donem:1, kredi:28},
+  {ad:"Yüzüne Okuma II", alan:"Kur'an-ı Kerim", donem:2, kredi:84},
+  {ad:"Ezbere Okuma II", alan:"Kur'an-ı Kerim", donem:2, kredi:56},
+  {ad:"Kur'an-ı Kerim Meali II", alan:"Temel İslami İlimler", donem:2, kredi:28},
+  {ad:"Akaid-Kelam II", alan:"Temel İslami İlimler", donem:2, kredi:28},
+  {ad:"İslam İbadet ve Sosyal Hayat Fıkhı II", alan:"Temel İslami İlimler", donem:2, kredi:56},
+  {ad:"Hadis II", alan:"Temel İslami İlimler", donem:2, kredi:28},
+  {ad:"Davet ve Nebevi Metot", alan:"Din Hizmetleri", donem:2, kredi:28},
+  {ad:"Manevi Danışmanlık ve Rehberlik", alan:"Din Hizmetleri", donem:2, kredi:28},
+  {ad:"İmamlık-Müezzinlik Bilgi ve Becerisi II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:56},
+  {ad:"Dini Musiki II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:56},
+  {ad:"Uygulama/Staj II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:28},
+  {ad:"Kültürel Etkinlikler II", alan:"Kültürel Etkinlikler", donem:2, kredi:28},
 ];
-const ALAN_RENKLER={
-  "Kur'an-ı Kerim":{bg:"rgba(59,130,246,0.1)",tx:"#2563eb"},
-  "Temel İslami İlimler":{bg:"rgba(34,197,94,0.1)",tx:"#16a34a"},
-  "Din Hizmetleri":{bg:"rgba(234,179,8,0.12)",tx:"#b45309"},
-  "Mesleki Bilgi ve Beceri":{bg:"rgba(239,68,68,0.1)",tx:"#dc2626"},
-  "Mevzuat":{bg:"rgba(107,114,128,0.12)",tx:"#4b5563"},
-  "Kültürel Etkinlikler":{bg:"rgba(107,114,128,0.12)",tx:"#4b5563"},
-  "Ekstra":{bg:"rgba(168,85,247,0.1)",tx:"#7c3aed"},
+
+const ALAN_RENKLER = {
+  "Kur'an-ı Kerim":         {bg:"rgba(59,130,246,0.1)",  tx:"#2563eb"},
+  "Temel İslami İlimler":   {bg:"rgba(34,197,94,0.1)",   tx:"#16a34a"},
+  "Din Hizmetleri":         {bg:"rgba(234,179,8,0.12)",  tx:"#b45309"},
+  "Mesleki Bilgi ve Beceri":{bg:"rgba(239,68,68,0.1)",   tx:"#dc2626"},
+  "Mevzuat":                {bg:"rgba(107,114,128,0.12)",tx:"#4b5563"},
+  "Kültürel Etkinlikler":   {bg:"rgba(107,114,128,0.12)",tx:"#4b5563"},
+  "Ekstra":                 {bg:"rgba(168,85,247,0.1)",  tx:"#7c3aed"},
 };
-let state={d1:{secili:{},notlar:{},ekstra:[]},d2:{secili:{},notlar:{},ekstra:[]},d1kayit:null,d2kayit:null,mezNot:''};
-async function save(){try{if(window.storage)await window.storage.set('akademi_v6',JSON.stringify(state));}catch(e){}}
-async function load(){try{const r=window.storage?await window.storage.get('akademi_v6'):null;if(r&&r.value)state=JSON.parse(r.value);}catch(e){}}
-function listele(dk){const dn=dk==='d1'?1:2;const ekstra=(state[dk].ekstra||[]).map((d,i)=>({...d,_ekstra:true,_ei:i}));return[...DERSLER.filter(d=>d.donem===dn),...ekstra];}
-function key(d,i){return d._ekstra?'e_'+d._ei:String(i);}
-function basari(ara,fin){const a=ara!==''&&ara!=null?Number(ara):null;const f=fin!==''&&fin!=null?Number(fin):null;if(a===null||f===null)return null;return Math.round(a*0.3+f*0.7);}
-function gecFinal(ara){if(ara===''||ara==null)return null;const p=Math.ceil((60-Number(ara)*0.3)/0.7);return p>100?null:Math.max(0,p);}
-function kalFinal(ara){if(ara===''||ara==null)return null;return Math.max(0,Math.ceil((59-Number(ara)*0.3)/0.7));}
-function sinifDur(dk){const liste=listele(dk);let kaldilar=new Set();liste.forEach((d,i)=>{const k=key(d,i);if(!state[dk].secili[k])return;const nv=state[dk].notlar[k]||{};const b=basari(nv.ara,nv.donem);if(b!==null&&b<60)kaldilar.add(k);});return{atildi:kaldilar.size>=3,butunleme:kaldilar.size>=1&&kaldilar.size<=2,kaldilar};}
-function tumFinalleriDoldurGlobal(tip){const dk=aktifTab;if(dk!=='d1'&&dk!=='d2'){alert('Lütfen önce 1. veya 2. Dönem sekmesine geçin!');return;}listele(dk).forEach((d,i)=>{const k=key(d,i);if(!state[dk].secili[k])return;const ara=state[dk].notlar[k]?.ara;if(ara===''||ara==null)return;const puan=tip==='gec'?gecFinal(ara):kalFinal(ara);if(puan===null)return;if(!state[dk].notlar[k])state[dk].notlar[k]={};state[dk].notlar[k].donem=String(puan);});save();refreshDonem(dk);}
-function toggle(dk,k,v){state[dk].secili[k]=v;if(!v)delete state[dk].notlar[k];save();refreshDonem(dk);}
-function setNot(dk,k,alan,val){if(!state[dk].notlar[k])state[dk].notlar[k]={};state[dk].notlar[k][alan]=val;save();refreshSatir(dk,k);}
+
+let state = {
+  d1:{secili:{},notlar:{},ekstra:[]},
+  d2:{secili:{},notlar:{},ekstra:[]},
+  d1kayit:null, d2kayit:null, mezNot:'',
+};
+
+async function save(){ try{ if(window.storage) await window.storage.set('akademi_v6',JSON.stringify(state)); }catch(e){} }
+async function load(){ try{ const r=window.storage?await window.storage.get('akademi_v6'):null; if(r&&r.value) state=JSON.parse(r.value); }catch(e){} }
+
+function listele(dk){
+  const dn=dk==='d1'?1:2;
+  const ekstra=(state[dk].ekstra||[]).map((d,i)=>({...d,_ekstra:true,_ei:i}));
+  return [...DERSLER.filter(d=>d.donem===dn),...ekstra];
+}
+function key(d,i){ return d._ekstra?'e_'+d._ei:String(i); }
+
+function basari(ara,final){
+  const a=ara!==''&&ara!=null?Number(ara):null;
+  const f=final!==''&&final!=null?Number(final):null;
+  if(a===null||f===null) return null;
+  return Math.round(a*0.3+f*0.7);
+}
+
+function gecFinal(ara){
+  if(ara===''||ara==null) return null;
+  const a=Number(ara);
+  const p=Math.ceil((60-a*0.3)/0.7);
+  return p>100?null:Math.max(0,p);
+}
+
+function kalFinal(ara){
+  if(ara===''||ara==null) return null;
+  const a=Number(ara);
+  return Math.max(0,Math.ceil((50-a*0.3)/0.7)-1);
+}
+
+function tumFinalleriDoldurGlobal(tip){
+  const dk=aktifTab;
+  if(dk!=='d1'&&dk!=='d2'){alert('Lütfen önce 1. veya 2. Dönem sekmesine geçin!');return;}
+  listele(dk).forEach((d,i)=>{
+    const k=key(d,i);
+    if(!state[dk].secili[k]) return;
+    const ara=state[dk].notlar[k]?.ara;
+    if(ara===''||ara==null) return;
+    const puan=tip==='gec'?gecFinal(ara):kalFinal(ara);
+    if(puan===null) return;
+    if(!state[dk].notlar[k]) state[dk].notlar[k]={};
+    state[dk].notlar[k].final=String(puan);
+  });
+  save(); refreshDonem(dk);
+}
+
+function toggle(dk,k,v){
+  state[dk].secili[k]=v;
+  if(!v) delete state[dk].notlar[k];
+  save(); refreshDonem(dk);
+}
+
+function setNot(dk,k,alan,v){
+  if(!state[dk].notlar[k]) state[dk].notlar[k]={};
+  state[dk].notlar[k][alan]=v;
+  save(); refreshSatir(dk,k);
+}
+
+function tumSec(dk,v){
+  listele(dk).forEach((d,i)=>{const k=key(d,i);state[dk].secili[k]=v;if(!v)delete state[dk].notlar[k];});
+  save(); refreshDonem(dk);
+}
+
+function ekstraEkle(dk){
+  const adEl=document.getElementById('ead-'+dk);
+  const alEl=document.getElementById('eal-'+dk);
+  const ad=(adEl?.value||'').trim();
+  if(!ad){adEl?.focus();return;}
+  if(!state[dk].ekstra) state[dk].ekstra=[];
+  state[dk].ekstra.push({ad,alan:alEl?.value||'Ekstra',donem:dk==='d1'?1:2,kredi:0});
+  if(adEl) adEl.value='';
+  save(); refreshDonem(dk);
+}
+
+function ekstraSil(dk,idx){
+  state[dk].ekstra.splice(idx,1);
+  save(); refreshDonem(dk);
+}
+
+function ozet(dk){
+  const src=state[dk+'kayit']||state[dk];
+  const ekstra=(state[dk+'kayit']?.ekstra||state[dk].ekstra||[]).map((d,i)=>({...d,_ekstra:true,_ei:i}));
+  const liste=[...DERSLER.filter(d=>d.donem===(dk==='d1'?1:2)),...ekstra];
+  let top=0,say=0;
+  liste.forEach((d,i)=>{
+    const k=d._ekstra?'e_'+d._ei:String(i);
+    if(!src.secili[k]) return;
+    const b=basari(src.notlar[k]?.ara,src.notlar[k]?.final);
+    if(b===null) return;
+    top+=b; say++;
+  });
+  return{say,dno:say>0?Math.round(top/say):null};
+}
+
+function kaydet(dk){
+  const oz=ozet(dk);
+  if(oz.say===0){alert('En az bir dersin notlarını girin!');return;}
+  state[dk+'kayit']={secili:{...state[dk].secili},notlar:JSON.parse(JSON.stringify(state[dk].notlar)),ekstra:JSON.parse(JSON.stringify(state[dk].ekstra||[]))};
+  save(); refreshDonem(dk);
+  if(aktifTab==='ozet') renderOzet();
+}
+
+function kayitSil(dk){
+  state[dk+'kayit']=null;
+  save(); refreshDonem(dk);
+  if(aktifTab==='ozet') renderOzet();
+}
+
 function refreshSatir(dk,k){
-  const nv=state[dk].notlar[k]||{};const ara=nv.ara??'';const fin=nv.donem??'';const b=basari(ara,fin);
-  const sinif=sinifDur(dk);let ozel=null;
-  if(b!==null&&b<60){if(sinif.atildi)ozel='atildi';else if(sinif.butunleme&&sinif.kaldilar.has(k))ozel='butunleme';}
-  const renk=b===null?'var(--color-text-secondary)':b>=60?'#16a34a':'#dc2626';
-  const bEl=document.getElementById('b-'+dk+'-'+k);const dEl=document.getElementById('d-'+dk+'-'+k);const rEl=document.getElementById('r-'+dk+'-'+k);
-  if(bEl){bEl.style.color=renk;bEl.textContent=b!==null?String(b):'—';}
-  if(dEl)dEl.innerHTML=b!==null?durumBadge(b,ozel):'—';
-  if(rEl)rEl.className='ders-row'+(b!==null&&b>=60?' gecti-satir':b!==null&&b<60?' kaldi-satir':'');
-  const mbEl=document.getElementById('mb-'+dk+'-'+k);
-  if(mbEl){
-    const kartCls='ders-kart'+(b!==null&&b>=60?' gecti-kart':b!==null&&b<60?(ozel==='butunleme'?' butunleme-kart':' kaldi-kart'):'')+(state[dk].secili[k]?'':' kapali');
-    mbEl.className=kartCls;
-    const bsEl=document.getElementById('mbb-'+dk+'-'+k);const dsEl=document.getElementById('mbd-'+dk+'-'+k);
-    if(bsEl){bsEl.textContent=b!==null?String(b):'—';bsEl.style.color=renk;}
-    if(dsEl)dsEl.innerHTML=b!==null?durumBadge(b,ozel):'—';
-  }
+  const ara=state[dk].notlar[k]?.ara??'';
+  const fin=state[dk].notlar[k]?.final??'';
+  const b=basari(ara,fin);
+  const sadeceAra=ara!==''&&(fin===''||fin==null);
+  const goruntuB=b!==null?b:(sadeceAra&&ara!==''?Number(ara):null);
+  const renk=goruntuB===null?'var(--color-text-secondary)':goruntuB>=60?'#16a34a':goruntuB>=50?'#b45309':'#dc2626';
+  const bEl=document.getElementById('b-'+dk+'-'+k);
+  const dEl=document.getElementById('d-'+dk+'-'+k);
+  const rEl=document.getElementById('r-'+dk+'-'+k);
+  if(bEl){bEl.style.color=renk;bEl.innerHTML=goruntuB!==null?(sadeceAra?'<span style="font-size:9px;display:block;opacity:0.65;">ara</span>'+goruntuB:goruntuB):'—';}
+  if(dEl){dEl.innerHTML=goruntuB!==null?badge(goruntuB,sadeceAra):'—';}
+  if(rEl){const d=goruntuB===null?'':goruntuB>=60?' gecti-satir':goruntuB>=50?' kritik-satir':' kaldi-satir';rEl.className='ders-row'+d;}
   updateFooter(dk);
 }
-function durumBadge(b,ozel){
-  if(b===null)return '—';
-  if(b>=60)return '<span class="badge" style="background:rgba(34,197,94,0.12);color:#16a34a;">✓ Geçti</span>';
-  if(ozel==='atildi')return '<span class="badge" style="background:rgba(127,0,0,0.15);color:#7f0000;">🚫 ATILDINIZ</span>';
-  if(ozel==='butunleme')return '<span class="badge" style="background:rgba(234,179,8,0.18);color:#92400e;">📋 BÜTÜNLEME</span>';
-  return '<span class="badge" style="background:rgba(239,68,68,0.12);color:#dc2626;">✕ Kaldı</span>';
+
+function badge(b,sadeceAra){
+  const pre=sadeceAra?'<span style="font-size:9px;display:block;opacity:0.65;margin-bottom:1px;">ara sınav</span>':'';
+  if(b>=60) return pre+'<span class="badge" style="background:rgba(34,197,94,0.12);color:#16a34a;">✓ Geçti</span>';
+  if(b>=50) return pre+'<span class="badge" style="background:rgba(234,179,8,0.12);color:#b45309;">⚠ Kritik</span>';
+  return pre+'<span class="badge" style="background:rgba(239,68,68,0.12);color:#dc2626;">✕ Kaldı</span>';
 }
-function ozet(dk){
-  const src=state[dk+'kayit']||state[dk];const srcEkstra=state[dk+'kayit']?(state[dk+'kayit'].ekstra||[]):(state[dk].ekstra||[]);
-  const dn=dk==='d1'?1:2;const liste=[...DERSLER.filter(d=>d.donem===dn),...srcEkstra.map((d,i)=>({...d,_ekstra:true,_ei:i}))];
-  let toplam=0,sayi=0;
-  liste.forEach((d,i)=>{const k=d._ekstra?'e_'+d._ei:String(i);if(!src.secili[k])return;const nv=src.notlar[k]||{};const b=basari(nv.ara,nv.donem);if(b===null)return;toplam+=b;sayi++;});
-  return{sayi,dno:sayi>0?Math.round(toplam/sayi):null};
-}
+
 function updateFooter(dk){
   const oz=ozet(dk);
-  ['footer-'+dk,'mfooter-'+dk].forEach(id=>{
-    const el=document.getElementById(id);if(!el)return;
-    if(oz.sayi===0){el.style.display='none';return;}
-    el.style.display='';
-    const renk=oz.dno>=70?'#16a34a':oz.dno>=60?'#b45309':'#dc2626';
-    const sEl=el.querySelector('.fs');const nEl=el.querySelector('.fd');const drEl=el.querySelector('.fdr');
-    if(sEl)sEl.textContent=oz.sayi;
-    if(nEl){nEl.textContent=oz.dno||'—';nEl.style.color=renk;}
-    if(drEl){drEl.textContent=oz.dno?(oz.dno>=70?'DNO ✓':oz.dno>=60?'Dikkat':'Yetersiz'):'—';drEl.style.color=renk;}
-  });
+  const fEl=document.getElementById('foot-'+dk);
+  if(!fEl) return;
+  if(oz.say===0){fEl.style.display='none';return;}
+  fEl.style.display='';
+  const renk=oz.dno===null?'var(--color-text-secondary)':oz.dno>=70?'#16a34a':oz.dno>=60?'#b45309':'#dc2626';
+  const sEl=document.getElementById('fs-'+dk);
+  const nEl=document.getElementById('fn-'+dk);
+  if(sEl) sEl.textContent=oz.say;
+  if(nEl){nEl.textContent=oz.dno||'—';nEl.style.color=renk;}
 }
-function tumunuSec(dk,v){listele(dk).forEach((d,i)=>{const k=key(d,i);state[dk].secili[k]=v;if(!v)delete state[dk].notlar[k];});save();refreshDonem(dk);}
-function ekstraEkle(dk){const adEl=document.getElementById('ead-'+dk);const ad=(adEl?.value||'').trim();if(!ad){adEl?.focus();return;}const alan=document.getElementById('eal-'+dk)?.value||'Ekstra';if(!state[dk].ekstra)state[dk].ekstra=[];state[dk].ekstra.push({ad,alan,donem:dk==='d1'?1:2,kredi:0,_ekstra:true});if(adEl)adEl.value='';save();refreshDonem(dk);}
-function ekstraSil(dk,idx){state[dk].ekstra.splice(idx,1);save();refreshDonem(dk);}
-function kaydet(dk){const oz=ozet(dk);if(oz.sayi===0){alert('En az bir dersin notlarını girin!');return;}state[dk+'kayit']={secili:{...state[dk].secili},notlar:JSON.parse(JSON.stringify(state[dk].notlar)),ekstra:JSON.parse(JSON.stringify(state[dk].ekstra||[]))};save();refreshDonem(dk);if(aktifTab==='ozet')renderOzet();}
-function kayitSil(dk){state[dk+'kayit']=null;save();refreshDonem(dk);if(aktifTab==='ozet')renderOzet();}
+
 function renderDonem(dk){
-  const dn=dk==='d1'?1:2;const s=state[dk];const kayit=state[dk+'kayit'];const ro=!!kayit;const src=ro?kayit:s;
-  const liste=listele(dk);const oz=ozet(dk);const sinif=sinifDur(dk);
-  const dnoRenk=oz.dno?(oz.dno>=70?'#16a34a':oz.dno>=60?'#b45309':'#dc2626'):'var(--color-text-secondary)';
-  let banner='';
-  if(!ro){if(sinif.atildi)banner='<div style="margin-bottom:10px;padding:12px 16px;background:rgba(127,0,0,0.1);border:1px solid rgba(127,0,0,0.3);border-radius:10px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">🚫</span><div><div style="font-size:13px;font-weight:700;color:#7f0000;">ATILDINIZ</div><div style="font-size:12px;color:#991b1b;">'+sinif.kaldilar.size+' dersten 60 altı — 3+ başarısız ders ilişik kesilir.</div></div></div>';else if(sinif.butunleme)banner='<div style="margin-bottom:10px;padding:12px 16px;background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.3);border-radius:10px;display:flex;align-items:center;gap:10px;"><span style="font-size:20px;">📋</span><div><div style="font-size:13px;font-weight:700;color:#92400e;">BÜTÜNLEME</div><div style="font-size:12px;color:#b45309;">'+sinif.kaldilar.size+' dersten 60 altı — bütünleme sınavına girebilirsiniz.</div></div></div>';}
+  const dn=dk==='d1'?1:2;
+  const ro=!!state[dk+'kayit'];
+  const src=ro?state[dk+'kayit']:state[dk];
+  const liste=listele(dk);
+  const oz=ozet(dk);
+  const dnoRenk=oz.dno===null?'var(--color-text-secondary)':oz.dno>=70?'#16a34a':oz.dno>=60?'#b45309':'#dc2626';
+
   let rows='';
   liste.forEach((d,i)=>{
-    const k=key(d,i);const sec=src.secili[k]||false;const nv=src.notlar[k]||{};const ara=nv.ara??'';const fin=nv.donem??'';const b=basari(ara,fin);
-    let ozel=null;if(!ro&&b!==null&&b<60){if(sinif.atildi)ozel='atildi';else if(sinif.butunleme&&sinif.kaldilar.has(k))ozel='butunleme';}
-    const renk=b===null?'var(--color-text-secondary)':b>=60?'#16a34a':'#dc2626';
-    const satirCls='ders-row'+(sec&&b!==null&&b>=60?' gecti-satir':sec&&b!==null&&b<60?' kaldi-satir':'');
-    const rk=ALAN_RENKLER[d.alan]||ALAN_RENKLER['Ekstra'];
-    const silBtn=(!ro&&d._ekstra)?'<button onclick="ekstraSil(\''+dk+'\','+d._ei+')" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:13px;padding:0 3px;">✕</button>':'';
-    rows+='<tr class="'+satirCls+'" id="r-'+dk+'-'+k+'" style="opacity:'+(sec?1:0.4)+';"><td style="text-align:center;">'+(ro?'<input type="checkbox"'+(sec?' checked':'')+' disabled>':'<input type="checkbox"'+(sec?' checked':'')+' onchange="toggle(\''+dk+'\',\''+k+'\',this.checked)">')+'</td><td><div style="font-size:12px;line-height:1.3;">'+d.ad+silBtn+'</div><div style="margin-top:2px;"><span class="badge" style="background:'+rk.bg+';color:'+rk.tx+';">'+d.alan+'</span></div></td><td style="text-align:center;color:var(--color-text-tertiary);font-size:11px;">'+(d.kredi?d.kredi+'s':'')+'</td><td style="text-align:center;">'+(sec?(ro?'<span style="font-size:13px;">'+(ara||'—')+'</span>':'<input class="inp" type="number" inputmode="numeric" min="0" max="100" value="'+ara+'" placeholder="—" style="width:62px;text-align:center;font-size:13px;padding:5px;" oninput="setNot(\''+dk+'\',\''+k+'\',\'ara\',this.value)">'):'—')+'</td><td style="text-align:center;">'+(sec?(ro?'<span style="font-size:13px;">'+(fin||'—')+'</span>':'<input class="inp" type="number" inputmode="numeric" min="0" max="100" value="'+fin+'" placeholder="—" style="width:62px;text-align:center;font-size:13px;padding:5px;" oninput="setNot(\''+dk+'\',\''+k+'\',\'donem\',this.value)">'):'—')+'</td><td style="text-align:center;font-weight:600;font-size:13px;color:'+renk+';" id="b-'+dk+'-'+k+'">'+(b!==null?String(b):'—')+'</td><td style="text-align:center;" id="d-'+dk+'-'+k+'">'+(b!==null?durumBadge(b,ozel):'—')+'</td></tr>';
+    const k=key(d,i);
+    const sec=src.secili[k]||false;
+    const ara=src.notlar[k]?.ara??'';
+    const fin=src.notlar[k]?.final??'';
+    const b=basari(ara,fin);
+    const sadeceAra=ara!==''&&(fin===''||fin==null);
+    const goruntuB=b!==null?b:(sadeceAra&&ara!==''?Number(ara):null);
+    const renk=goruntuB===null?'var(--color-text-secondary)':goruntuB>=60?'#16a34a':goruntuB>=50?'#b45309':'#dc2626';
+    const satirClass='ders-row'+(sec&&goruntuB!==null?(goruntuB>=60?' gecti-satir':goruntuB>=50?' kritik-satir':' kaldi-satir'):'');
+    const r=ALAN_RENKLER[d.alan]||ALAN_RENKLER['Ekstra'];
+    const silBtn=(!ro&&d._ekstra)?'<button onclick="ekstraSil(\''+dk+'\','+d._ei+')" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:14px;padding:0 4px;">✕</button>':'';
+    rows+=`<tr class="${satirClass}" id="r-${dk}-${k}" style="opacity:${sec?1:0.45};">
+      <td style="text-align:center;">${ro?'<input type="checkbox"'+(sec?' checked':'')+' disabled>':'<input type="checkbox"'+(sec?' checked':'')+' onchange="toggle(\''+dk+'\',\''+k+'\',this.checked)">'}</td>
+      <td><div style="font-size:13px;line-height:1.3;">${d.ad}${silBtn}</div><div style="margin-top:2px;"><span class="badge" style="background:${r.bg};color:${r.tx};">${d.alan}</span></div></td>
+      <td style="text-align:center;color:var(--color-text-tertiary);font-size:11px;">${d.kredi?d.kredi+'s':''}</td>
+      <td style="text-align:center;">${sec?(ro?'<span style="font-size:13px;">'+(ara||'—')+'</span>':'<input class="inp" type="number" min="0" max="100" value="'+ara+'" placeholder="—" style="width:62px;text-align:center;" oninput="setNot(\''+dk+'\',\''+k+'\',\'ara\',this.value)">'):'—'}</td>
+      <td style="text-align:center;">${sec?(ro?'<span style="font-size:13px;">'+(fin||'—')+'</span>':'<input class="inp" type="number" min="0" max="100" value="'+fin+'" placeholder="—" style="width:62px;text-align:center;" oninput="setNot(\''+dk+'\',\''+k+'\',\'final\',this.value)">'):'—'}</td>
+      <td style="text-align:center;font-weight:600;font-size:14px;color:${renk};" id="b-${dk}-${k}">${goruntuB!==null?(sadeceAra?'<span style="font-size:9px;display:block;opacity:0.65;">ara</span>'+goruntuB:goruntuB):'—'}</td>
+      <td style="text-align:center;" id="d-${dk}-${k}">${goruntuB!==null?badge(goruntuB,sadeceAra):'—'}</td>
+    </tr>`;
   });
-  let kartlar='';
-  liste.forEach((d,i)=>{
-    const k=key(d,i);const sec=src.secili[k]||false;const nv=src.notlar[k]||{};const ara=nv.ara??'';const fin=nv.donem??'';const b=basari(ara,fin);
-    let ozel=null;if(!ro&&b!==null&&b<60){if(sinif.atildi)ozel='atildi';else if(sinif.butunleme&&sinif.kaldilar.has(k))ozel='butunleme';}
-    const renk=b===null?'var(--color-text-secondary)':b>=60?'#16a34a':'#dc2626';
-    const rk=ALAN_RENKLER[d.alan]||ALAN_RENKLER['Ekstra'];
-    const kartCls='ders-kart'+(b!==null&&b>=60?' gecti-kart':b!==null&&b<60?(ozel==='butunleme'?' butunleme-kart':' kaldi-kart'):'')+(sec?'':' kapali');
-    const silBtn=(!ro&&d._ekstra)?'<button onclick="ekstraSil(\''+dk+'\','+d._ei+')" style="background:none;border:none;color:#dc2626;cursor:pointer;font-size:16px;padding:0 4px;">✕</button>':'';
-    kartlar+='<div class="'+kartCls+'" id="mb-'+dk+'-'+k+'"><div style="display:flex;align-items:flex-start;gap:8px;">'+(ro?'<input type="checkbox"'+(sec?' checked':'')+' disabled style="margin-top:3px;flex-shrink:0;">':'<input type="checkbox"'+(sec?' checked':'')+' onchange="toggle(\''+dk+'\',\''+k+'\',this.checked)" style="margin-top:3px;flex-shrink:0;width:18px;height:18px;">')+'<div style="min-width:0;flex:1;"><div style="font-size:13px;font-weight:600;color:var(--color-text-primary);line-height:1.4;">'+d.ad+silBtn+'</div><div style="margin-top:3px;"><span class="badge" style="background:'+rk.bg+';color:'+rk.tx+';">'+d.alan+'</span>'+(d.kredi?'<span style="font-size:10px;color:var(--color-text-tertiary);margin-left:6px;">'+d.kredi+'s</span>':'')+'</div></div></div>'+(sec?'<div class="not-grid"><div><div class="not-label">Ara Sınav</div>'+(ro?'<div class="not-val" style="color:var(--color-text-primary);">'+(ara||'—')+'</div>':'<input class="inp" type="number" inputmode="numeric" min="0" max="100" value="'+ara+'" placeholder="—" style="text-align:center;font-size:18px;padding:8px 4px;" oninput="setNot(\''+dk+'\',\''+k+'\',\'ara\',this.value)">')+'</div><div><div class="not-label">Final</div>'+(ro?'<div class="not-val" style="color:var(--color-text-primary);">'+(fin||'—')+'</div>':'<input class="inp" type="number" inputmode="numeric" min="0" max="100" value="'+fin+'" placeholder="—" style="text-align:center;font-size:18px;padding:8px 4px;" oninput="setNot(\''+dk+'\',\''+k+'\',\'donem\',this.value)">')+'</div><div style="text-align:center;"><div class="not-label">Başarı</div><div class="not-val" id="mbb-'+dk+'-'+k+'" style="color:'+renk+';">'+(b!==null?String(b):'—')+'</div><div id="mbd-'+dk+'-'+k+'" style="margin-top:4px;">'+(b!==null?durumBadge(b,ozel):'—')+'</div></div></div>':'')+'</div>';
-  });
-  const mFooter='<div id="mfooter-'+dk+'" style="'+(oz.sayi>0?'':'display:none;')+'margin-top:4px;padding:12px 14px;background:rgba(255,96,0,0.06);border:1px solid rgba(255,96,0,0.15);border-radius:10px;display:flex;align-items:center;justify-content:space-between;"><div style="font-size:13px;font-weight:600;color:#FF6000;">Dönem Ort. (<span class="fs">'+oz.sayi+'</span> ders)</div><div style="display:flex;align-items:center;gap:10px;"><span class="fd" style="font-size:22px;font-weight:700;color:'+dnoRenk+';">'+(oz.dno||'—')+'</span><span class="fdr" style="font-size:12px;font-weight:600;color:'+dnoRenk+';">'+(oz.dno?(oz.dno>=70?'DNO ✓':oz.dno>=60?'Dikkat':'Yetersiz'):'—')+'</span></div></div>';
-  const ekstraForm=!ro?'<div style="margin-top:10px;padding:12px 14px;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.18);border-radius:10px;"><div style="font-size:12px;font-weight:600;color:#7c3aed;margin-bottom:8px;">➕ Ekstra Ders Ekle</div><div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;"><input class="inp" id="ead-'+dk+'" type="text" placeholder="Ders adı..." style="flex:2;min-width:120px;" onkeydown="if(event.key===\'Enter\')ekstraEkle(\''+dk+'\')"><select class="inp" id="eal-'+dk+'" style="flex:1;min-width:110px;"><option value="Ekstra">Ekstra</option><option value="Kur\'an-ı Kerim">Kur\'an-ı Kerim</option><option value="Temel İslami İlimler">Temel İslami İlimler</option><option value="Mesleki Bilgi ve Beceri">Mesleki Bilgi ve Beceri</option><option value="Din Hizmetleri">Din Hizmetleri</option><option value="Mevzuat">Mevzuat</option><option value="Kültürel Etkinlikler">Kültürel Etkinlikler</option></select><button onclick="ekstraEkle(\''+dk+'\')" style="background:#7c3aed;color:white;border:none;border-radius:8px;padding:9px 14px;font-size:12px;font-weight:600;cursor:pointer;">Ekle</button></div></div>':'';
-  const kayitAlani=!ro?'<div style="margin-top:12px;"><button onclick="kaydet(\''+dk+'\')" style="width:100%;font-size:14px;padding:12px 18px;background:#FF6000;color:white;border:none;border-radius:10px;font-weight:600;cursor:pointer;">💾 '+dn+'. Dönemi Kaydet</button></div>':'<div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="font-size:12px;padding:6px 14px;border-radius:8px;background:rgba(34,197,94,0.12);color:#16a34a;font-weight:600;">✓ '+dn+'. Dönem kaydedildi</span><button onclick="kayitSil(\''+dk+'\')" style="font-size:12px;padding:6px 12px;background:rgba(239,68,68,0.1);color:#dc2626;border:1px solid rgba(239,68,68,0.2);border-radius:8px;cursor:pointer;">Kaydı Sil</button></div>';
-  return '<p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 8px;">'+(ro?'Notlar kaydedildi ve kilitlendi.':'Dersleri seçin → ara notunu girin → butona basın.')+'</p>'+banner+'<div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;"><button onclick="tumunuSec(\''+dk+'\',true)" style="font-size:12px;padding:7px 13px;border-radius:7px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;color:var(--color-text-primary);">Tümünü Seç</button><button onclick="tumunuSec(\''+dk+'\',false)" style="font-size:12px;padding:7px 13px;border-radius:7px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;color:var(--color-text-primary);">Temizle</button></div><div class="tablo-wrap" style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:8px;"><table style="width:100%;border-collapse:collapse;font-size:12px;min-width:460px;"><thead><tr style="background:rgba(255,96,0,0.06);border-bottom:1px solid rgba(255,96,0,0.12);"><th style="padding:9px 7px;width:5%;text-align:center;font-weight:600;color:#FF6000;">#</th><th style="padding:9px 7px;text-align:left;font-weight:600;color:#FF6000;">Ders / Alan</th><th style="padding:9px 7px;width:7%;text-align:center;font-weight:600;color:#FF6000;">Saat</th><th style="padding:9px 7px;width:11%;text-align:center;font-weight:600;color:#FF6000;">Ara</th><th style="padding:9px 7px;width:11%;text-align:center;font-weight:600;color:#FF6000;">Final</th><th style="padding:9px 7px;width:9%;text-align:center;font-weight:600;color:#FF6000;">Başarı</th><th style="padding:9px 7px;width:13%;text-align:center;font-weight:600;color:#FF6000;">Durum</th></tr></thead><tbody>'+rows+'</tbody><tfoot id="footer-'+dk+'" style="'+(oz.sayi>0?'':'display:none')+'"><tr style="background:rgba(255,96,0,0.06);border-top:1px solid rgba(255,96,0,0.12);"><td colspan="5" style="padding:10px 12px;font-weight:600;font-size:13px;color:#FF6000;">Dönem Ortalaması (<span class="fs">'+oz.sayi+'</span> ders)</td><td style="padding:10px 8px;text-align:center;font-size:16px;font-weight:700;color:'+dnoRenk+';" class="fd">'+(oz.dno||'—')+'</td><td style="padding:10px 8px;text-align:center;font-size:12px;font-weight:600;color:'+dnoRenk+';" class="fdr">'+(oz.dno?(oz.dno>=70?'DNO ✓':oz.dno>=60?'Dikkat':'Yetersiz'):'—')+'</td></tr></tfoot></table></div><div class="kart-wrap">'+kartlar+mFooter+'</div>'+ekstraForm+kayitAlani+'<div style="margin-top:10px;padding:8px 14px;background:var(--color-background-secondary);border-radius:8px;"><p style="font-size:11px;color:var(--color-text-tertiary);margin:0;">💡 Ara sınavı girin → final olmadan durum görünür</p></div>';
+
+  return `<p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 8px;">${ro?'Notlar kaydedildi ve kilitlendi.':'Dersleri seçin → ara notunu girin → final girmeden de durum görünür.'}</p>
+    <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+      <button onclick="tumSec('${dk}',true)" style="font-size:12px;padding:6px 12px;border-radius:7px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;color:var(--color-text-primary);">Tümünü Seç</button>
+      <button onclick="tumSec('${dk}',false)" style="font-size:12px;padding:6px 12px;border-radius:7px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;color:var(--color-text-primary);">Temizle</button>
+    </div>
+    <div class="tablo-wrap" style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:10px;">
+    <table style="width:100%;border-collapse:collapse;min-width:460px;">
+    <thead><tr style="background:rgba(255,96,0,0.06);border-bottom:1px solid rgba(255,96,0,0.12);">
+      <th style="padding:10px 7px;width:5%;text-align:center;font-weight:600;color:#FF6000;">#</th>
+      <th style="padding:10px 7px;text-align:left;font-weight:600;color:#FF6000;">Ders / Alan</th>
+      <th style="padding:10px 7px;width:7%;text-align:center;font-weight:600;color:#FF6000;">Saat</th>
+      <th style="padding:10px 7px;width:11%;text-align:center;font-weight:600;color:#FF6000;">Ara</th>
+      <th style="padding:10px 7px;width:11%;text-align:center;font-weight:600;color:#FF6000;">Final</th>
+      <th style="padding:10px 7px;width:9%;text-align:center;font-weight:600;color:#FF6000;">Başarı</th>
+      <th style="padding:10px 7px;width:13%;text-align:center;font-weight:600;color:#FF6000;">Durum</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+    <tfoot id="foot-${dk}" style="${oz.say>0?'':'display:none'}">
+      <tr style="background:rgba(255,96,0,0.06);border-top:1px solid rgba(255,96,0,0.12);">
+        <td colspan="5" style="padding:10px 12px;font-weight:600;font-size:13px;color:#FF6000;">Dönem Ort. (<span id="fs-${dk}">${oz.say}</span> ders)</td>
+        <td colspan="2" style="padding:10px 8px;text-align:center;font-size:18px;font-weight:700;color:${dnoRenk};" id="fn-${dk}">${oz.dno||'—'}</td>
+      </tr>
+    </tfoot>
+    </table></div>
+    ${!ro?`<div style="margin-bottom:12px;padding:12px 14px;background:rgba(168,85,247,0.06);border:1px solid rgba(168,85,247,0.18);border-radius:10px;">
+      <div style="font-size:12px;font-weight:600;color:#7c3aed;margin-bottom:8px;">➕ Ekstra Ders Ekle</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <input class="inp" id="ead-${dk}" type="text" placeholder="Ders adı..." style="flex:2;min-width:120px;" onkeydown="if(event.key==='Enter')ekstraEkle('${dk}')">
+        <select class="inp" id="eal-${dk}" style="flex:1;min-width:110px;">
+          <option value="Ekstra">Ekstra</option>
+          <option value="Kur'an-ı Kerim">Kur'an-ı Kerim</option>
+          <option value="Temel İslami İlimler">Temel İslami İlimler</option>
+          <option value="Mesleki Bilgi ve Beceri">Mesleki Bilgi ve Beceri</option>
+          <option value="Din Hizmetleri">Din Hizmetleri</option>
+          <option value="Mevzuat">Mevzuat</option>
+          <option value="Kültürel Etkinlikler">Kültürel Etkinlikler</option>
+        </select>
+        <button onclick="ekstraEkle('${dk}')" style="background:#7c3aed;color:white;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;">Ekle</button>
+      </div>
+    </div>`:''}
+    <div style="margin-top:12px;">${!ro
+      ?'<button onclick="kaydet(\''+dk+'\')" style="font-size:13px;padding:8px 18px;background:#FF6000;color:white;border:none;border-radius:10px;font-weight:600;cursor:pointer;">💾 '+dn+'. Dönemi Kaydet</button>'
+      :'<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;"><span style="font-size:12px;padding:6px 14px;border-radius:8px;background:rgba(34,197,94,0.12);color:#16a34a;font-weight:600;">✓ '+dn+'. Dönem kaydedildi</span><button onclick="kayitSil(\''+dk+'\')" style="font-size:12px;padding:6px 12px;background:rgba(239,68,68,0.1);color:#dc2626;border:1px solid rgba(239,68,68,0.2);border-radius:8px;cursor:pointer;">Kaydı Sil</button></div>'
+    }</div>`;
 }
+
+function atamaHesapla(gno,mez){
+  if(!gno||!mez) return null;
+  return parseFloat((gno*0.6+mez*0.4).toFixed(2));
+}
+
 function renderMez(){
-  const oz1=state.d1kayit?ozet('d1'):{dno:null};const oz2=state.d2kayit?ozet('d2'):{dno:null};
-  const g1=oz1.dno,g2=oz2.dno;const gno=(g1&&g2)?parseFloat(((g1+g2)/2).toFixed(2)):(g1||g2||null);
-  const mez=state.mezNot!==''?parseFloat(state.mezNot):null;const atama=(gno&&mez)?parseFloat((gno*0.6+mez*0.4).toFixed(2)):null;
-  document.getElementById('panel-mez').innerHTML='<div style="background:rgba(255,96,0,0.06);border:1px solid rgba(255,96,0,0.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;"><p style="font-size:13px;color:var(--color-text-secondary);margin:0;"><strong style="color:#FF6000;">Atama Puanı = GNO × %60 + Mezuniyet × %40</strong><br>Mezuniyet sınavından en az 70 almak zorunludur.</p></div><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;"><div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">1. DÖNEM</p><p style="font-size:22px;font-weight:700;margin:0;color:'+(g1?(g1>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)')+';">'+(g1||'—')+'</p></div><div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">2. DÖNEM</p><p style="font-size:22px;font-weight:700;margin:0;color:'+(g2?(g2>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)')+';">'+(g2||'—')+'</p></div><div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">GNO</p><p style="font-size:22px;font-weight:700;margin:0;color:'+(gno?(gno>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)')+';">'+(gno||'—')+'</p></div></div><div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:16px;margin-bottom:12px;"><p style="font-size:13px;font-weight:600;margin:0 0 6px;color:var(--color-text-primary);">Mezuniyet Sınavı Notu</p><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 10px;">Ondalıklı girebilirsiniz (örn: 97.60)</p><div style="display:flex;align-items:center;gap:10px;"><input class="inp" type="number" min="0" max="100" step="0.01" inputmode="decimal" value="'+state.mezNot+'" placeholder="örn: 97.60" oninput="state.mezNot=this.value;save();renderMez();" style="width:150px;font-size:20px;padding:10px 12px;text-align:center;"><span style="font-size:14px;color:var(--color-text-secondary);">/ 100</span></div></div>'+(atama!==null?'<div style="padding:16px 20px;background:'+(atama>=70&&mez>=70?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)')+';border-radius:14px;border:1px solid '+(atama>=70&&mez>=70?'rgba(34,197,94,0.25)':'rgba(239,68,68,0.25)')+'"><p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 4px;">Tahmini Atama Puanı</p><p style="font-size:40px;font-weight:700;margin:0;color:'+(atama>=70&&mez>=70?'#16a34a':'#dc2626')+';">'+atama+'</p></div>':'');
+  const oz1=state.d1kayit?ozet('d1'):{dno:null};
+  const oz2=state.d2kayit?ozet('d2'):{dno:null};
+  const g1=oz1.dno,g2=oz2.dno;
+  const gno=(g1&&g2)?parseFloat(((g1+g2)/2).toFixed(2)):(g1||g2||null);
+  const mez=state.mezNot!==''?parseFloat(state.mezNot):null;
+  const atama=atamaHesapla(gno,mez);
+  document.getElementById('panel-mez').innerHTML=`
+    <div style="background:rgba(255,96,0,0.06);border:1px solid rgba(255,96,0,0.15);border-radius:12px;padding:14px 16px;margin-bottom:14px;">
+      <p style="font-size:13px;color:var(--color-text-secondary);margin:0;"><strong style="color:#FF6000;">Atama Puanı = GNO × %60 + Mezuniyet Sınavı × %40</strong><br>Mezuniyet sınavından en az 70 almak zorunludur.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:14px;">
+      <div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">1. DÖNEM</p><p style="font-size:22px;font-weight:700;margin:0;color:${g1?(g1>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)'};">${g1||'—'}</p></div>
+      <div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">2. DÖNEM</p><p style="font-size:22px;font-weight:700;margin:0;color:${g2?(g2>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)'};">${g2||'—'}</p></div>
+      <div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">GNO</p><p style="font-size:22px;font-weight:700;margin:0;color:${gno?(gno>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)'};">${gno||'—'}</p></div>
+    </div>
+    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;padding:16px;margin-bottom:12px;">
+      <p style="font-size:13px;font-weight:600;margin:0 0 6px;color:var(--color-text-primary);">Mezuniyet Sınavı Notu</p>
+      <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 10px;">Ondalıklı girebilirsiniz (örn: 97.60)</p>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <input class="inp" type="number" min="0" max="100" step="0.01" inputmode="decimal" value="${state.mezNot}" placeholder="örn: 97.60" oninput="state.mezNot=this.value;save();renderMez();" style="width:150px;font-size:18px;padding:10px 12px;text-align:center;">
+        <span style="font-size:14px;color:var(--color-text-secondary);">/ 100</span>
+      </div>
+    </div>
+    ${atama!==null?'<div style="padding:16px 20px;background:'+(atama>=70&&mez>=70?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)')+';border-radius:14px;border:1px solid '+(atama>=70&&mez>=70?'rgba(34,197,94,0.25)':'rgba(239,68,68,0.25)')+'"><p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 4px;">Tahmini Atama Puanı</p><p style="font-size:38px;font-weight:700;margin:0;color:'+(atama>=70&&mez>=70?'#16a34a':'#dc2626')+';"> '+atama+'</p></div>':''}`;
 }
+
 function renderOzet(){
-  const oz1=state.d1kayit?ozet('d1'):{dno:null};const oz2=state.d2kayit?ozet('d2'):{dno:null};
-  const mez=state.mezNot!==''?parseFloat(state.mezNot):null;const g1=oz1.dno,g2=oz2.dno;
-  const gno=(g1&&g2)?parseFloat(((g1+g2)/2).toFixed(2)):(g1||g2||null);const atama=(gno&&mez)?parseFloat((gno*0.6+mez*0.4).toFixed(2)):null;
-  document.getElementById('panel-ozet').innerHTML='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;"><div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">1. DÖNEM</p><p style="font-size:22px;font-weight:700;margin:0;color:'+(g1?(g1>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)')+';">'+(g1||'—')+'</p></div><div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">2. DÖNEM</p><p style="font-size:22px;font-weight:700;margin:0;color:'+(g2?(g2>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)')+';">'+(g2||'—')+'</p></div><div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">GNO</p><p style="font-size:22px;font-weight:700;margin:0;color:'+(gno?(gno>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)')+';">'+(gno||'—')+'</p></div><div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">MEZUNİYET</p><p style="font-size:22px;font-weight:700;margin:0;color:'+(mez?(mez>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)')+';">'+(mez||'—')+'</p></div></div>'+(atama!==null?'<div style="padding:18px 22px;background:'+(atama>=70&&mez>=70?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)')+';border-radius:16px;border:1px solid '+(atama>=70&&mez>=70?'rgba(34,197,94,0.25)':'rgba(239,68,68,0.25)')+'"><p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 4px;">Tahmini Atama Puanı</p><p style="font-size:40px;font-weight:700;margin:0;color:'+(atama>=70&&mez>=70?'#16a34a':'#dc2626')+';">'+atama+'</p></div>':'<p style="font-size:13px;color:var(--color-text-secondary);">Her iki dönemi kaydedin ve mezuniyet notunu girin.</p>');
+  const oz1=state.d1kayit?ozet('d1'):{dno:null};
+  const oz2=state.d2kayit?ozet('d2'):{dno:null};
+  const mez=state.mezNot!==''?parseFloat(state.mezNot):null;
+  const g1=oz1.dno,g2=oz2.dno;
+  const gno=(g1&&g2)?parseFloat(((g1+g2)/2).toFixed(2)):(g1||g2||null);
+  const atama=atamaHesapla(gno,mez);
+  document.getElementById('panel-ozet').innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:14px;">
+      <div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">1. DÖNEM</p><p style="font-size:22px;font-weight:700;margin:0;color:${g1?(g1>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)'};">${g1||'—'}</p></div>
+      <div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">2. DÖNEM</p><p style="font-size:22px;font-weight:700;margin:0;color:${g2?(g2>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)'};">${g2||'—'}</p></div>
+      <div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">GNO</p><p style="font-size:22px;font-weight:700;margin:0;color:${gno?(gno>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)'};">${gno||'—'}</p></div>
+      <div style="background:var(--color-background-secondary);border-radius:10px;padding:.85rem;text-align:center;"><p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 4px;font-weight:600;">MEZUNİYET</p><p style="font-size:22px;font-weight:700;margin:0;color:${mez?(mez>=70?'#16a34a':'#dc2626'):'var(--color-text-tertiary)'};">${mez||'—'}</p></div>
+    </div>
+    ${atama!==null?'<div style="padding:18px 22px;background:'+(atama>=70&&mez>=70?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)')+';border-radius:16px;border:1px solid '+(atama>=70&&mez>=70?'rgba(34,197,94,0.25)':'rgba(239,68,68,0.25)')+'"><p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 4px;">Tahmini Atama Puanı</p><p style="font-size:40px;font-weight:700;margin:0;color:'+(atama>=70&&mez>=70?'#16a34a':'#dc2626')+';"> '+atama+'</p></div>':'<p style="font-size:13px;color:var(--color-text-secondary);">Her iki dönemi kaydedin ve mezuniyet notunu girin.</p>'}`;
 }
+
 let aktifTab='d1';
-function refreshDonem(dk){document.getElementById(dk==='d1'?'panel-d1':'panel-d2').innerHTML=renderDonem(dk);}
+function refreshDonem(dk){ document.getElementById(dk==='d1'?'panel-d1':'panel-d2').innerHTML=renderDonem(dk); }
+
 function gotoTab(tab){
   aktifTab=tab;
   ['d1','d2','mez','ozet'].forEach(t=>{
-    const btn=document.getElementById('tab-'+t);const panel=document.getElementById('panel-'+t);
+    const btn=document.getElementById('tab-'+t);
+    const panel=document.getElementById('panel-'+t);
     if(btn){btn.style.background=t===tab?'#FF6000':'var(--color-background-secondary)';btn.style.color=t===tab?'white':'var(--color-text-secondary)';}
-    if(panel)panel.style.display=t===tab?'':'none';
+    if(panel) panel.style.display=t===tab?'':'none';
   });
-  if(tab==='mez')renderMez();
-  if(tab==='ozet')renderOzet();
+  if(tab==='mez') renderMez();
+  if(tab==='ozet') renderOzet();
 }
-async function init(){await load();document.getElementById('panel-d1').innerHTML=renderDonem('d1');document.getElementById('panel-d2').innerHTML=renderDonem('d2');gotoTab('d1');}
+
+async function init(){
+  await load();
+  document.getElementById('panel-d1').innerHTML=renderDonem('d1');
+  document.getElementById('panel-d2').innerHTML=renderDonem('d2');
+  gotoTab('d1');
+}
 init();
 </script>
