@@ -1,646 +1,187 @@
-<h2 class="sr-only">Diyanet Akademisi İmam-Hatip not hesaplama</h2>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Not & Atama Puanı Hesaplama</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cinzel:wght@700;900&display=swap');
+        body { font-family: 'Amiri', serif; }
+        .header-font { font-family: 'Cinzel', serif; }
+        .passed { background-color: #d1fae5 !important; }
+        .failed { background-color: #fee2e2 !important; }
+        .critical { background-color: #fefce8 !important; }
+        .tab-active { border-bottom: 4px solid #ea580c; color: #ea580c; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 to-amber-50 min-h-screen">
+    <div class="max-w-6xl mx-auto p-4 md:p-6">
+        <!-- Header -->
+        <div class="bg-orange-600 text-white p-6 rounded-3xl shadow-xl mb-8 flex items-center justify-between">
+            <div>
+                <h1 class="text-4xl header-font tracking-tight">Not & Atama Puanı Hesaplama</h1>
+                <p class="text-orange-100 mt-1">Diyanet Akademisi — 1. Dönem • 2. Dönem • Mezuniyet</p>
+            </div>
+        </div>
 
-<div id="app" style="padding:0.5rem 0;">
+        <!-- Sabit Hızlı Butonlar -->
+        <div class="sticky top-4 z-50 bg-white shadow-2xl rounded-3xl p-5 mb-8 flex flex-wrap gap-3">
+            <button onclick="quickFillAll('pass')" 
+                    class="flex-1 min-w-[220px] bg-green-600 hover:bg-green-700 text-white font-bold py-5 px-8 rounded-3xl text-xl transition-all flex items-center justify-center gap-3">
+                ✅ Kaç alırsam <span class="text-2xl">GEÇERİM</span>
+            </button>
+            <button onclick="quickFillAll('fail')" 
+                    class="flex-1 min-w-[220px] bg-red-600 hover:bg-red-700 text-white font-bold py-5 px-8 rounded-3xl text-xl transition-all flex items-center justify-center gap-3">
+                ❌ Kaç alırsam <span class="text-2xl">KALIRIM</span>
+            </button>
+            <button onclick="resetAll()" 
+                    class="px-8 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-3xl font-semibold">Sıfırla</button>
+        </div>
 
-<div style="display:flex;gap:6px;margin-bottom:1rem;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:.75rem;flex-wrap:wrap;">
-  <button onclick="gotoTab('d1')" id="tab-d1" class="tab-btn" style="font-size:13px;padding:6px 14px;">1. Dönem</button>
-  <button onclick="gotoTab('d2')" id="tab-d2" class="tab-btn" style="font-size:13px;padding:6px 14px;">2. Dönem</button>
-  <button onclick="gotoTab('mez')" id="tab-mez" class="tab-btn" style="font-size:13px;padding:6px 14px;">Mezuniyet Sınavı</button>
-  <button onclick="gotoTab('ozet')" id="tab-ozet" class="tab-btn" style="font-size:13px;padding:6px 14px;">Genel Özet</button>
-</div>
+        <!-- Tabs -->
+        <div class="flex border-b border-orange-200 mb-8 text-lg">
+            <button onclick="switchTab(0)" id="tab-0" class="tab-button flex-1 py-5 font-semibold tab-active">1. Dönem</button>
+            <button onclick="switchTab(1)" id="tab-1" class="tab-button flex-1 py-5 font-semibold">2. Dönem</button>
+            <button onclick="switchTab(2)" id="tab-2" class="tab-button flex-1 py-5 font-semibold">Mezuniyet &amp; Atama</button>
+        </div>
 
-<div id="panel-d1"></div>
-<div id="panel-d2" style="display:none;"></div>
-<div id="panel-mez" style="display:none;"></div>
-<div id="panel-ozet" style="display:none;"></div>
-
-</div>
-
-<style>
-.tab-btn{transition:all .15s;}
-input[type=number]{
-  width:100%;
-  box-sizing:border-box;
-  font-size:13px;
-  padding:5px 6px;
-  border-radius:4px;
-  -moz-appearance:textfield;
-}
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
-input[type=number]:focus{outline:2px solid var(--color-border-info);outline-offset:1px;}
-input[type=checkbox]{width:16px;height:16px;cursor:pointer;}
-.ders-row td{padding:5px 6px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px;vertical-align:middle;}
-.badge{font-size:10px;padding:2px 6px;border-radius:4px;white-space:nowrap;display:inline-block;}
-.gecti-satir{background:rgba(0,180,0,0.07);}
-.kaldi-satir{background:rgba(220,0,0,0.07);}
-.kritik-satir{background:rgba(220,160,0,0.07);}
-
-/* Mobil uyumlu tablo */
-@media(max-width:600px){
-  .tablo-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  .ders-row td{font-size:11px;padding:4px 4px;}
-  input[type=number]{font-size:12px;padding:4px;}
-  .badge{font-size:9px;padding:1px 4px;}
-  .hizli-buton-wrap{flex-direction:column;}
-}
-
-/* Hızlı doldur butonları */
-.hizli-btn{
-  display:flex;align-items:center;gap:8px;padding:10px 14px;
-  border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;
-  border:1px solid;transition:all .15s;width:100%;text-align:left;
-}
-</style>
-
-<script>
-const DERSLER = [
-  {ad:"Tecvid Bilgisi", alan:"Kur'an-ı Kerim", donem:1, kredi:28},
-  {ad:"Talim Uygulamaları", alan:"Kur'an-ı Kerim", donem:1, kredi:28},
-  {ad:"Yüzüne Okuma I", alan:"Kur'an-ı Kerim", donem:1, kredi:112},
-  {ad:"Ezbere Okuma I", alan:"Kur'an-ı Kerim", donem:1, kredi:56},
-  {ad:"Kur'an-ı Kerim Meali I", alan:"Temel İslami İlimler", donem:1, kredi:28},
-  {ad:"Akaid-Kelam I", alan:"Temel İslami İlimler", donem:1, kredi:28},
-  {ad:"İslam İbadet ve Sosyal Hayat Fıkhı I", alan:"Temel İslami İlimler", donem:1, kredi:56},
-  {ad:"Hadis I", alan:"Temel İslami İlimler", donem:1, kredi:28},
-  {ad:"İmamlık-Müezzinlik Bilgi ve Becerisi I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},
-  {ad:"Dini Musiki I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},
-  {ad:"Uygulama/Staj I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},
-  {ad:"Devlet Teşkilatı ve Kamu Mevzuatı", alan:"Mevzuat", donem:1, kredi:28},
-  {ad:"Kültürel Etkinlikler I", alan:"Kültürel Etkinlikler", donem:1, kredi:28},
-  {ad:"Yüzüne Okuma II", alan:"Kur'an-ı Kerim", donem:2, kredi:84},
-  {ad:"Ezbere Okuma II", alan:"Kur'an-ı Kerim", donem:2, kredi:56},
-  {ad:"Kur'an-ı Kerim Meali II", alan:"Temel İslami İlimler", donem:2, kredi:28},
-  {ad:"Akaid-Kelam II", alan:"Temel İslami İlimler", donem:2, kredi:28},
-  {ad:"İslam İbadet ve Sosyal Hayat Fıkhı II", alan:"Temel İslami İlimler", donem:2, kredi:56},
-  {ad:"Hadis II", alan:"Temel İslami İlimler", donem:2, kredi:28},
-  {ad:"Davet ve Nebevi Metot", alan:"Din Hizmetleri", donem:2, kredi:28},
-  {ad:"Manevi Danışmanlık ve Rehberlik", alan:"Din Hizmetleri", donem:2, kredi:28},
-  {ad:"İmamlık-Müezzinlik Bilgi ve Becerisi II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:56},
-  {ad:"Dini Musiki II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:56},
-  {ad:"Uygulama/Staj II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:28},
-  {ad:"Kültürel Etkinlikler II", alan:"Kültürel Etkinlikler", donem:2, kredi:28},
-];
-
-const ALAN_BG={
-  "Kur'an-ı Kerim":"var(--color-background-info)",
-  "Temel İslami İlimler":"var(--color-background-success)",
-  "Din Hizmetleri":"var(--color-background-warning)",
-  "Mesleki Bilgi ve Beceri":"var(--color-background-danger)",
-  "Mevzuat":"var(--color-background-secondary)",
-  "Kültürel Etkinlikler":"var(--color-background-secondary)"
-};
-const ALAN_TX={
-  "Kur'an-ı Kerim":"var(--color-text-info)",
-  "Temel İslami İlimler":"var(--color-text-success)",
-  "Din Hizmetleri":"var(--color-text-warning)",
-  "Mesleki Bilgi ve Beceri":"var(--color-text-danger)",
-  "Mevzuat":"var(--color-text-secondary)",
-  "Kültürel Etkinlikler":"var(--color-text-secondary)"
-};
-
-let state = {
-  d1:{secili:{},notlar:{}},
-  d2:{secili:{},notlar:{}},
-  d1kayit:null, d2kayit:null,
-  mezNot:'',
-};
-
-function saveToStorage(){
-  try{ window.storage.set('akademi_v4',JSON.stringify(state)); }catch(e){}
-}
-async function loadFromStorage(){
-  try{
-    const r=await window.storage.get('akademi_v4');
-    if(r&&r.value) state=JSON.parse(r.value);
-    // Eski kayıttan taşı
-    if(!r||!r.value){
-      const r2=await window.storage.get('akademi_v3');
-      if(r2&&r2.value) state=JSON.parse(r2.value);
-    }
-  }catch(e){}
-}
-
-// Başarı = ara*0.3 + donemSonu*0.7
-function getBasari(ara, dsonu){
-  const a = ara !== '' && ara !== undefined && ara !== null ? Number(ara) : null;
-  const d = dsonu !== '' && dsonu !== undefined && dsonu !== null ? Number(dsonu) : null;
-  if(a === null) return null;
-  if(d === null){
-    // Sadece ara sınav varsa tahmini göster (dönem sonu henüz girilmemiş)
-    return null; // null döndür ama ayrıca araBasari hesaplanacak
-  }
-  return Math.round(a * 0.3 + d * 0.7);
-}
-
-// Sadece ara sınavla anlık durum (final girmeden)
-function getAraBasari(ara){
-  if(ara === '' || ara === undefined || ara === null) return null;
-  return Number(ara); // ara sınav puanını göster, not: gerçek başarı değil, sadece ara puan
-}
-
-function getDurum(b){
-  if(b === null) return null;
-  if(b >= 60) return 'gecti';
-  if(b >= 50) return 'kritik';
-  return 'kaldi';
-}
-
-function durumBadge(b, sadeceAra){
-  const d = getDurum(b);
-  if(d === null) return '—';
-  const prefix = sadeceAra ? '<span style="font-size:9px;display:block;margin-bottom:1px;opacity:0.7;">ara sınav</span>' : '';
-  if(d === 'gecti') return `${prefix}<span class="badge" style="background:var(--color-background-success);color:var(--color-text-success);">✓ Geçiyor</span>`;
-  if(d === 'kritik') return `${prefix}<span class="badge" style="background:var(--color-background-warning);color:var(--color-text-warning);">⚠ Kritik</span>`;
-  return `${prefix}<span class="badge" style="background:var(--color-background-danger);color:var(--color-text-danger);">✕ Kalıyor</span>`;
-}
-
-// Kaç alırsam geçerim? (dönem sonu)
-function dipGecmePuani(ara){
-  if(ara === '' || ara === undefined || ara === null) return null;
-  const a = Number(ara);
-  const puan = Math.ceil((60 - a * 0.3) / 0.7);
-  if(puan > 100) return null; // imkansız
-  return Math.max(0, puan);
-}
-
-// Kaç alırsam kalırım? (dönem sonu)
-function kalmaEsigi(ara){
-  if(ara === '' || ara === undefined || ara === null) return null;
-  const a = Number(ara);
-  const puan = Math.ceil((50 - a * 0.3) / 0.7) - 1;
-  return puan; // bu ve altı = kalma
-}
-
-// Tüm seçili derslerin finalini dip geçme puanıyla doldur
-function tumFinalleriDoldurGec(dk){
-  const donemNo = dk === 'd1' ? 1 : 2;
-  DERSLER.forEach((d, idx) => {
-    if(d.donem !== donemNo) return;
-    if(!state[dk].secili[idx]) return;
-    const ara = state[dk].notlar[idx]?.ara;
-    if(ara === '' || ara === undefined || ara === null) return;
-    const dip = dipGecmePuani(ara);
-    if(dip === null) return; // imkansız, bu dersi atlıyoruz
-    if(!state[dk].notlar[idx]) state[dk].notlar[idx] = {};
-    state[dk].notlar[idx].donem = String(dip);
-  });
-  saveToStorage();
-  refreshDonem(dk);
-}
-
-// Tüm seçili derslerin finalini kalma eşiğiyle doldur
-function tumFinalleriDoldurKal(dk){
-  const donemNo = dk === 'd1' ? 1 : 2;
-  DERSLER.forEach((d, idx) => {
-    if(d.donem !== donemNo) return;
-    if(!state[dk].secili[idx]) return;
-    const ara = state[dk].notlar[idx]?.ara;
-    if(ara === '' || ara === undefined || ara === null) return;
-    const esik = kalmaEsigi(ara);
-    if(esik === null || esik < 0) return;
-    if(!state[dk].notlar[idx]) state[dk].notlar[idx] = {};
-    state[dk].notlar[idx].donem = String(Math.max(0, esik));
-  });
-  saveToStorage();
-  refreshDonem(dk);
-}
-
-function toggleSecili(dk, idx, val){
-  state[dk].secili[idx] = val;
-  if(!val) delete state[dk].notlar[idx];
-  saveToStorage();
-  refreshDonem(dk);
-}
-
-function setNot(dk, idx, alan, val){
-  if(!state[dk].notlar[idx]) state[dk].notlar[idx] = {};
-  state[dk].notlar[idx][alan] = val;
-  saveToStorage();
-  refreshDonem(dk);
-}
-
-function tumunuSec(dk, val){
-  const donemNo = dk === 'd1' ? 1 : 2;
-  DERSLER.forEach((d, i) => { if(d.donem === donemNo) state[dk].secili[i] = val; });
-  saveToStorage();
-  refreshDonem(dk);
-}
-
-function kaydet(dk){
-  const oz = hesapOzet(dk);
-  if(oz.sayi === 0){ alert('Önce en az bir dersin notlarını girin!'); return; }
-  state[dk + 'kayit'] = { secili: {...state[dk].secili}, notlar: JSON.parse(JSON.stringify(state[dk].notlar)) };
-  saveToStorage();
-  refreshDonem(dk);
-  if(aktifTab === 'ozet') renderOzetPanel();
-}
-
-function kayitSil(dk){
-  state[dk + 'kayit'] = null;
-  saveToStorage();
-  refreshDonem(dk);
-  if(aktifTab === 'ozet') renderOzetPanel();
-}
-
-function hesapOzet(dk){
-  const veri = state[dk + 'kayit'] || state[dk];
-  const liste = DERSLER.filter(d => d.donem === (dk === 'd1' ? 1 : 2));
-  let toplam = 0, sayi = 0, basarili = 0, kritik = 0, basarisiz = 0;
-  liste.forEach(d => {
-    const idx = DERSLER.indexOf(d);
-    if(!veri.secili[idx]) return;
-    const ara = veri.notlar[idx]?.ara, dsonu = veri.notlar[idx]?.donem;
-    const b = getBasari(ara, dsonu);
-    if(b === null) return;
-    toplam += b; sayi++;
-    const dur = getDurum(b);
-    if(dur === 'gecti') basarili++;
-    else if(dur === 'kritik') kritik++;
-    else basarisiz++;
-  });
-  return { toplam, sayi, basarili, kritik, basarisiz, dno: sayi > 0 ? Math.round(toplam / sayi) : null };
-}
-
-function aktifDonem(){
-  if(aktifTab === 'd1') return 'd1';
-  if(aktifTab === 'd2') return 'd2';
-  return null;
-}
-
-// Input focus kaybetmeden güncelleme için debounce yaklaşımı
-function handleInput(dk, idx, alan, inputEl){
-  const val = inputEl.value;
-  if(!state[dk].notlar[idx]) state[dk].notlar[idx] = {};
-  state[dk].notlar[idx][alan] = val;
-  saveToStorage();
-  // Sadece özet satırını güncelle, tüm tabloyu yeniden çizme
-  updateSatir(dk, idx);
-  updateFooter(dk);
-}
-
-function updateSatir(dk, idx){
-  const readonly = !!state[dk + 'kayit'];
-  if(readonly) return;
-  const ara = state[dk].notlar[idx]?.ara ?? '';
-  const dsonu = state[dk].notlar[idx]?.donem ?? '';
-
-  // Başarı ve durum
-  const b = getBasari(ara, dsonu);
-  // Sadece ara girilmişse
-  const sadeceAra = (ara !== '' && (dsonu === '' || dsonu === undefined || dsonu === null));
-  const araNum = ara !== '' ? Number(ara) : null;
-
-  let goruntuB = b;
-  let sadeceAraGoster = false;
-  if(b === null && sadeceAra && araNum !== null){
-    goruntuB = araNum;
-    sadeceAraGoster = true;
-  }
-
-  const basariEl = document.getElementById(`basari-${dk}-${idx}`);
-  const durumEl = document.getElementById(`durum-${dk}-${idx}`);
-  const rowEl = document.getElementById(`row-${dk}-${idx}`);
-  if(!basariEl || !durumEl || !rowEl) return;
-
-  const bRenk = goruntuB === null ? 'var(--color-text-secondary)'
-    : goruntuB >= 60 ? 'var(--color-text-success)'
-    : goruntuB >= 50 ? 'var(--color-text-warning)'
-    : 'var(--color-text-danger)';
-
-  basariEl.style.color = bRenk;
-  if(goruntuB !== null){
-    basariEl.textContent = goruntuB;
-    if(sadeceAraGoster){
-      basariEl.innerHTML = `<span style="font-size:9px;display:block;opacity:0.6;">ara</span>${goruntuB}`;
-    }
-  } else {
-    basariEl.textContent = '—';
-  }
-
-  durumEl.innerHTML = goruntuB !== null ? durumBadge(goruntuB, sadeceAraGoster) : '—';
-
-  // Satır rengi
-  const dur = getDurum(goruntuB);
-  rowEl.className = 'ders-row' + (dur === 'gecti' ? ' gecti-satir' : dur === 'kaldi' ? ' kaldi-satir' : dur === 'kritik' ? ' kritik-satir' : '');
-
-  // Hızlı doldur butonlarını güncelle
-  updateHizliButonlar(dk);
-}
-
-function updateFooter(dk){
-  const oz = hesapOzet(dk);
-  const footerEl = document.getElementById(`footer-${dk}`);
-  if(!footerEl) return;
-  if(oz.sayi === 0){ footerEl.style.display = 'none'; return; }
-  footerEl.style.display = '';
-  const dnoRenk = oz.dno === null ? 'var(--color-text-secondary)'
-    : oz.dno >= 70 ? 'var(--color-text-success)'
-    : oz.dno >= 60 ? 'var(--color-text-warning)'
-    : 'var(--color-text-danger)';
-  document.getElementById(`footer-dno-${dk}`).textContent = oz.dno;
-  document.getElementById(`footer-dno-${dk}`).style.color = dnoRenk;
-  document.getElementById(`footer-dur-${dk}`).textContent = oz.dno >= 70 ? 'DNO ✓' : oz.dno >= 60 ? 'Kritik' : 'Yetersiz';
-  document.getElementById(`footer-dur-${dk}`).style.color = dnoRenk;
-  document.getElementById(`footer-say-${dk}`).textContent = oz.sayi;
-}
-
-function updateHizliButonlar(dk){
-  // Kaç tane ara sınav girilmiş ve final girmemiş
-  const donemNo = dk === 'd1' ? 1 : 2;
-  let araGirildi = 0;
-  DERSLER.forEach((d, idx) => {
-    if(d.donem !== donemNo || !state[dk].secili[idx]) return;
-    const ara = state[dk].notlar[idx]?.ara;
-    if(ara !== '' && ara !== undefined && ara !== null) araGirildi++;
-  });
-  const wrap = document.getElementById(`hizli-${dk}`);
-  if(wrap) wrap.style.display = araGirildi > 0 ? 'flex' : 'none';
-}
-
-function renderDonem(dk){
-  const donemNo = dk === 'd1' ? 1 : 2;
-  const s = state[dk];
-  const kayit = state[dk + 'kayit'];
-  const readonly = !!kayit;
-  const liste = DERSLER.filter(d => d.donem === donemNo);
-  const oz = hesapOzet(dk);
-  const dnoRenk = oz.dno === null ? 'var(--color-text-secondary)'
-    : oz.dno >= 70 ? 'var(--color-text-success)'
-    : oz.dno >= 60 ? 'var(--color-text-warning)'
-    : 'var(--color-text-danger)';
-  const seciliSayi = liste.filter(d => s.secili[DERSLER.indexOf(d)]).length;
-
-  // Ara sınav girilen ders sayısı
-  let araGirildi = 0;
-  liste.forEach(d => {
-    const idx = DERSLER.indexOf(d);
-    if(!s.secili[idx]) return;
-    const ara = s.notlar[idx]?.ara;
-    if(ara !== '' && ara !== undefined && ara !== null) araGirildi++;
-  });
-
-  let rows = '';
-  liste.forEach(d => {
-    const idx = DERSLER.indexOf(d);
-    const secili = readonly ? (kayit.secili[idx] || false) : (s.secili[idx] || false);
-    const notVeri = readonly ? kayit.notlar[idx] : s.notlar[idx];
-    const ara = notVeri?.ara ?? '';
-    const dsonu = notVeri?.donem ?? '';
-
-    const b = getBasari(ara, dsonu);
-    const sadeceAra = (ara !== '' && (dsonu === '' || dsonu === undefined || dsonu === null));
-    const araNum = ara !== '' ? Number(ara) : null;
-
-    let goruntuB = b;
-    let sadeceAraGoster = false;
-    if(b === null && sadeceAra && araNum !== null){
-      goruntuB = araNum;
-      sadeceAraGoster = true;
-    }
-
-    const bRenk = goruntuB === null ? 'var(--color-text-secondary)'
-      : goruntuB >= 60 ? 'var(--color-text-success)'
-      : goruntuB >= 50 ? 'var(--color-text-warning)'
-      : 'var(--color-text-danger)';
-
-    const dur = getDurum(goruntuB);
-    const satirClass = 'ders-row' + (secili && dur === 'gecti' ? ' gecti-satir' : secili && dur === 'kaldi' ? ' kaldi-satir' : secili && dur === 'kritik' ? ' kritik-satir' : '');
-
-    const alanBadge = `<span class="badge" style="background:${ALAN_BG[d.alan]};color:${ALAN_TX[d.alan]};">${d.alan}</span>`;
-
-    const basariHtml = goruntuB !== null
-      ? (sadeceAraGoster
-        ? `<span style="font-size:9px;display:block;opacity:0.6;">ara</span><span>${goruntuB}</span>`
-        : goruntuB)
-      : '—';
-
-    rows += `<tr class="${satirClass}" id="row-${dk}-${idx}" style="opacity:${secili ? 1 : 0.4};">
-      <td style="text-align:center;">
-        ${readonly
-          ? `<input type="checkbox" ${secili ? 'checked' : ''} disabled>`
-          : `<input type="checkbox" ${secili ? 'checked' : ''} onchange="toggleSecili('${dk}',${idx},this.checked)">`}
-      </td>
-      <td>
-        <div style="font-size:12px;line-height:1.3;">${d.ad}</div>
-        <div style="margin-top:2px;">${alanBadge}</div>
-      </td>
-      <td style="text-align:center;color:var(--color-text-secondary);font-size:11px;">${d.kredi}s</td>
-      <td style="text-align:center;">
-        ${secili
-          ? (readonly
-            ? `<span style="font-size:13px;">${ara || '—'}</span>`
-            : `<input type="number" min="0" max="100" value="${ara}" placeholder="—" oninput="handleInput('${dk}',${idx},'ara',this)">`)
-          : '—'}
-      </td>
-      <td style="text-align:center;">
-        ${secili
-          ? (readonly
-            ? `<span style="font-size:13px;">${dsonu || '—'}</span>`
-            : `<input type="number" min="0" max="100" value="${dsonu}" placeholder="—" oninput="handleInput('${dk}',${idx},'donem',this)">`)
-          : '—'}
-      </td>
-      <td style="text-align:center;font-weight:500;font-size:13px;color:${bRenk};" id="basari-${dk}-${idx}">${basariHtml}</td>
-      <td style="text-align:center;" id="durum-${dk}-${idx}">${goruntuB !== null ? durumBadge(goruntuB, sadeceAraGoster) : '—'}</td>
-    </tr>`;
-  });
-
-  // Hızlı doldur butonları (üstte, sabit)
-  const hizliButonlar = !readonly ? `
-    <div id="hizli-${dk}" style="display:${araGirildi > 0 ? 'flex' : 'none'};flex-direction:column;gap:8px;margin-bottom:1rem;">
-      <p style="font-size:12px;font-weight:600;color:var(--color-text-secondary);margin:0 0 4px;">📊 Final Sınavı Otomatik Doldur (tüm seçili dersler)</p>
-      <button class="hizli-btn" onclick="tumFinalleriDoldurGec('${dk}')"
-        style="background:var(--color-background-success);border-color:var(--color-border-success);color:var(--color-text-success);">
-        ✅ Kaç alırsam geçerim? → Dip puanı doldur (minimum geçme)
-      </button>
-      <button class="hizli-btn" onclick="tumFinalleriDoldurKal('${dk}')"
-        style="background:var(--color-background-danger);border-color:var(--color-border-danger);color:var(--color-text-danger);">
-        ❌ Kaç alırsam kalırım? → Kalma eşiğini doldur
-      </button>
-    </div>` : '';
-
-  const kayitAlani = !readonly
-    ? `<div style="margin-top:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <button onclick="kaydet('${dk}')" style="font-size:13px;padding:7px 16px;background:var(--color-background-success);border-color:var(--color-border-success);color:var(--color-text-success);">💾 ${donemNo}. Dönemi Kaydet</button>
-        <span style="font-size:12px;color:var(--color-text-tertiary);">Kaydettikten sonra notlar kilitlenir.</span>
-      </div>`
-    : `<div style="margin-top:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <span style="font-size:12px;padding:5px 12px;border-radius:6px;background:var(--color-background-success);color:var(--color-text-success);">✓ ${donemNo}. Dönem kaydedildi</span>
-        <button onclick="kayitSil('${dk}')" style="font-size:12px;padding:5px 12px;color:var(--color-text-danger);border-color:var(--color-border-danger);">Kaydı Sil</button>
-      </div>`;
-
-  return `
-    <div style="margin-bottom:.75rem;">
-      <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 .6rem;">
-        ${readonly ? 'Notlar kaydedildi.' : 'Dersleri seçin → ara sınavı girin → anında sonuç görün. Final girmeden de durum hesaplanır.'}
-      </p>
-      ${!readonly ? `<div style="display:flex;gap:8px;margin-bottom:.8rem;flex-wrap:wrap;">
-        <button onclick="tumunuSec('${dk}',true)" style="font-size:12px;padding:4px 10px;">Tümünü Seç</button>
-        <button onclick="tumunuSec('${dk}',false)" style="font-size:12px;padding:4px 10px;">Seçimi Temizle</button>
-        <span style="font-size:12px;color:var(--color-text-secondary);align-self:center;">${seciliSayi} ders seçili</span>
-      </div>` : ''}
-      ${hizliButonlar}
+        <div id="content" class="min-h-[500px]"></div>
     </div>
-    <div class="tablo-wrap" style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:.75rem;">
-    <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:480px;">
-    <thead>
-    <tr style="background:var(--color-background-secondary);border-bottom:0.5px solid var(--color-border-tertiary);">
-      <th style="padding:8px 6px;width:5%;text-align:center;font-weight:500;color:var(--color-text-secondary);">#</th>
-      <th style="padding:8px 6px;text-align:left;font-weight:500;color:var(--color-text-secondary);">Ders / Alan</th>
-      <th style="padding:8px 6px;width:7%;text-align:center;font-weight:500;color:var(--color-text-secondary);">Saat</th>
-      <th style="padding:8px 6px;width:12%;text-align:center;font-weight:500;color:var(--color-text-secondary);">Ara</th>
-      <th style="padding:8px 6px;width:12%;text-align:center;font-weight:500;color:var(--color-text-secondary);">Final</th>
-      <th style="padding:8px 6px;width:9%;text-align:center;font-weight:500;color:var(--color-text-secondary);">Başarı</th>
-      <th style="padding:8px 6px;width:13%;text-align:center;font-weight:500;color:var(--color-text-secondary);">Durum</th>
-    </tr>
-    </thead>
-    <tbody>${rows}</tbody>
-    <tfoot id="footer-${dk}" style="${oz.sayi > 0 ? '' : 'display:none'}">
-      <tr style="background:var(--color-background-secondary);border-top:1px solid var(--color-border-secondary);">
-        <td colspan="5" style="padding:9px 12px;font-weight:500;font-size:13px;">Dönem Ortalaması (<span id="footer-say-${dk}">${oz.sayi}</span> ders)</td>
-        <td style="padding:9px 8px;text-align:center;font-size:15px;font-weight:500;" id="footer-dno-${dk}" style="color:${dnoRenk};">${oz.dno || '—'}</td>
-        <td style="padding:9px 8px;text-align:center;font-size:12px;" id="footer-dur-${dk}" style="color:${dnoRenk};">${oz.dno ? (oz.dno >= 70 ? 'DNO ✓' : oz.dno >= 60 ? 'Kritik' : 'Yetersiz') : '—'}</td>
-      </tr>
-    </tfoot>
-    </table>
-    </div>
-    ${kayitAlani}
-    <div style="margin-top:.75rem;padding:.55rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);">
-      <p style="font-size:11px;color:var(--color-text-tertiary);margin:0;">
-        💡 Ara sınav girin → final girmeden durum görünür &nbsp;|&nbsp; 
-        🟢 Geçti: ≥60 &nbsp;|&nbsp; 🟡 Kritik: 50-59 &nbsp;|&nbsp; 🔴 Kaldı: &lt;50 &nbsp;|&nbsp; 
-        DNO ≥70 zorunlu
-      </p>
-    </div>`;
-}
 
-function renderMezPanel(){
-  const oz1 = state.d1kayit ? hesapOzet('d1') : {dno:null};
-  const oz2 = state.d2kayit ? hesapOzet('d2') : {dno:null};
-  const gno1 = oz1.dno, gno2 = oz2.dno;
-  const gnoBilgi = (gno1 && gno2) ? Math.round((gno1 + gno2) / 2) : (gno1 || gno2 || null);
-  const mez = state.mezNot !== '' ? Number(state.mezNot) : null;
-  let basariPuani = null;
-  if(gnoBilgi && mez) basariPuani = Math.round(gnoBilgi * 0.6 + mez * 0.4);
+    <script>
+        const PASS = 60;
+        const VIZE_W = 0.4;
+        const FINAL_W = 0.6;
 
-  document.getElementById('panel-mez').innerHTML = `
-    <p style="font-size:13px;color:var(--color-text-secondary);margin:0 0 1rem;">
-      <strong>Başarı puanı = GNO × %60 + Mezuniyet sınavı × %40</strong><br>
-      Mezuniyet sınavından en az 70 almak zorunludur.
-    </p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-bottom:1.25rem;">
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem;">
-        <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 3px;">1. Dönem Ort.</p>
-        <p style="font-size:20px;font-weight:500;margin:0;">${gno1 || 'Kayıt yok'}</p>
-      </div>
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem;">
-        <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 3px;">2. Dönem Ort.</p>
-        <p style="font-size:20px;font-weight:500;margin:0;">${gno2 || 'Kayıt yok'}</p>
-      </div>
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem;">
-        <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 3px;">GNO</p>
-        <p style="font-size:20px;font-weight:500;margin:0;">${gnoBilgi || '—'}</p>
-      </div>
-    </div>
-    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1.25rem;margin-bottom:1rem;">
-      <p style="font-size:13px;font-weight:500;margin:0 0 .75rem;">Mezuniyet sınavı notunuzu girin</p>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-        <input type="number" min="0" max="100" value="${state.mezNot}" placeholder="0 — 100"
-          oninput="state.mezNot=this.value;saveToStorage();renderMezPanel();"
-          style="width:120px;font-size:16px;padding:8px 10px;box-sizing:border-box;">
-        <span style="font-size:13px;color:var(--color-text-secondary);">/ 100</span>
-        ${mez !== null ? `<span class="badge" style="font-size:12px;padding:4px 10px;background:${mez >= 70 ? 'var(--color-background-success)' : 'var(--color-background-danger)'};color:${mez >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)'};">${mez >= 70 ? 'Geçer' : 'Geçmez (min 70)'}</span>` : ''}
-      </div>
-    </div>
-    ${mez !== null && mez < 70 ? `<div style="margin-bottom:1rem;padding:.65rem 1rem;background:var(--color-background-danger);border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-danger);"><p style="font-size:13px;color:var(--color-text-danger);margin:0;">70 altı alındı → GNO'ya bakılmaksızın <strong>başarısız</strong> sayılırsınız.</p></div>` : ''}
-    ${basariPuani !== null ? `
-    <div style="padding:1rem 1.25rem;background:${basariPuani >= 70 && mez >= 70 ? 'var(--color-background-success)' : 'var(--color-background-danger)'};border-radius:var(--border-radius-lg);border:0.5px solid ${basariPuani >= 70 && mez >= 70 ? 'var(--color-border-success)' : 'var(--color-border-danger)'};">
-      <p style="font-size:12px;margin:0 0 4px;color:${basariPuani >= 70 && mez >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)'};">GNO (${gnoBilgi}) × %60 + Mezuniyet (${mez}) × %40</p>
-      <p style="font-size:32px;font-weight:500;margin:0;color:${basariPuani >= 70 && mez >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)'};">${basariPuani} <span style="font-size:14px;font-weight:400;">${basariPuani >= 70 && mez >= 70 ? '— Diploma 🎓' : '— Başarısız'}</span></p>
-    </div>` : ''}
-    ${!gnoBilgi ? `<p style="font-size:12px;color:var(--color-text-tertiary);margin-top:.75rem;">Dönem(ler)i kaydettikten sonra mezuniyet hesaplaması yapılabilir.</p>` : ''}
-  `;
-}
+        let semesters = {
+            0: JSON.parse(localStorage.getItem('donem1') || '[]'),
+            1: JSON.parse(localStorage.getItem('donem2') || '[]')
+        };
 
-function renderOzetPanel(){
-  const oz1 = state.d1kayit ? hesapOzet('d1') : {dno:null,sayi:0,basarili:0,kritik:0,basarisiz:0};
-  const oz2 = state.d2kayit ? hesapOzet('d2') : {dno:null,sayi:0,basarili:0,kritik:0,basarisiz:0};
-  const mez = state.mezNot !== '' ? Number(state.mezNot) : null;
-  const gno1 = oz1.dno, gno2 = oz2.dno;
-  const gno = (gno1 && gno2) ? Math.round((gno1 + gno2) / 2) : (gno1 || gno2 || null);
-  const basariPuani = (gno && mez) ? Math.round(gno * 0.6 + mez * 0.4) : null;
-  const tumBasarisiz = oz1.basarisiz + oz2.basarisiz;
+        if (semesters[0].length === 0) semesters[0] = [{id:1,name:"Arapça",vize:null,final:null},{id:2,name:"Tefsir",vize:null,final:null},{id:3,name:"Hadis",vize:null,final:null}];
+        if (semesters[1].length === 0) semesters[1] = [{id:4,name:"Fıkıh",vize:null,final:null},{id:5,name:"Kelam",vize:null,final:null}];
 
-  const satir = (label, val, renk) => `<tr style="border-bottom:0.5px solid var(--color-border-tertiary);">
-    <td style="padding:9px 12px;font-size:13px;color:var(--color-text-secondary);">${label}</td>
-    <td style="padding:9px 12px;font-size:14px;font-weight:500;text-align:right;color:${renk || 'var(--color-text-primary)'};">${val}</td>
-  </tr>`;
+        function save() {
+            localStorage.setItem('donem1', JSON.stringify(semesters[0]));
+            localStorage.setItem('donem2', JSON.stringify(semesters[1]));
+        }
 
-  document.getElementById('panel-ozet').innerHTML = `
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:1.25rem;">
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem;">
-        <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 3px;">1. Dönem</p>
-        <p style="font-size:20px;font-weight:500;margin:0;color:${gno1 ? (gno1 >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)') : 'var(--color-text-tertiary)'};">${gno1 || '—'}</p>
-        <p style="font-size:10px;color:var(--color-text-tertiary);margin:2px 0 0;">${state.d1kayit ? oz1.sayi + ' ders' : 'kayıt yok'}</p>
-      </div>
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem;">
-        <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 3px;">2. Dönem</p>
-        <p style="font-size:20px;font-weight:500;margin:0;color:${gno2 ? (gno2 >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)') : 'var(--color-text-tertiary)'};">${gno2 || '—'}</p>
-        <p style="font-size:10px;color:var(--color-text-tertiary);margin:2px 0 0;">${state.d2kayit ? oz2.sayi + ' ders' : 'kayıt yok'}</p>
-      </div>
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem;">
-        <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 3px;">GNO</p>
-        <p style="font-size:20px;font-weight:500;margin:0;color:${gno ? (gno >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)') : 'var(--color-text-tertiary)'};">${gno || '—'}</p>
-      </div>
-      <div style="background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:.85rem;">
-        <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 3px;">Mezuniyet</p>
-        <p style="font-size:20px;font-weight:500;margin:0;color:${mez ? (mez >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)') : 'var(--color-text-tertiary)'};">${mez || '—'}</p>
-      </div>
-    </div>
-    <div style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;margin-bottom:1rem;">
-    <table style="width:100%;border-collapse:collapse;">
-      ${satir('Toplam başarılı ders', oz1.basarili + oz2.basarili, 'var(--color-text-success)')}
-      ${satir('Toplam kritik ders (50-59)', oz1.kritik + oz2.kritik, oz1.kritik + oz2.kritik > 0 ? 'var(--color-text-warning)' : 'var(--color-text-secondary)')}
-      ${satir('Toplam başarısız ders', tumBasarisiz, tumBasarisiz > 0 ? 'var(--color-text-danger)' : 'var(--color-text-secondary)')}
-      ${satir('Bütünleme durumu', tumBasarisiz === 0 ? 'Gerekmiyor' : tumBasarisiz <= 2 ? tumBasarisiz + ' ders için hak var' : 'Hak yok (3+ ders)', tumBasarisiz === 0 ? 'var(--color-text-success)' : tumBasarisiz <= 2 ? 'var(--color-text-warning)' : 'var(--color-text-danger)')}
-    </table>
-    </div>
-    ${basariPuani !== null ? `
-    <div style="padding:1rem 1.25rem;background:${basariPuani >= 70 && mez >= 70 ? 'var(--color-background-success)' : 'var(--color-background-danger)'};border-radius:var(--border-radius-lg);border:0.5px solid ${basariPuani >= 70 && mez >= 70 ? 'var(--color-border-success)' : 'var(--color-border-danger)'};">
-      <p style="font-size:12px;margin:0 0 4px;color:${basariPuani >= 70 && mez >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)'};">Nihai Başarı Puanı = GNO (${gno}) × %60 + Mezuniyet (${mez}) × %40</p>
-      <p style="font-size:32px;font-weight:500;margin:0;color:${basariPuani >= 70 && mez >= 70 ? 'var(--color-text-success)' : 'var(--color-text-danger)'};">${basariPuani} <span style="font-size:14px;font-weight:400;">${basariPuani >= 70 && mez >= 70 ? '— Diploma Hakkı 🎓' : '— Başarısız'}</span></p>
-    </div>` : `<div style="padding:.75rem 1rem;background:var(--color-background-secondary);border-radius:var(--border-radius-md);"><p style="font-size:13px;color:var(--color-text-tertiary);margin:0;">Her iki dönemi kaydedip mezuniyet notunu girin → nihai puan hesaplanır.</p></div>`}
-  `;
-}
+        function calcScore(v, f) { return v===null||f===null ? null : (v*VIZE_W + f*FINAL_W); }
+        function reqFinal(v) {
+            if (v===null) return null;
+            const need = (PASS - v*VIZE_W) / FINAL_W;
+            return Math.max(0, Math.ceil(need*100)/100);
+        }
+        function status(s) {
+            if (s===null) return {txt:'Bekliyor', col:'gray'};
+            return s >= PASS ? {txt:'GEÇTİ', col:'green'} : {txt:'KALDI', col:'red'};
+        }
 
-let aktifTab = 'd1';
+        function render(tab) {
+            let html = `<div class="bg-white rounded-3xl shadow p-6">`;
+            if (tab < 2) {
+                html += `
+                <div class="flex justify-between mb-6">
+                    <h2 class="text-3xl font-bold text-orange-700">${tab+1}. Dönem</h2>
+                    <button onclick="addCourse(${tab})" class="bg-orange-600 hover:bg-orange-700 text-white px-7 py-3 rounded-3xl flex items-center gap-2">
+                        <span class="text-3xl leading-none">+</span> Ders Ekle
+                    </button>
+                </div>`;
+                
+                html += `<table class="w-full"><thead><tr class="text-left border-b"><th class="py-4">Ders</th><th class="text-center py-4 w-28">Ara Sınav</th><th class="text-center py-4 w-28">Final</th><th class="text-center py-4">Ortalama</th><th class="text-center py-4">Durum</th><th class="w-10"></th></tr></thead><tbody>`;
+                
+                semesters[tab].forEach((c,i) => {
+                    const score = calcScore(c.vize, c.final);
+                    const req = reqFinal(c.vize);
+                    const st = status(score);
+                    const finalShow = c.final !== null ? c.final : (req ? `<span class="text-orange-500 text-sm">(${req} gerek)</span>` : '-');
+                    const rowClass = score !== null ? (score >= PASS ? 'passed' : 'failed') : (req && req > 100 ? 'failed' : 'critical');
+                    
+                    html += `
+                    <tr class="${rowClass} border-b last:border-none">
+                        <td class="py-5"><input type="text" value="${c.name}" onchange="updateName(${tab},${i},this.value)" class="w-full bg-transparent border-b focus:border-orange-500 outline-none"></td>
+                        <td class="text-center"><input type="number" step="0.01" value="${c.vize||''}" onchange="updateVal(${tab},${i},'vize',this.value)" class="w-20 text-center border rounded-2xl py-2"></td>
+                        <td class="text-center"><input type="number" step="0.01" value="${c.final||''}" onchange="updateVal(${tab},${i},'final',this.value)" class="w-20 text-center border rounded-2xl py-2"></td>
+                        <td class="text-center font-bold text-xl">${score ? score.toFixed(2) : '-'}</td>
+                        <td class="text-center"><span class="px-6 py-1 text-xs font-bold rounded-3xl ${st.col==='green'?'bg-green-200 text-green-700':st.col==='red'?'bg-red-200 text-red-700':'bg-yellow-200 text-yellow-700'}">${st.txt}</span></td>
+                        <td><button onclick="deleteCourse(${tab},${i})" class="text-red-500 text-2xl">🗑</button></td>
+                    </tr>`;
+                });
+                html += `</tbody></table>`;
+                
+                let total=0, cnt=0, gecen=0;
+                semesters[tab].forEach(c=>{ const s=calcScore(c.vize,c.final); if(s!==null){total+=s;cnt++; if(s>=PASS)gecen++;} });
+                const ort = cnt ? (total/cnt).toFixed(2) : '0.00';
+                html += `<div class="mt-8 flex justify-between bg-orange-50 p-6 rounded-3xl"><div><div class="text-orange-600 text-sm">Dönem Ortalaması</div><div class="text-5xl font-bold text-orange-700">${ort}</div></div><div class="text-right"><div class="text-orange-600 text-sm">Geçen Ders</div><div class="text-5xl font-bold text-green-600">${gecen}</div></div></div>`;
+            } else {
+                const o1 = semesters[0].reduce((a,c)=>{const s=calcScore(c.vize,c.final);return s!==null?a+s:a;},0) / (semesters[0].filter(c=>calcScore(c.vize,c.final)!==null).length||1);
+                const o2 = semesters[1].reduce((a,c)=>{const s=calcScore(c.vize,c.final);return s!==null?a+s:a;},0) / (semesters[1].filter(c=>calcScore(c.vize,c.final)!==null).length||1);
+                const gno = ((o1 + o2)/2).toFixed(2);
+                const atama = gno;
+                
+                html += `
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-green-50 p-8 rounded-3xl text-center"><p class="text-green-700">1. Dönem Ort.</p><p class="text-6xl font-bold text-green-600">${o1.toFixed(2)}</p></div>
+                    <div class="bg-green-50 p-8 rounded-3xl text-center"><p class="text-green-700">2. Dönem Ort.</p><p class="text-6xl font-bold text-green-600">${o2.toFixed(2)}</p></div>
+                    <div class="bg-amber-50 p-8 rounded-3xl text-center"><p class="text-amber-700">Genel GNO</p><p class="text-6xl font-bold text-amber-600">${gno}</p><p class="mt-4 text-amber-800">Atama Puanı: <span class="font-bold text-4xl">${atama}</span></p></div>
+                </div>`;
+            }
+            html += `</div>`;
+            document.getElementById('content').innerHTML = html;
+        }
 
-function refreshDonem(dk){
-  const panelId = dk === 'd1' ? 'panel-d1' : 'panel-d2';
-  document.getElementById(panelId).innerHTML = renderDonem(dk);
-}
-
-function gotoTab(tab){
-  aktifTab = tab;
-  ['d1','d2','mez','ozet'].forEach(t => {
-    const btn = document.getElementById('tab-' + t);
-    const panel = document.getElementById('panel-' + t);
-    const aktif = t === tab;
-    btn.style.background = aktif ? 'var(--color-background-info)' : '';
-    btn.style.borderColor = aktif ? 'var(--color-border-info)' : '';
-    btn.style.color = aktif ? 'var(--color-text-info)' : '';
-    panel.style.display = aktif ? '' : 'none';
-  });
-  if(tab === 'mez') renderMezPanel();
-  if(tab === 'ozet') renderOzetPanel();
-}
-
-async function init(){
-  await loadFromStorage();
-  document.getElementById('panel-d1').innerHTML = renderDonem('d1');
-  document.getElementById('panel-d2').innerHTML = renderDonem('d2');
-  gotoTab('d1');
-}
-
-init();
-</script>
+        function switchTab(t) {
+            document.querySelectorAll('.tab-button').forEach((el,i)=> el.classList.toggle('tab-active', i===t));
+            render(t);
+        }
+        function updateVal(tab, i, key, val) {
+            semesters[tab][i][key] = val==='' ? null : parseFloat(val);
+            save();
+            render(tab);
+        }
+        function updateName(tab, i, name) {
+            semesters[tab][i].name = name;
+            save();
+            render(tab);
+        }
+        function addCourse(tab) {
+            const name = prompt("Dersin adını gir:", "Yeni Ders");
+            if (!name) return;
+            semesters[tab].push({id:Date.now(), name, vize:null, final:null});
+            save();
+            render(tab);
+        }
+        function deleteCourse(tab, i) {
+            if (confirm("Dersi sil?")) {
+                semesters[tab].splice(i,1);
+                save();
+                render(tab);
+            }
+        }
+        function quickFillAll(mode) {
+            [0,1].forEach(tab => {
+                semesters[tab].forEach(c => {
+                    if (c.vize !== null) {
+                        if (mode==='pass') c.final = reqFinal(c.vize);
+                        else c.final = Math.max(0, Math.floor((reqFinal(c.vize)-0.01)*100)/100);
+                    }
+                });
+            });
+            save();
+            render(currentTab || 0);
+            alert(mode==='pass' ? '✅ Tüm dersler için GEÇMEK için en düşük final puanları dolduruldu!' : '❌ Tüm dersler için KALMAK için en yüksek final puanları dolduruldu!');
+        }
+        function resetAll() {
+            if (confirm('HER ŞEYİ sıfırlamak istediğine emin misin?')) {
+                localStorage.clear();
+                semesters = {0:[],1:[]};
+                render(0);
+            }
+        }
+        let currentTab = 0;
+        window.onload = () => { render(0); };
+    </script>
+</body>
+</html>
