@@ -347,7 +347,7 @@ function renderMez(){
       <p style="font-size:13px;font-weight:600;margin:0 0 6px;color:var(--color-text-primary);">Mezuniyet Sınavı Notu</p>
       <p style="font-size:11px;color:var(--color-text-secondary);margin:0 0 10px;">Ondalıklı girebilirsiniz (örn: 97.60)</p>
       <div style="display:flex;align-items:center;gap:10px;">
-        <input class="inp" type="number" min="0" max="100" step="0.01" inputmode="decimal" value="${state.mezNot}" placeholder="örn: 97.60" oninput="state.mezNot=this.value;save();renderMez();" style="width:150px;font-size:18px;padding:10px 12px;text-align:center;">
+        <input class="inp" type="text" inputmode="decimal" pattern="[0-9]*[.,]?[0-9]*" value="${state.mezNot}" placeholder="örn: 97.60" oninput="state.mezNot=this.value.replace(',','.');save();renderMez();" style="width:150px;font-size:16px;padding:10px 12px;text-align:center;">
         <span style="font-size:14px;color:var(--color-text-secondary);">/ 100</span>
       </div>
     </div>
