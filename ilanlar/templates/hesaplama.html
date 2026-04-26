@@ -18,170 +18,66 @@
 </head>
 <body class="bg-gradient-to-br from-orange-50 to-amber-50 min-h-screen">
     <div class="max-w-6xl mx-auto p-4 md:p-6">
-        <!-- Header -->
         <div class="bg-orange-600 text-white p-6 rounded-3xl shadow-xl mb-8 flex items-center justify-between">
             <div>
                 <h1 class="text-4xl header-font tracking-tight">Not & Atama Puanı Hesaplama</h1>
-                <p class="text-orange-100 mt-1">Diyanet Akademisi — 1. Dönem • 2. Dönem • Mezuniyet</p>
+                <p class="text-orange-100 mt-1">1. Dönem • 2. Dönem • Mezuniyet & Atama Puanı</p>
             </div>
         </div>
 
-        <!-- Sabit Hızlı Butonlar -->
         <div class="sticky top-4 z-50 bg-white shadow-2xl rounded-3xl p-5 mb-8 flex flex-wrap gap-3">
-            <button onclick="quickFillAll('pass')" 
-                    class="flex-1 min-w-[220px] bg-green-600 hover:bg-green-700 text-white font-bold py-5 px-8 rounded-3xl text-xl transition-all flex items-center justify-center gap-3">
-                ✅ Kaç alırsam <span class="text-2xl">GEÇERİM</span>
-            </button>
-            <button onclick="quickFillAll('fail')" 
-                    class="flex-1 min-w-[220px] bg-red-600 hover:bg-red-700 text-white font-bold py-5 px-8 rounded-3xl text-xl transition-all flex items-center justify-center gap-3">
-                ❌ Kaç alırsam <span class="text-2xl">KALIRIM</span>
-            </button>
-            <button onclick="resetAll()" 
-                    class="px-8 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-3xl font-semibold">Sıfırla</button>
+            <button onclick="quickFillAll('pass')" class="flex-1 min-w-[220px] bg-green-600 hover:bg-green-700 text-white font-bold py-5 px-8 rounded-3xl text-xl flex items-center justify-center gap-3">✅ Kaç alırsam <span class="text-2xl">GEÇERİM</span></button>
+            <button onclick="quickFillAll('fail')" class="flex-1 min-w-[220px] bg-red-600 hover:bg-red-700 text-white font-bold py-5 px-8 rounded-3xl text-xl flex items-center justify-center gap-3">❌ Kaç alırsam <span class="text-2xl">KALIRIM</span></button>
+            <button onclick="resetAll()" class="px-8 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-3xl font-semibold">Sıfırla</button>
         </div>
 
-        <!-- Tabs -->
         <div class="flex border-b border-orange-200 mb-8 text-lg">
             <button onclick="switchTab(0)" id="tab-0" class="tab-button flex-1 py-5 font-semibold tab-active">1. Dönem</button>
             <button onclick="switchTab(1)" id="tab-1" class="tab-button flex-1 py-5 font-semibold">2. Dönem</button>
-            <button onclick="switchTab(2)" id="tab-2" class="tab-button flex-1 py-5 font-semibold">Mezuniyet &amp; Atama</button>
+            <button onclick="switchTab(2)" id="tab-2" class="tab-button flex-1 py-5 font-semibold">Mezuniyet & Atama</button>
         </div>
 
         <div id="content" class="min-h-[500px]"></div>
     </div>
 
     <script>
-        const PASS = 60;
-        const VIZE_W = 0.4;
-        const FINAL_W = 0.6;
+        const PASS = 60; const VIZE_W = 0.4; const FINAL_W = 0.6;
+        let semesters = {0: JSON.parse(localStorage.getItem('donem1')||'[]'), 1: JSON.parse(localStorage.getItem('donem2')||'[]')};
+        if(semesters[0].length===0) semesters[0]=[{id:1,name:"Arapça",vize:null,final:null},{id:2,name:"Tefsir",vize:null,final:null},{id:3,name:"Hadis",vize:null,final:null}];
+        if(semesters[1].length===0) semesters[1]=[{id:4,name:"Fıkıh",vize:null,final:null},{id:5,name:"Kelam",vize:null,final:null}];
 
-        let semesters = {
-            0: JSON.parse(localStorage.getItem('donem1') || '[]'),
-            1: JSON.parse(localStorage.getItem('donem2') || '[]')
-        };
+        function save(){localStorage.setItem('donem1',JSON.stringify(semesters[0]));localStorage.setItem('donem2',JSON.stringify(semesters[1]));}
+        function calcScore(v,f){return v===null||f===null?null:(v*VIZE_W + f*FINAL_W);}
+        function reqFinal(v){if(v===null)return null;const need=(PASS-v*VIZE_W)/FINAL_W;return Math.max(0,Math.ceil(need*100)/100);}
+        function status(s){if(s===null)return{txt:'Bekliyor',col:'gray'};return s>=PASS?{txt:'GEÇTİ',col:'green'}:{txt:'KALDI',col:'red'};}
 
-        if (semesters[0].length === 0) semesters[0] = [{id:1,name:"Arapça",vize:null,final:null},{id:2,name:"Tefsir",vize:null,final:null},{id:3,name:"Hadis",vize:null,final:null}];
-        if (semesters[1].length === 0) semesters[1] = [{id:4,name:"Fıkıh",vize:null,final:null},{id:5,name:"Kelam",vize:null,final:null}];
-
-        function save() {
-            localStorage.setItem('donem1', JSON.stringify(semesters[0]));
-            localStorage.setItem('donem2', JSON.stringify(semesters[1]));
-        }
-
-        function calcScore(v, f) { return v===null||f===null ? null : (v*VIZE_W + f*FINAL_W); }
-        function reqFinal(v) {
-            if (v===null) return null;
-            const need = (PASS - v*VIZE_W) / FINAL_W;
-            return Math.max(0, Math.ceil(need*100)/100);
-        }
-        function status(s) {
-            if (s===null) return {txt:'Bekliyor', col:'gray'};
-            return s >= PASS ? {txt:'GEÇTİ', col:'green'} : {txt:'KALDI', col:'red'};
-        }
-
-        function render(tab) {
-            let html = `<div class="bg-white rounded-3xl shadow p-6">`;
-            if (tab < 2) {
-                html += `
-                <div class="flex justify-between mb-6">
-                    <h2 class="text-3xl font-bold text-orange-700">${tab+1}. Dönem</h2>
-                    <button onclick="addCourse(${tab})" class="bg-orange-600 hover:bg-orange-700 text-white px-7 py-3 rounded-3xl flex items-center gap-2">
-                        <span class="text-3xl leading-none">+</span> Ders Ekle
-                    </button>
-                </div>`;
-                
-                html += `<table class="w-full"><thead><tr class="text-left border-b"><th class="py-4">Ders</th><th class="text-center py-4 w-28">Ara Sınav</th><th class="text-center py-4 w-28">Final</th><th class="text-center py-4">Ortalama</th><th class="text-center py-4">Durum</th><th class="w-10"></th></tr></thead><tbody>`;
-                
-                semesters[tab].forEach((c,i) => {
-                    const score = calcScore(c.vize, c.final);
-                    const req = reqFinal(c.vize);
-                    const st = status(score);
-                    const finalShow = c.final !== null ? c.final : (req ? `<span class="text-orange-500 text-sm">(${req} gerek)</span>` : '-');
-                    const rowClass = score !== null ? (score >= PASS ? 'passed' : 'failed') : (req && req > 100 ? 'failed' : 'critical');
-                    
-                    html += `
-                    <tr class="${rowClass} border-b last:border-none">
-                        <td class="py-5"><input type="text" value="${c.name}" onchange="updateName(${tab},${i},this.value)" class="w-full bg-transparent border-b focus:border-orange-500 outline-none"></td>
-                        <td class="text-center"><input type="number" step="0.01" value="${c.vize||''}" onchange="updateVal(${tab},${i},'vize',this.value)" class="w-20 text-center border rounded-2xl py-2"></td>
-                        <td class="text-center"><input type="number" step="0.01" value="${c.final||''}" onchange="updateVal(${tab},${i},'final',this.value)" class="w-20 text-center border rounded-2xl py-2"></td>
-                        <td class="text-center font-bold text-xl">${score ? score.toFixed(2) : '-'}</td>
-                        <td class="text-center"><span class="px-6 py-1 text-xs font-bold rounded-3xl ${st.col==='green'?'bg-green-200 text-green-700':st.col==='red'?'bg-red-200 text-red-700':'bg-yellow-200 text-yellow-700'}">${st.txt}</span></td>
-                        <td><button onclick="deleteCourse(${tab},${i})" class="text-red-500 text-2xl">🗑</button></td>
-                    </tr>`;
-                });
-                html += `</tbody></table>`;
-                
-                let total=0, cnt=0, gecen=0;
-                semesters[tab].forEach(c=>{ const s=calcScore(c.vize,c.final); if(s!==null){total+=s;cnt++; if(s>=PASS)gecen++;} });
-                const ort = cnt ? (total/cnt).toFixed(2) : '0.00';
-                html += `<div class="mt-8 flex justify-between bg-orange-50 p-6 rounded-3xl"><div><div class="text-orange-600 text-sm">Dönem Ortalaması</div><div class="text-5xl font-bold text-orange-700">${ort}</div></div><div class="text-right"><div class="text-orange-600 text-sm">Geçen Ders</div><div class="text-5xl font-bold text-green-600">${gecen}</div></div></div>`;
+        function render(tab){
+            let html=`<div class="bg-white rounded-3xl shadow p-6">`;
+            if(tab<2){
+                html+=`<div class="flex justify-between mb-6"><h2 class="text-3xl font-bold text-orange-700">${tab+1}. Dönem</h2><button onclick="addCourse(${tab})" class="bg-orange-600 hover:bg-orange-700 text-white px-7 py-3 rounded-3xl flex items-center gap-2"><span class="text-3xl">+</span> Ders Ekle</button></div>`;
+                html+=`<table class="w-full"><thead><tr class="text-left border-b"><th class="py-4">Ders</th><th class="text-center py-4 w-28">Ara Sınav</th><th class="text-center py-4 w-28">Final</th><th class="text-center py-4">Ortalama</th><th class="text-center py-4">Durum</th><th class="w-10"></th></tr></thead><tbody>`;
+                semesters[tab].forEach((c,i)=>{const score=calcScore(c.vize,c.final);const req=reqFinal(c.vize);const st=status(score);const rowClass=score!==null?(score>=PASS?'passed':'failed'):(req&&req>100?'failed':'critical');
+                html+=`<tr class="${rowClass} border-b last:border-none"><td class="py-5"><input type="text" value="${c.name}" onchange="updateName(${tab},${i},this.value)" class="w-full bg-transparent border-b focus:border-orange-500 outline-none"></td><td class="text-center"><input type="number" step="0.01" value="${c.vize||''}" onchange="updateVal(${tab},${i},'vize',this.value)" class="w-20 text-center border rounded-2xl py-2"></td><td class="text-center"><input type="number" step="0.01" value="${c.final||''}" onchange="updateVal(${tab},${i},'final',this.value)" class="w-20 text-center border rounded-2xl py-2"></td><td class="text-center font-bold text-xl">${score?score.toFixed(2):'-'}</td><td class="text-center"><span class="px-6 py-1 text-xs font-bold rounded-3xl ${st.col==='green'?'bg-green-200 text-green-700':st.col==='red'?'bg-red-200 text-red-700':'bg-yellow-200 text-yellow-700'}">${st.txt}</span></td><td><button onclick="deleteCourse(${tab},${i})" class="text-red-500 text-2xl">🗑</button></td></tr>`;});
+                html+=`</tbody></table>`;
+                let total=0,cnt=0,gecen=0; semesters[tab].forEach(c=>{const s=calcScore(c.vize,c.final);if(s!==null){total+=s;cnt++;if(s>=PASS)gecen++;}}); const ort=cnt?(total/cnt).toFixed(2):'0.00';
+                html+=`<div class="mt-8 flex justify-between bg-orange-50 p-6 rounded-3xl"><div><div class="text-orange-600 text-sm">Dönem Ortalaması</div><div class="text-5xl font-bold text-orange-700">${ort}</div></div><div class="text-right"><div class="text-orange-600 text-sm">Geçen Ders</div><div class="text-5xl font-bold text-green-600">${gecen}</div></div></div>`;
             } else {
-                const o1 = semesters[0].reduce((a,c)=>{const s=calcScore(c.vize,c.final);return s!==null?a+s:a;},0) / (semesters[0].filter(c=>calcScore(c.vize,c.final)!==null).length||1);
-                const o2 = semesters[1].reduce((a,c)=>{const s=calcScore(c.vize,c.final);return s!==null?a+s:a;},0) / (semesters[1].filter(c=>calcScore(c.vize,c.final)!==null).length||1);
-                const gno = ((o1 + o2)/2).toFixed(2);
-                const atama = gno;
-                
-                html += `
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-green-50 p-8 rounded-3xl text-center"><p class="text-green-700">1. Dönem Ort.</p><p class="text-6xl font-bold text-green-600">${o1.toFixed(2)}</p></div>
-                    <div class="bg-green-50 p-8 rounded-3xl text-center"><p class="text-green-700">2. Dönem Ort.</p><p class="text-6xl font-bold text-green-600">${o2.toFixed(2)}</p></div>
-                    <div class="bg-amber-50 p-8 rounded-3xl text-center"><p class="text-amber-700">Genel GNO</p><p class="text-6xl font-bold text-amber-600">${gno}</p><p class="mt-4 text-amber-800">Atama Puanı: <span class="font-bold text-4xl">${atama}</span></p></div>
-                </div>`;
+                const o1=semesters[0].reduce((a,c)=>{const s=calcScore(c.vize,c.final);return s!==null?a+s:a;},0)/(semesters[0].filter(c=>calcScore(c.vize,c.final)!==null).length||1);
+                const o2=semesters[1].reduce((a,c)=>{const s=calcScore(c.vize,c.final);return s!==null?a+s:a;},0)/(semesters[1].filter(c=>calcScore(c.vize,c.final)!==null).length||1);
+                const gno=((o1+o2)/2).toFixed(2); const atama=gno;
+                html+=`<div class="grid grid-cols-1 md:grid-cols-3 gap-6"><div class="bg-green-50 p-8 rounded-3xl text-center"><p class="text-green-700">1. Dönem Ort.</p><p class="text-6xl font-bold text-green-600">${o1.toFixed(2)}</p></div><div class="bg-green-50 p-8 rounded-3xl text-center"><p class="text-green-700">2. Dönem Ort.</p><p class="text-6xl font-bold text-green-600">${o2.toFixed(2)}</p></div><div class="bg-amber-50 p-8 rounded-3xl text-center"><p class="text-amber-700">Genel GNO</p><p class="text-6xl font-bold text-amber-600">${gno}</p><p class="mt-4 text-amber-800">Atama Puanı: <span class="font-bold text-4xl">${atama}</span></p></div></div>`;
             }
-            html += `</div>`;
-            document.getElementById('content').innerHTML = html;
+            html+=`</div>`; document.getElementById('content').innerHTML=html;
         }
 
-        function switchTab(t) {
-            document.querySelectorAll('.tab-button').forEach((el,i)=> el.classList.toggle('tab-active', i===t));
-            render(t);
-        }
-        function updateVal(tab, i, key, val) {
-            semesters[tab][i][key] = val==='' ? null : parseFloat(val);
-            save();
-            render(tab);
-        }
-        function updateName(tab, i, name) {
-            semesters[tab][i].name = name;
-            save();
-            render(tab);
-        }
-        function addCourse(tab) {
-            const name = prompt("Dersin adını gir:", "Yeni Ders");
-            if (!name) return;
-            semesters[tab].push({id:Date.now(), name, vize:null, final:null});
-            save();
-            render(tab);
-        }
-        function deleteCourse(tab, i) {
-            if (confirm("Dersi sil?")) {
-                semesters[tab].splice(i,1);
-                save();
-                render(tab);
-            }
-        }
-        function quickFillAll(mode) {
-            [0,1].forEach(tab => {
-                semesters[tab].forEach(c => {
-                    if (c.vize !== null) {
-                        if (mode==='pass') c.final = reqFinal(c.vize);
-                        else c.final = Math.max(0, Math.floor((reqFinal(c.vize)-0.01)*100)/100);
-                    }
-                });
-            });
-            save();
-            render(currentTab || 0);
-            alert(mode==='pass' ? '✅ Tüm dersler için GEÇMEK için en düşük final puanları dolduruldu!' : '❌ Tüm dersler için KALMAK için en yüksek final puanları dolduruldu!');
-        }
-        function resetAll() {
-            if (confirm('HER ŞEYİ sıfırlamak istediğine emin misin?')) {
-                localStorage.clear();
-                semesters = {0:[],1:[]};
-                render(0);
-            }
-        }
-        let currentTab = 0;
-        window.onload = () => { render(0); };
+        function switchTab(t){document.querySelectorAll('.tab-button').forEach((el,i)=>el.classList.toggle('tab-active',i===t));render(t);}
+        function updateVal(tab,i,key,val){semesters[tab][i][key]=val===''?null:parseFloat(val);save();render(tab);}
+        function updateName(tab,i,name){semesters[tab][i].name=name;save();render(tab);}
+        function addCourse(tab){const name=prompt("Dersin adını gir:","Yeni Ders");if(!name)return;semesters[tab].push({id:Date.now(),name,vize:null,final:null});save();render(tab);}
+        function deleteCourse(tab,i){if(confirm("Dersi sil?")){semesters[tab].splice(i,1);save();render(tab);}}
+        function quickFillAll(mode){[0,1].forEach(tab=>{semesters[tab].forEach(c=>{if(c.vize!==null){if(mode==='pass')c.final=reqFinal(c.vize);else c.final=Math.max(0,Math.floor((reqFinal(c.vize)-0.01)*100)/100);}})});save();render(currentTab||0);alert(mode==='pass'?'✅ Tüm dersler GEÇMEK için dolduruldu!':'❌ Tüm dersler KALMAK için dolduruldu!');}
+        function resetAll(){if(confirm('HER ŞEYİ sıfırlamak istediğine emin misin?')){localStorage.clear();semesters={0:[],1:[]};render(0);}}
+        let currentTab=0; window.onload=()=>{render(0);};
     </script>
 </body>
 </html>
