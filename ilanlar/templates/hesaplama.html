@@ -15,10 +15,17 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .inp:focus{outline:2px solid #FF6000;outline-offset:1px;border-color:transparent;}
 .tablo-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 @media(max-width:580px){
-  .ders-row td{font-size:12px;padding:8px 4px;}
+  .ders-row td{font-size:11px;padding:5px 2px;}
   .inp{font-size:16px;padding:10px 8px;}
   .hizli-btn{font-size:13px;padding:12px 8px;}
   .tab-btn{font-size:12px;padding:8px 12px;}
+  .badge{font-size:9px;padding:2px 4px;}
+  th{font-size:10px;padding:6px 2px !important;}
+}
+@media(max-width:380px){
+  .ders-row td{font-size:10px;padding:4px 1px;}
+  .badge{font-size:8px;padding:1px 3px;}
+  th{font-size:9px;padding:4px 1px !important;}
 }
 </style>
 
@@ -282,9 +289,9 @@ function renderDonem(dk){
       <button onclick="tumSec('${dk}',false)" style="font-size:12px;padding:6px 12px;border-radius:7px;border:1px solid var(--color-border-secondary);background:var(--color-background-secondary);cursor:pointer;color:var(--color-text-primary);">Temizle</button>
     </div>
     <div class="tablo-wrap" style="background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:12px;overflow:hidden;margin-bottom:10px;">
-    <table style="width:100%;border-collapse:collapse;min-width:460px;">
+    <table style="width:100%;border-collapse:collapse;min-width:320px;">
     <thead><tr style="background:rgba(255,96,0,0.06);border-bottom:1px solid rgba(255,96,0,0.12);">
-      <th style="padding:10px 7px;width:5%;text-align:center;font-weight:600;color:#FF6000;">#</th>
+      <th style="padding:6px 3px;width:5%;text-align:center;font-weight:600;color:#FF6000;">#</th>
       <th style="padding:10px 7px;text-align:left;font-weight:600;color:#FF6000;">Ders / Alan</th>
       <th style="padding:10px 7px;width:7%;text-align:center;font-weight:600;color:#FF6000;">Saat</th>
       <th style="padding:10px 7px;width:11%;text-align:center;font-weight:600;color:#FF6000;">Ara</th>
