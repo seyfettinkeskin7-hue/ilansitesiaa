@@ -179,8 +179,5 @@ def gorevli_detay(request, gorevli_id):
     return render(request, 'gorevli_detay.html', {'gorevli': gorevli})
 
 def hesaplama(request):
-    return render(request, 'hesaplama.html')
-
-def hesaplama(request):
     from django.shortcuts import render
     return render(request, 'hesaplama.html')

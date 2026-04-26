@@ -30,5 +30,6 @@ urlpatterns = [
     path('gorevli/<int:gorevli_id>/', views.gorevli_detay, name='gorevli_detay'),
     path('ilanlar/', views.tum_ilanlar, name='ilanlar'),
     path('hutbeler/', views.hutbeler, name='hutbeler'),
+    path('hesaplama/', views.hesaplama, name='hesaplama'),
     path('accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
