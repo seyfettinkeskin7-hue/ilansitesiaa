@@ -177,3 +177,6 @@ def gorevli_detay(request, gorevli_id):
     from .models import AkademiGorevli
     gorevli = get_object_or_404(AkademiGorevli, id=gorevli_id)
     return render(request, 'gorevli_detay.html', {'gorevli': gorevli})
+
+def hesaplama(request):
+    return render(request, 'hesaplama.html')
