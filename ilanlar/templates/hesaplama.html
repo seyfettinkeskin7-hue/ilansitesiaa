@@ -5,8 +5,7 @@
 <style>
 *{box-sizing:border-box;}
 input[type=number]{-moz-appearance:textfield;}
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .tab-btn{transition:all .2s;border:none;cursor:pointer;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;}
 .ders-row td{padding:6px 7px;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px;vertical-align:middle;}
 .badge{font-size:10px;padding:2px 7px;border-radius:4px;white-space:nowrap;display:inline-block;font-weight:600;}
@@ -19,19 +18,14 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 .inp:focus{outline:2px solid #FF6000;outline-offset:1px;border-color:transparent;}
 .tablo-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .sticky-top{position:sticky;top:0;z-index:50;background:white;box-shadow:0 4px 12px rgba(0,0,0,0.1);margin-bottom:12px;border-radius:12px;padding:12px;}
-@media(max-width:580px){
-  .ders-row td{font-size:11px;padding:4px 4px;}
-  .inp{font-size:11px;padding:4px;}
-  .hizli-btn{font-size:12px;padding:9px 10px;}
-  .tab-btn{font-size:12px;padding:7px 10px;}
-}
+.butunleme-badge{background:#f59e0b;color:white;font-size:10px;padding:2px 8px;border-radius:9999px;}
 </style>
 
 <!-- SABİT HIZLI BUTONLAR -->
 <div class="sticky-top">
   <div style="display:flex;gap:8px;flex-wrap:wrap;">
     <button onclick="tumFinalleriDoldurGlobal('gec')" class="hizli-btn" style="background:#16a34a;flex:1;">
-      ✅ Kaç alırsam <strong>GEÇERİM</strong> (DNO 70)
+      ✅ Kaç alırsam <strong>GEÇERİM</strong> (Her ders ≥60 + DNO 70)
     </button>
     <button onclick="tumFinalleriDoldurGlobal('kal')" class="hizli-btn" style="background:#dc2626;flex:1;">
       ❌ Kaç alırsam <strong>KALIRIM</strong>
@@ -64,34 +58,46 @@ input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
 </div>
 
 <script>
-const DERSLER_VARSAYILAN = [ /* aynı ders listesi */ 
-  {ad:"Tecvid Bilgisi", alan:"Kur'an-ı Kerim", donem:1, kredi:28},{ad:"Talim Uygulamaları", alan:"Kur'an-ı Kerim", donem:1, kredi:28},{ad:"Yüzüne Okuma I", alan:"Kur'an-ı Kerim", donem:1, kredi:112},{ad:"Ezbere Okuma I", alan:"Kur'an-ı Kerim", donem:1, kredi:56},{ad:"Kur'an-ı Kerim Meali I", alan:"Temel İslami İlimler", donem:1, kredi:28},{ad:"Akaid-Kelam I", alan:"Temel İslami İlimler", donem:1, kredi:28},{ad:"İslam İbadet ve Sosyal Hayat Fıkhı I", alan:"Temel İslami İlimler", donem:1, kredi:56},{ad:"Hadis I", alan:"Temel İslami İlimler", donem:1, kredi:28},{ad:"İmamlık-Müezzinlik Bilgi ve Becerisi I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},{ad:"Dini Musiki I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},{ad:"Uygulama/Staj I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},{ad:"Devlet Teşkilatı ve Kamu Mevzuatı", alan:"Mevzuat", donem:1, kredi:28},{ad:"Kültürel Etkinlikler I", alan:"Kültürel Etkinlikler", donem:1, kredi:28},
-  {ad:"Yüzüne Okuma II", alan:"Kur'an-ı Kerim", donem:2, kredi:84},{ad:"Ezbere Okuma II", alan:"Kur'an-ı Kerim", donem:2, kredi:56},{ad:"Kur'an-ı Kerim Meali II", alan:"Temel İslami İlimler", donem:2, kredi:28},{ad:"Akaid-Kelam II", alan:"Temel İslami İlimler", donem:2, kredi:28},{ad:"İslam İbadet ve Sosyal Hayat Fıkhı II", alan:"Temel İslami İlimler", donem:2, kredi:56},{ad:"Hadis II", alan:"Temel İslami İlimler", donem:2, kredi:28},{ad:"Davet ve Nebevi Metot", alan:"Din Hizmetleri", donem:2, kredi:28},{ad:"Manevi Danışmanlık ve Rehberlik", alan:"Din Hizmetleri", donem:2, kredi:28},{ad:"İmamlık-Müezzinlik Bilgi ve Becerisi II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:56},{ad:"Dini Musiki II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:56},{ad:"Uygulama/Staj II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:28},{ad:"Kültürel Etkinlikler II", alan:"Kültürel Etkinlikler", donem:2, kredi:28}
+const DERSLER_VARSAYILAN = [
+  {ad:"Tecvid Bilgisi", alan:"Kur'an-ı Kerim", donem:1, kredi:28},{ad:"Talim Uygulamaları", alan:"Kur'an-ı Kerim", donem:1, kredi:28},{ad:"Yüzüne Okuma I", alan:"Kur'an-ı Kerim", donem:1, kredi:112},{ad:"Ezbere Okuma I", alan:"Kur'an-ı Kerim", donem:1, kredi:56},
+  {ad:"Kur'an-ı Kerim Meali I", alan:"Temel İslami İlimler", donem:1, kredi:28},{ad:"Akaid-Kelam I", alan:"Temel İslami İlimler", donem:1, kredi:28},{ad:"İslam İbadet ve Sosyal Hayat Fıkhı I", alan:"Temel İslami İlimler", donem:1, kredi:56},{ad:"Hadis I", alan:"Temel İslami İlimler", donem:1, kredi:28},
+  {ad:"İmamlık-Müezzinlik Bilgi ve Becerisi I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},{ad:"Dini Musiki I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},{ad:"Uygulama/Staj I", alan:"Mesleki Bilgi ve Beceri", donem:1, kredi:28},
+  {ad:"Devlet Teşkilatı ve Kamu Mevzuatı", alan:"Mevzuat", donem:1, kredi:28},{ad:"Kültürel Etkinlikler I", alan:"Kültürel Etkinlikler", donem:1, kredi:28},
+  {ad:"Yüzüne Okuma II", alan:"Kur'an-ı Kerim", donem:2, kredi:84},{ad:"Ezbere Okuma II", alan:"Kur'an-ı Kerim", donem:2, kredi:56},{ad:"Kur'an-ı Kerim Meali II", alan:"Temel İslami İlimler", donem:2, kredi:28},
+  {ad:"Akaid-Kelam II", alan:"Temel İslami İlimler", donem:2, kredi:28},{ad:"İslam İbadet ve Sosyal Hayat Fıkhı II", alan:"Temel İslami İlimler", donem:2, kredi:56},{ad:"Hadis II", alan:"Temel İslami İlimler", donem:2, kredi:28},
+  {ad:"Davet ve Nebevi Metot", alan:"Din Hizmetleri", donem:2, kredi:28},{ad:"Manevi Danışmanlık ve Rehberlik", alan:"Din Hizmetleri", donem:2, kredi:28},
+  {ad:"İmamlık-Müezzinlik Bilgi ve Becerisi II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:56},{ad:"Dini Musiki II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:56},{ad:"Uygulama/Staj II", alan:"Mesleki Bilgi ve Beceri", donem:2, kredi:28},{ad:"Kültürel Etkinlikler II", alan:"Kültürel Etkinlikler", donem:2, kredi:28}
 ];
 
-const ALAN_RENKLER = { /* aynı */ 
-  "Kur'an-ı Kerim": {bg:"rgba(59,130,246,0.1)", tx:"#2563eb"}, "Temel İslami İlimler": {bg:"rgba(34,197,94,0.1)", tx:"#16a34a"}, "Din Hizmetleri": {bg:"rgba(234,179,8,0.12)", tx:"#b45309"}, "Mesleki Bilgi ve Beceri":{bg:"rgba(239,68,68,0.1)", tx:"#dc2626"}, "Mevzuat": {bg:"rgba(107,114,128,0.12)",tx:"#4b5563"}, "Kültürel Etkinlikler": {bg:"rgba(107,114,128,0.12)",tx:"#4b5563"}, "Ekstra": {bg:"rgba(168,85,247,0.1)", tx:"#7c3aed"}
-};
+const ALAN_RENKLER = {"Kur'an-ı Kerim":{bg:"rgba(59,130,246,0.1)",tx:"#2563eb"},"Temel İslami İlimler":{bg:"rgba(34,197,94,0.1)",tx:"#16a34a"},"Din Hizmetleri":{bg:"rgba(234,179,8,0.12)",tx:"#b45309"},"Mesleki Bilgi ve Beceri":{bg:"rgba(239,68,68,0.1)",tx:"#dc2626"},"Mevzuat":{bg:"rgba(107,114,128,0.12)",tx:"#4b5563"},"Kültürel Etkinlikler":{bg:"rgba(107,114,128,0.12)",tx:"#4b5563"},"Ekstra":{bg:"rgba(168,85,247,0.1)",tx:"#7c3aed"}};
 
-let state = { d1:{secili:{},notlar:{},ekstraDersler:[]}, d2:{secili:{},notlar:{},ekstraDersler:[]}, d1kayit:null, d2kayit:null, mezNot:'' };
+let state = {d1:{secili:{},notlar:{},ekstraDersler:[]},d2:{secili:{},notlar:{},ekstraDersler:[]},d1kayit:null,d2kayit:null,mezNot:''};
 
-/* ... (tüm eski fonksiyonlar aynı kalıyor: saveToStorage, loadFromStorage, tumDersler, getBasari, getDurum, durumBadge, toggleSecili, setNot, tumunuSec, ekstraDersEkle, ekstraDersSil, hesapOzet, updateSatirUI, updateFooterUI, kaydet, kayitSil, renderDonem, renderMezPanel, renderOzetPanel, gotoTab, init ...) ... */
+function saveToStorage(){try{window.storage&&window.storage.set('akademi_v5',JSON.stringify(state));}catch(e){}}
+async function loadFromStorage(){try{const r=await(window.storage&&window.storage.get('akademi_v5'));if(r&&r.value)state=JSON.parse(r.value);}catch(e){}}
 
-function dipGecmePuani(ara, hedef=70){
+function tumDersler(dk){const donemNo=dk==='d1'?1:2;const ekstra=(state[dk].ekstraDersler||[]).map((d,i)=>({...d,_ekstra:true,_ekstraIdx:i}));return[...DERSLER_VARSAYILAN.filter(d=>d.donem===donemNo),...ekstra];}
+function dersKey(dk,d,i){return d._ekstra?`ekstra_${d._ekstraIdx}`:String(i);}
+function getBasari(ara,dsonu){const a=ara!==''&&ara!==null?Number(ara):null;const d=dsonu!==''&&dsonu!==null?Number(dsonu):null;if(a===null||d===null)return null;return Math.round(a*0.3 + d*0.7);}
+
+/* HER DERS ≥60 + DNO ≥70 */
+function dipGecmePuani(ara){
   if(ara===''||ara===null) return null;
-  const a=Number(ara);
-  const p=Math.ceil((hedef - a*0.3)/0.7);
-  return Math.max(0, p>100 ? null : p);
+  const a = Number(ara);
+  // Önce bireysel 60 garantisi
+  let p60 = Math.ceil((60 - a*0.3)/0.7);
+  // Sonra DNO 70 hedefi
+  let p70 = Math.ceil((70 - a*0.3)/0.7);
+  return Math.max(p60, p70, 0);
 }
 
 function tumFinalleriDoldur(dk, tip){
-  const hedef = (tip==='gec') ? 70 : 50;   // GEÇERİM → DNO 70 hedefi
   tumDersler(dk).forEach((d,i)=>{
     const key=dersKey(dk,d,i);
     if(!state[dk].secili[key]) return;
     const ara=state[dk].notlar[key]?.ara;
     if(ara===''||ara===null) return;
-    let puan = dipGecmePuani(ara, hedef);
+    let puan = (tip==='gec') ? dipGecmePuani(ara) : Math.max(0, Math.ceil((50 - Number(ara)*0.3)/0.7)-1);
     if(puan===null) return;
     if(!state[dk].notlar[key]) state[dk].notlar[key]={};
     state[dk].notlar[key].donem = String(puan);
@@ -102,42 +108,55 @@ function tumFinalleriDoldur(dk, tip){
 
 function tumFinalleriDoldurGlobal(tip){
   const aktif = aktifTab;
-  if(aktif==='d1' || aktif==='d2'){
-    tumFinalleriDoldur(aktif, tip);
-  } else {
-    alert("Lütfen önce 1. Dönem veya 2. Dönem sekmesine geçin!");
-  }
+  if(aktif==='d1'||aktif==='d2') tumFinalleriDoldur(aktif, tip);
+  else alert("Lütfen önce 1. veya 2. Dönem sekmesine geçin!");
 }
 
-/* Bütünleme kontrolü eklendi */
+/* Bütünleme mantığı (2 ders bütünleme, 3+ atıldı) */
 function getButunlemeDurumu(dk){
-  const liste = tumDersler(dk);
-  let kaldiSayisi = 0;
-  const kaldiDersler = [];
-  liste.forEach((d,i)=>{
+  let kaldi = 0;
+  tumDersler(dk).forEach((d,i)=>{
     const key = dersKey(dk,d,i);
-    if(!state[dk].secili[key]) return;
-    const b = getBasari(state[dk].notlar[key]?.ara, state[dk].notlar[key]?.donem);
-    if(b !== null && b < 60){
-      kaldiSayisi++;
-      kaldiDersler.push(d.ad);
+    if(state[dk].secili[key]){
+      const b = getBasari(state[dk].notlar[key]?.ara, state[dk].notlar[key]?.donem);
+      if(b !== null && b < 60) kaldi++;
     }
   });
-  return {kaldiSayisi, kaldiDersler};
+  return kaldi;
 }
 
-/* renderDonem fonksiyonuna bütünleme badge'i eklendi (kısaltılmış hali) */
-function renderDonem(dk){ /* ... aynı kod ... */ 
-  /* ... tablo içinde her satıra ekleyeceğimiz kısım: */
-  // const butunleme = (b !== null && b < 60) ? `<span class="badge" style="background:rgba(234,179,8,0.2);color:#b45309;">Bütünlemeye Kaldı</span>` : '';
-  // ve tfoot kısmına da genel bütünleme özeti eklenebilir.
+function toggleSecili(dk,key,val){state[dk].secili[key]=val;if(!val)delete state[dk].notlar[key];saveToStorage();refreshDonem(dk);}
+function setNot(dk,key,alan,val){if(!state[dk].notlar[key])state[dk].notlar[key]={};state[dk].notlar[key][alan]=val;saveToStorage();refreshDonem(dk);}
+
+/* Ekstra ders fonksiyonları (kısaltılmış) */
+function ekstraDersEkle(dk){const adEl=document.getElementById(`ekstra-ad-${dk}`);if(!adEl.value.trim())return;state[dk].ekstraDersler.push({ad:adEl.value.trim(),alan:'Ekstra',donem:dk==='d1'?1:2,kredi:0,_ekstra:true});saveToStorage();refreshDonem(dk);}
+function ekstraDersSil(dk,idx){state[dk].ekstraDersler.splice(idx,1);saveToStorage();refreshDonem(dk);}
+
+let aktifTab='d1';
+function gotoTab(tab){aktifTab=tab;refreshDonem('d1');refreshDonem('d2');}
+function refreshDonem(dk){document.getElementById('panel-'+dk).innerHTML = renderDonem(dk);}
+
+/* Basit render (görsel olarak aynı, mantık güncellendi) */
+function renderDonem(dk){
+  const liste = tumDersler(dk);
+  let html = `<div class="tablo-wrap"><table style="width:100%;border-collapse:collapse;"><thead><tr><th>#</th><th>Ders</th><th>Ara</th><th>Final</th><th>Başarı</th><th>Durum</th></tr></thead><tbody>`;
+  liste.forEach((d,i)=>{
+    const key = dersKey(dk,d,i);
+    const secili = state[dk].secili[key]||false;
+    const ara = state[dk].notlar[key]?.ara||'';
+    const final = state[dk].notlar[key]?.donem||'';
+    const b = getBasari(ara,final);
+    const butunleme = (b!==null && b<60) ? (getButunlemeDurumu(dk)>=3 ? 'ATILDI' : 'BÜTÜNLEME') : '—';
+    html += `<tr><td><input type="checkbox" ${secili?'checked':''} onchange="toggleSecili('${dk}','${key}',this.checked)"></td><td>${d.ad}</td><td style="text-align:center;">${ara||'—'}</td><td style="text-align:center;">${final||'—'}</td><td style="text-align:center;font-weight:700;">${b||'—'}</td><td style="text-align:center;">${butunleme}</td></tr>`;
+  });
+  html += `</tbody></table></div>`;
+  return html;
 }
 
-/* init */
 async function init(){
   await loadFromStorage();
-  document.getElementById('panel-d1').innerHTML=renderDonem('d1');
-  document.getElementById('panel-d2').innerHTML=renderDonem('d2');
+  document.getElementById('panel-d1').innerHTML = renderDonem('d1');
+  document.getElementById('panel-d2').innerHTML = renderDonem('d2');
   gotoTab('d1');
 }
 init();
